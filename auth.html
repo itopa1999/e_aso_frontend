@@ -3,94 +3,450 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auth Form - Switchable</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <title>Login | Aso Oke & Aso Ofi Marketplace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/auth.css">
     <style>
-       
+        :root {
+            --primary-color: #8a4b38;
+            --secondary-color: #e8d0b3;
+            --accent-color: #d4a373;
+            --dark-color: #4a2c2a;
+            --light-color: #f9f5f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf8f5;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f9f5f0"/><path d="M20,20 L80,80 M80,20 L20,80" stroke="%23e8d0b3" stroke-width="0.5" opacity="0.3"/></svg>');
+            background-size: 300px;
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(74, 44, 42, 0.1);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(to right, var(--primary-color), var(--dark-color));
+            z-index: 2;
+        }
+        
+        .logo {
+            display: block;
+            margin: 0 auto 30px;
+            width: 70px;
+            height: 70px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--dark-color);
+            font-size: 24px;
+            box-shadow: 0 5px 15px rgba(138, 75, 56, 0.15);
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header h1 {
+            font-size: 28px;
+            color: var(--dark-color);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .login-header p {
+            color: #777;
+            font-size: 16px;
+            max-width: 300px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #999;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #fcfbf9;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(138, 75, 56, 0.1);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-color);
+            font-size: 18px;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary-color), var(--dark-color));
+            color: white;
+            box-shadow: 0 5px 15px rgba(138, 75, 56, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(138, 75, 56, 0.4);
+        }
+        
+        .btn-google {
+            background: white;
+            color: #555;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 25px;
+        }
+        
+        .btn-google:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #eee;
+        }
+        
+        .divider-text {
+            padding: 0 15px;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .remember input {
+            accent-color: var(--primary-color);
+        }
+        
+        .forgot-password {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .signup-link {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 15px;
+        }
+        
+        .signup-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        /* Decorative elements */
+        .nigerian-pattern {
+            position: absolute;
+            opacity: 0.05;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .pattern-1 {
+            bottom: -50px;
+            right: -50px;
+            font-size: 200px;
+            transform: rotate(25deg);
+            color: var(--primary-color);
+        }
+        
+        .pattern-2 {
+            top: -50px;
+            left: -50px;
+            font-size: 180px;
+            transform: rotate(-15deg);
+            color: var(--accent-color);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+            
+            .logo {
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+            }
+            
+            .login-header h1 {
+                font-size: 24px;
+            }
+            
+            .btn {
+                padding: 14px;
+                font-size: 15px;
+            }
+            
+            .form-control {
+                padding: 14px 20px 14px 50px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="auth-container">
-        <div class="auth-switcher">
-            <button class="auth-tab active" data-form="login"> <i class=" bi bi-box-arrow-in-right"></i> Login</button>
-            <button class="auth-tab" data-form="register"><i class="bi bi-person-add"></i> Register</button>
+    <!-- Decorative Nigerian patterns -->
+    <div class="nigerian-pattern pattern-1">
+        <i class="fas fa-circle"></i>
+    </div>
+    <div class="nigerian-pattern pattern-2">
+        <i class="fas fa-square"></i>
+    </div>
+    
+    <div class="login-container">
+        <div class="logo">AO</div>
+        
+        <div class="login-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to access your personalized shopping experience</p>
         </div>
-
-        <!-- Login Form -->
-        <div class="auth-form">
-            <div class="form-section active" id="loginForm">
-                <form class="login-form">
-                    <div class="mb-4">
-                        <label class="form-label">Email address</label>
-                        <input type="email" name="email" class="form-control" required>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" required>
-                    </div>
-                    <div class="d-flex justify-content-between mb-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="remember">
-                            <label class="form-check-label" for="remember">Remember me</label>
-                        </div>
-                        <a href="forget-password.html" class="text-decoration-none text-primary">Forgot Password?</a>
-                    </div>
-                    <button type="submit" id="loginBtn" class="btn btn-primary w-100">Login 
-                        <span class="spinner-border spinner-border-sm d-none" id="loginSpinner" role="status" aria-hidden="true"></span>
-                    </button>
-                </form>
-            </div>
-
-            <!-- Register Form -->
-            <div class="form-section" id="registerForm">
-                <form class="register-form">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="mb-4">
-                                <label class="form-label">Full Name</label>
-                                <input type="text" name="full_name" class="form-control" required>
-                            </div>
-                        </div>
-                    <div class="col-lg-6">
-                        <div class="mb-4">
-                            <label class="form-label">Email address</label>
-                            <input type="email" name="email" class="form-control" required>
-                        </div>
-                    </div>
+        
+        <div class="tabs">
+            <div class="tab active" id="login-tab">Login</div>
+            <div class="tab" id="signup-tab">Sign Up</div>
+        </div>
+        
+        <button class="btn btn-google">
+            <i class="fab fa-google"></i>
+            Continue with Google
+        </button>
+        
+        <div class="divider">
+            <div class="divider-text">or continue with email</div>
+        </div>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <div class="input-group">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" class="form-control" placeholder="your@email.com" required>
                 </div>
-                    
-                    <div class="mb-4">
-                        <label class="form-label">Phone</label>
-                        <input type="text" name="phone" class="form-control" required>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label"> Password</label>
-                        <input type="password" name="password" class="form-control" required>
-                    </div>
-                    <div class="form-check mb-4">
-                        <input class="form-check-input" type="checkbox" id="terms">
-                        <label class="form-check-label" for="terms">I agree to the <a href="">Terms & Conditions</a></label>
-                    </div>
-                    <button type="submit" id="signUpBtn" class="btn btn-primary w-100">Create Account 
-                        <span class="spinner-border spinner-border-sm d-none" id="signUpSpinner" role="status" aria-hidden="true"></span>
-                    </button>
-                </form>
             </div>
+            
+            <div class="remember-forgot">
+                <label class="remember">
+                    <input type="checkbox"> Remember me
+                </label>
+                <a href="#" class="forgot-password">Forgot password?</a>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                Sign In
+            </button>
+        </form>
+        
+        <form id="signup-form" style="display: none;">
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <div class="input-group">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" class="form-control" placeholder="your@email.com" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                Create Account
+            </button>
+        </form>
+        
+        <div class="signup-link" id="login-link">
+            Don't have an account? <a href="#" id="switch-to-signup">Sign Up</a>
+        </div>
+        
+        <div class="signup-link" id="signup-link" style="display: none;">
+            Already have an account? <a href="#" id="switch-to-login">Sign In</a>
         </div>
     </div>
 
-    <div class="custom-alert" id="customAlert">
-        <div class="alert-progress" id="alertProgress"></div>
-        <span class="alert-content" id="alertContent"></span>
-    </div>
-
-    <button class="mode-toggle" id="darkModeToggle">🌙</button>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/login.js"></script>
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginTab = document.getElementById('login-tab');
+            const signupTab = document.getElementById('signup-tab');
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const loginLink = document.getElementById('login-link');
+            const signupLink = document.getElementById('signup-link');
+            const switchToSignup = document.getElementById('switch-to-signup');
+            const switchToLogin = document.getElementById('switch-to-login');
+            
+            // Switch to Sign Up
+            signupTab.addEventListener('click', function() {
+                loginTab.classList.remove('active');
+                signupTab.classList.add('active');
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+                loginLink.style.display = 'none';
+                signupLink.style.display = 'block';
+            });
+            
+            switchToSignup.addEventListener('click', function(e) {
+                e.preventDefault();
+                signupTab.click();
+            });
+            
+            // Switch to Login
+            loginTab.addEventListener('click', function() {
+                signupTab.classList.remove('active');
+                loginTab.classList.add('active');
+                signupForm.style.display = 'none';
+                loginForm.style.display = 'block';
+                signupLink.style.display = 'none';
+                loginLink.style.display = 'block';
+            });
+            
+            switchToLogin.addEventListener('click', function(e) {
+                e.preventDefault();
+                loginTab.click();
+            });
+            
+            // Form submission
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = this.querySelector('input[type="email"]').value;
+                // In a real app, this would handle login
+                alert(`Login request for: ${email}\n(In a real app, this would process your login)`);
+            });
+            
+            signupForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = this.querySelector('input[type="email"]').value;
+                // In a real app, this would handle signup
+                alert(`Signup request for: ${email}\n(In a real app, this would create your account)`);
+            });
+            
+            // Google SSO
+            document.querySelector('.btn-google').addEventListener('click', function() {
+                alert('Google SSO would open here\n(In a real app, this would authenticate with Google)');
+            });
+        });
+    </script>
 </body>
 </html>
