@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Aso Oke Fabric | Aso Oke & Aso Ofi Marketplace</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap">
+    <style>
+        :root {
+            --primary-color: #8a4b38;
+            --secondary-color: #e8d0b3;
+            --accent-color: #d4a373;
+            --dark-color: #4a2c2a;
+            --light-color: #f9f5f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #faf8f5;
+            color: #333;
+            padding-top: 70px;
+            padding-bottom: 70px;
+        }
+        
+        /* Header Styles */
+        .header {
+            background: linear-gradient(to right, var(--primary-color), var(--dark-color));
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 70px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            height: 40px;
+            width: 40px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--dark-color);
+            font-size: 18px;
+            text-decoration: none;
+        }
+        
+        .header-icons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .header-icons .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .header-icons .icon:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .icon-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Product Detail Section */
+        .product-detail-section {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .product-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .product-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Gallery Styles */
+        .gallery-container {
+            position: relative;
+        }
+        
+        .main-image {
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            background: linear-gradient(45deg, #8a4b38, #4a2c2a);
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .thumbnail-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .thumbnail {
+            aspect-ratio: 1/1;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            background: var(--secondary-color);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-color);
+            font-size: 0.9rem;
+        }
+        
+        .thumbnail:hover, .thumbnail.active {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Product Info */
+        .product-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-badge {
+            background: var(--accent-color);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            align-self: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .product-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .stars {
+            color: #ffc107;
+            margin-right: 10px;
+        }
+        
+        .rating-count {
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        .product-price {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .current-price {
+            font-weight: bold;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            margin-left: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .discount {
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            margin-left: 15px;
+            font-weight: bold;
+        }
+        
+        .product-description {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            font-size: 1.05rem;
+        }
+        
+        /* Options */
+        .options-section {
+            margin-bottom: 30px;
+        }
+        
+        .option-title {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option-title i {
+            margin-right: 8px;
+            color: var(--accent-color);
+        }
+        
+        .color-options {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .color-option.active::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+        }
+        
+        .color-1 { background: #8a4b38; }
+        .color-2 { background: #4a2c2a; }
+        .color-3 { background: #d4a373; }
+        .color-4 { background: #b08968; }
+        
+        .size-options {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .size-option {
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .size-option.active, .size-option:hover {
+            border-color: var(--primary-color);
+            background: rgba(138, 75, 56, 0.1);
+            color: var(--primary-color);
+        }
+        
+        /* Quantity and Actions */
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .qty-btn {
+            width: 40px;
+            height: 40px;
+            background: #f1f1f1;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .qty-input {
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            border: 1px solid #ddd;
+            font-size: 1.1rem;
+            margin: 0 5px;
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .btn-add-cart {
+            background: linear-gradient(to right, var(--primary-color), var(--dark-color));
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-add-cart:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(138, 75, 56, 0.4);
+        }
+        
+        .btn-wishlist {
+            background: white;
+            color: var(--dark-color);
+            border: 2px solid #ddd;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-wishlist:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        /* Product Details */
+        .details-container {
+            margin-top: 50px;
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+        }
+        
+        .details-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 25px;
+        }
+        
+        .tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #777;
+            position: relative;
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .detail-item {
+            margin-bottom: 20px;
+        }
+        
+        .detail-title {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 8px;
+        }
+        
+        .detail-value {
+            color: #666;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .feature i {
+            color: var(--accent-color);
+            font-size: 1.3rem;
+            margin-top: 3px;
+        }
+        
+        /* Bottom Navbar */
+        .bottom-navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            height: 70px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #777;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .nav-item.active, .nav-item:hover {
+            color: var(--primary-color);
+        }
+        
+        .nav-icon {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        
+        .nav-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Related Products */
+        .related-products {
+            margin-top: 60px;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--dark-color);
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: var(--primary-color);
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+        }
+        
+        .product-card-image {
+            height: 200px;
+            background: linear-gradient(to bottom right, #8a4b38, #d4a373);
+        }
+        
+        .product-card-details {
+            padding: 20px;
+        }
+        
+        .product-card-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+        
+        .product-card-price {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">AO</a>
+            <div class="header-icons">
+                <a href="#" class="icon">
+                    <i class="fas fa-user"></i>
+                </a>
+                <a href="#" class="icon">
+                    <i class="fas fa-filter"></i>
+                </a>
+                <a href="#" class="icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="icon-badge">3</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Product Detail Section -->
+    <section class="product-detail-section">
+        <div class="product-container">
+            <!-- Product Gallery -->
+            <div class="gallery-container">
+                <div class="main-image">
+                    Premium Handwoven Aso Oke
+                </div>
+                <div class="thumbnail-container">
+                    <div class="thumbnail active">Pattern 1</div>
+                    <div class="thumbnail">Pattern 2</div>
+                    <div class="thumbnail">Pattern 3</div>
+                    <div class="thumbnail">Pattern 4</div>
+                </div>
+            </div>
+            
+            <!-- Product Info -->
+            <div class="product-info">
+                <div class="product-badge">Best Seller</div>
+                <h1 class="product-title">Premium Handwoven Aso Oke Fabric</h1>
+                
+                <div class="product-rating">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <div class="rating-count">(287 reviews)</div>
+                </div>
+                
+                <div class="product-price">
+                    <span class="current-price">₦132,368</span>
+                    <span class="original-price">₦443,159</span>
+                    <span class="discount">-70%</span>
+                </div>
+                
+                <p class="product-description">
+                    Exquisite handwoven Aso Oke fabric made using traditional Yoruba techniques. 
+                    This premium fabric features intricate patterns and vibrant colors that celebrate 
+                    Nigeria's rich cultural heritage. Perfect for special occasions like weddings, 
+                    naming ceremonies, and festivals.
+                </p>
+                
+                <!-- Color Options -->
+                <div class="options-section">
+                    <div class="option-title">
+                        <i class="fas fa-palette"></i>
+                        Color
+                    </div>
+                    <div class="color-options">
+                        <div class="color-option color-1 active"></div>
+                        <div class="color-option color-2"></div>
+                        <div class="color-option color-3"></div>
+                        <div class="color-option color-4"></div>
+                    </div>
+                </div>
+                
+                <!-- Size Options -->
+                <div class="options-section">
+                    <div class="option-title">
+                        <i class="fas fa-ruler"></i>
+                        Size (Yards)
+                    </div>
+                    <div class="size-options">
+                        <div class="size-option active">5</div>
+                        <div class="size-option">6</div>
+                        <div class="size-option">7</div>
+                        <div class="size-option">8</div>
+                    </div>
+                </div>
+                
+                <!-- Quantity and Actions -->
+                <div class="quantity-selector">
+                    <button class="qty-btn minus">-</button>
+                    <input type="text" class="qty-input" value="1">
+                    <button class="qty-btn plus">+</button>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-add-cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        Add to Cart
+                    </button>
+                    <button class="btn-wishlist">
+                        <i class="far fa-heart"></i>
+                        Wishlist
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Product Details Tabs -->
+        <div class="details-container">
+            <div class="details-tabs">
+                <div class="tab active" data-tab="description">Description</div>
+                <div class="tab" data-tab="details">Product Details</div>
+                <div class="tab" data-tab="shipping">Shipping & Returns</div>
+            </div>
+            
+            <div class="tab-content active" id="description">
+                <p class="product-description">
+                    Our Premium Handwoven Aso Oke Fabric is crafted by master weavers using techniques passed down through generations. Each piece tells a story of cultural heritage and exceptional craftsmanship.
+                </p>
+                <p class="product-description">
+                    Made from 100% cotton, this fabric is both durable and comfortable. The intricate patterns are achieved through a complex dyeing and weaving process that can take several weeks to complete for a single piece.
+                </p>
+                <div class="features-grid">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <div class="detail-title">Handcrafted Excellence</div>
+                            <div class="detail-value">Each piece is uniquely woven by skilled artisans</div>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <div class="detail-title">Premium Materials</div>
+                            <div class="detail-value">Made with 100% premium cotton fibers</div>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <div class="detail-title">Cultural Authenticity</div>
+                            <div class="detail-value">Traditional patterns with cultural significance</div>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <div class="detail-title">Eco-Friendly</div>
+                            <div class="detail-value">Natural dyes and sustainable practices</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="details">
+                <div class="detail-item">
+                    <div class="detail-title">Material</div>
+                    <div class="detail-value">100% Premium Cotton</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-title">Origin</div>
+                    <div class="detail-value">Handwoven in Oyo State, Nigeria</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-title">Dimensions</div>
+                    <div class="detail-value">Width: 48 inches, Length per yard: 36 inches</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-title">Care Instructions</div>
+                    <div class="detail-value">Hand wash in cold water. Do not bleach. Line dry in shade. Iron on low heat.</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-title">Weight</div>
+                    <div class="detail-value">Approximately 250g per yard</div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="shipping">
+                <div class="detail-item">
+                    <div class="detail-title">Shipping Policy</div>
+                    <div class="detail-value">We ship worldwide within 3-5 business days. Domestic shipping takes 2-3 days. International shipping takes 7-14 days depending on destination.</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-title">Returns</div>
+                    <div class="detail-value">We offer 14-day returns on unused items with original packaging. Buyer is responsible for return shipping costs.</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-title">Warranty</div>
+                    <div class="detail-value">All fabrics come with a 6-month craftsmanship warranty against manufacturing defects.</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Products -->
+        <div class="related-products">
+            <h2 class="section-title">Related Products</h2>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-card-image"></div>
+                    <div class="product-card-details">
+                        <h3 class="product-card-title">Aso Oke Royal Blue</h3>
+                        <div class="product-card-price">₦98,500</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-card-image" style="background:linear-gradient(to bottom right, #4a2c2a, #b08968)"></div>
+                    <div class="product-card-details">
+                        <h3 class="product-card-title">Aso Ofi Gold Pattern</h3>
+                        <div class="product-card-price">₦120,000</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-card-image" style="background:linear-gradient(to bottom right, #7f5539, #e6ccb2)"></div>
+                    <div class="product-card-details">
+                        <h3 class="product-card-title">Traditional Ankara Mix</h3>
+                        <div class="product-card-price">₦85,750</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-card-image" style="background:linear-gradient(to bottom right, #9c6644, #ddb892)"></div>
+                    <div class="product-card-details">
+                        <h3 class="product-card-title">Embroidered Aso Oke</h3>
+                        <div class="product-card-price">₦145,000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom Navbar -->
+    <nav class="bottom-navbar">
+        <a href="#" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-search nav-icon"></i>
+            <span>Search</span>
+        </a>
+        <a href="#" class="nav-item active">
+            <i class="fas fa-heart nav-icon"></i>
+            <span>Wishlist</span>
+            <span class="nav-badge">2</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-user nav-icon"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Thumbnail Gallery Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Thumbnail selection
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            thumbnails.forEach(thumb => {
+                thumb.addEventListener('click', function() {
+                    thumbnails.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Color selection
+            const colorOptions = document.querySelectorAll('.color-option');
+            colorOptions.forEach(color => {
+                color.addEventListener('click', function() {
+                    colorOptions.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Size selection
+            const sizeOptions = document.querySelectorAll('.size-option');
+            sizeOptions.forEach(size => {
+                size.addEventListener('click', function() {
+                    sizeOptions.forEach(s => s.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Quantity selector
+            const minusBtn = document.querySelector('.qty-btn.minus');
+            const plusBtn = document.querySelector('.qty-btn.plus');
+            const qtyInput = document.querySelector('.qty-input');
+            
+            minusBtn.addEventListener('click', function() {
+                let value = parseInt(qtyInput.value);
+                if (value > 1) {
+                    qtyInput.value = value - 1;
+                }
+            });
+            
+            plusBtn.addEventListener('click', function() {
+                let value = parseInt(qtyInput.value);
+                qtyInput.value = value + 1;
+            });
+            
+            // Tab functionality
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to current tab and content
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Add to cart animation
+            const addToCartBtn = document.querySelector('.btn-add-cart');
+            const cartBadge = document.querySelector('.icon-badge');
+            
+            addToCartBtn.addEventListener('click', function() {
+                let count = parseInt(cartBadge.textContent);
+                cartBadge.textContent = count + 1;
+                
+                // Animation
+                this.innerHTML = '<i class="fas fa-check"></i> Added to Cart';
+                this.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
+                    this.style.background = '';
+                }, 2000);
+            });
+            
+            // Wishlist button toggle
+            const wishlistBtn = document.querySelector('.btn-wishlist');
+            wishlistBtn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                if (icon.classList.contains('far')) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    this.style.color = '#e74c3c';
+                    this.style.borderColor = '#e74c3c';
+                    
+                    // Update wishlist count
+                    const wishlistCount = document.querySelector('.nav-badge');
+                    wishlistCount.textContent = parseInt(wishlistCount.textContent) + 1;
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    this.style.color = '';
+                    this.style.borderColor = '';
+                    
+                    // Update wishlist count
+                    const wishlistCount = document.querySelector('.nav-badge');
+                    wishlistCount.textContent = parseInt(wishlistCount.textContent) - 1;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
