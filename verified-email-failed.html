@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Failed | Aso Oke Marketplace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/auth.css">
+    <style>
+        
+        
+    </style>
+</head>
+<body>
+    <!-- Decorative Nigerian patterns -->
+    <div class="nigerian-pattern pattern-1">
+        <i class="fas fa-circle"></i>
+    </div>
+    <div class="nigerian-pattern pattern-2">
+        <i class="fas fa-square"></i>
+    </div>
+    
+    <div class="verification-container">
+        <div class="verification-icon fade-in">
+            <i class="fas fa-exclamation-circle"></i>
+        </div>
+        
+        <div class="verification-header fade-in" style="animation-delay: 0.2s;">
+            <h1>Email Verification Failed</h1>
+            <p>We couldn't verify your email address. Please see the possible reasons below.</p>
+        </div>
+        
+        <div class="reasons-container fade-in" style="animation-delay: 0.4s;">
+            <h2><i class="fas fa-exclamation-triangle"></i> Possible Reasons</h2>
+            <ul class="reasons-list">
+                <li class="reason-item">
+                    <div class="reason-icon">
+                        <i class="fas fa-hourglass-end"></i>
+                    </div>
+                    <div class="reason-content">
+                        <h3>Verification Link Expired</h3>
+                        <p>Email verification links are only valid for 10 minutes. If you didn't verify within this time, you'll need to request a new verification email.</p>
+                    </div>
+                </li>
+                
+                <li class="reason-item">
+                    <div class="reason-icon">
+                        <i class="fas fa-link-slash"></i>
+                    </div>
+                    <div class="reason-content">
+                        <h3>Invalid Verification Link</h3>
+                        <p>The verification link might be incomplete or corrupted. Please ensure you're using the full link from the email we sent you.</p>
+                    </div>
+                </li>
+                
+                <li class="reason-item">
+                    <div class="reason-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="reason-content">
+                        <h3>Email Already Verified</h3>
+                        <p>Your email address may have already been verified. Try signing in to your account instead of using the verification link.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="solution-section fade-in" style="animation-delay: 0.6s;">
+            <h2>How to Resolve This Issue</h2>
+            <p>We can send a new verification email to your registered email address. Click the button below to request a new verification link.</p>
+            
+            <div class="action-buttons">
+                <button id="resendBtn" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Resend Verification Email
+                </button>
+                <a href="#" class="btn btn-outline">
+                    <i class="fas fa-question-circle"></i> Contact Support
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Modal -->
+    <div class="notification-modal" id="notificationModal">
+        <div class="modal-backdrop" onclick="closeNotification()"></div>
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i id="modalIcon"></i>
+            </div>
+            <h2 class="modal-title" id="modalTitle"></h2>
+            <p class="modal-message" id="modalMessage"></p>
+            <div class="modal-actions">
+                <button class="modal-btn" id="modalButton" onclick="closeNotification()">
+                    <i class="fas fa-check"></i> Continue
+                </button>
+            </div>
+            <div class="close-modal" onclick="closeNotification()">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/verified-email-failed.js"></script>
+
+    <script>
+
+    </script>
+</body>
+</html>

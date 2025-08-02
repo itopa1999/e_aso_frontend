@@ -6,490 +6,67 @@
     <title>Watchlist | Aso Oke & Aso Ofi Marketplace</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/watchlist.css">
     <style>
-        :root {
-            --primary-color: #8a4b38;
-            --secondary-color: #e8d0b3;
-            --accent-color: #d4a373;
-            --dark-color: #4a2c2a;
-            --light-color: #f9f5f0;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #faf8f5;
-            color: #333;
-            padding-top: 70px;
-            padding-bottom: 70px;
-        }
-        
-        /* Header Styles */
-        .header {
-            background: linear-gradient(to right, var(--primary-color), var(--dark-color));
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            height: 70px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            height: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            height: 40px;
-            width: 40px;
-            background-color: var(--secondary-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: var(--dark-color);
-            font-size: 18px;
-            text-decoration: none;
-        }
-        
-        .header-icons {
-            display: flex;
-            gap: 12px;
-        }
-        
-        .header-icons .icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            transition: all 0.3s ease;
-            position: relative;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        
-        .header-icons .icon:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-        }
-        
-        .icon-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: var(--accent-color);
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* Watchlist Header */
-        .watchlist-header {
-            max-width: 1200px;
-            margin: 40px auto 30px;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        
-        .watchlist-title {
-            font-size: 2.2rem;
-            color: var(--dark-color);
-            font-weight: 700;
-            position: relative;
-            padding-bottom: 15px;
-        }
-        
-        .watchlist-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 80px;
-            height: 3px;
-            background: var(--primary-color);
-        }
-        
-        .watchlist-actions {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .action-btn {
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .btn-move-all {
-            background: white;
-            color: var(--dark-color);
-            border: 2px solid #ddd;
-        }
-        
-        .btn-move-all:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
-        
-        .btn-clear-all {
-            background: #ff6b6b;
-            color: white;
-            border: 2px solid #ff6b6b;
-        }
-        
-        .btn-clear-all:hover {
-            background: #e74c3c;
-            border-color: #e74c3c;
-            transform: translateY(-2px);
-        }
-        
-        /* Empty Watchlist */
-        .empty-watchlist {
-            text-align: center;
-            padding: 80px 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .empty-icon {
-            font-size: 100px;
-            color: var(--accent-color);
-            margin-bottom: 30px;
-            animation: pulse 2s infinite;
-        }
-        
-        .empty-title {
-            font-size: 1.8rem;
-            color: var(--dark-color);
-            margin-bottom: 20px;
-        }
-        
-        .empty-text {
-            color: #666;
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-        
-        .btn-shop {
-            background: linear-gradient(to right, var(--primary-color), var(--dark-color));
-            color: white;
-            border: none;
-            padding: 12px 40px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-shop:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(138, 75, 56, 0.3);
-        }
-        
-        /* Product Grid */
-        .product-section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-        }
-        
-        .product-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .product-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
-        }
-        
-        .product-badge {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: var(--accent-color);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        
-        .wishlist-button {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 10;
-            border: none;
-        }
-        
-        .wishlist-button:hover {
-            background: white;
-            transform: scale(1.1);
-        }
-        
-        .wishlist-button.active i {
-            color: #e74c3c;
-        }
-        
-        .product-image {
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-        }
-        
-        .product-details {
-            padding: 20px;
-        }
-        
-        .product-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--dark-color);
-            font-size: 1.1rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            min-height: 50px;
-        }
-        
-        .product-features {
-            font-size: 0.9rem;
-            color: #777;
-            margin-bottom: 15px;
-            min-height: 40px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
-        .rating {
-            color: #ffc107;
-            margin-bottom: 10px;
-        }
-        
-        .price {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .current-price {
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: var(--primary-color);
-        }
-        
-        .original-price {
-            text-decoration: line-through;
-            color: #999;
-            margin-left: 10px;
-            font-size: 0.9rem;
-        }
-        
-        .discount {
-            background: #ff6b6b;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-size: 0.8rem;
-            margin-left: 10px;
-            font-weight: bold;
-        }
-        
-        .add-to-cart {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .add-to-cart:hover {
-            background: var(--dark-color);
-            transform: scale(1.02);
-        }
-        
-        /* Bottom Navbar */
-        .bottom-navbar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            height: 70px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 1000;
-        }
-        
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #777;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-        
-        .nav-item.active, .nav-item:hover {
-            color: var(--primary-color);
-        }
-        
-        .nav-icon {
-            font-size: 1.3rem;
-            margin-bottom: 5px;
-        }
-        
-        .nav-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: var(--accent-color);
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* Animations */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.6s ease-out;
-        }
-        
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .watchlist-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .watchlist-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
-            
-            .watchlist-title {
-                font-size: 1.8rem;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .watchlist-actions {
-                flex-direction: column;
-            }
-            
-            .action-btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
+  
     </style>
 </head>
 <body>
+    <div class="preloader" id="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Loading your cart items</div>
+        <div class="preloader-dots">
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+        </div>
+    </div>
     <!-- Header -->
     <header class="header">
         <div class="header-container">
-            <a href="#" class="logo">AO</a>
+            <a href="index.html" class="logo">AO</a>
             <div class="header-icons">
-                <a href="#" class="icon">
+                <a href="#" class="icon" id="user-icon">
                     <i class="fas fa-user"></i>
                 </a>
-                <a href="#" class="icon">
-                    <i class="fas fa-filter"></i>
-                </a>
-                <a href="#" class="icon">
+                <a href="cart-item.html" class="icon">
                     <i class="fas fa-shopping-cart"></i>
                     <span class="icon-badge">3</span>
                 </a>
+            </div>
+        <div class="user-dropdown" id="userDropdown">
+                <div class="user-header">
+                    <div class="user-avatar d-lg-none">AO</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Aminat Yusuf</div>
+                        <div class="user-email" id="userEmail">aminat.yusuf@example.com</div>
+                    </div>
+                </div>
+                
+                <div class="dropdown-items">
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-user-circle"></i>
+                        <span>My Profile</span>
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>My Orders</span>
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-heart"></i>
+                        <span>My Wishlist</span>
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Account Settings</span>
+                    </a>
+                    
+                    <a href="#" class="dropdown-item logout-item" id="logoutButton">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
             </div>
         </div>
     </header>
@@ -624,147 +201,30 @@
 
     <!-- Bottom Navbar -->
     <nav class="bottom-navbar">
-        <a href="#" class="nav-item">
+        <a href="index.html" class="nav-item">
             <i class="fas fa-home nav-icon"></i>
             <span>Home</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="search-result.html" class="nav-item">
             <i class="fas fa-search nav-icon"></i>
             <span>Search</span>
         </a>
-        <a href="#" class="nav-item active">
+        <a href="watchlist.html" class="nav-item">
             <i class="fas fa-heart nav-icon"></i>
-            <span>Watchlist</span>
+            <span>Wishlist</span>
             <span class="nav-badge">4</span>
         </a>
-        <a href="#" class="nav-item">
-            <i class="fas fa-shopping-cart nav-icon"></i>
-            <span>Cart</span>
-            <span class="nav-badge">3</span>
+        <a href="#" class="nav-item active">
+            <i class="fas fa-user nav-icon"></i>
+            <span>Profile</span>
         </a>
     </nav>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/watchlist.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Wishlist functionality
-            const wishlistButtons = document.querySelectorAll('.wishlist-button');
-            const wishlistCountElement = document.querySelector('.nav-badge');
-            let wishlistCount = 4;
-            
-            wishlistButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    if (this.classList.contains('active')) {
-                        this.classList.remove('active');
-                        wishlistCount--;
-                        
-                        // Animation
-                        this.style.transform = 'scale(1.2)';
-                        setTimeout(() => {
-                            this.style.transform = 'scale(1)';
-                        }, 300);
-                    }
-                    
-                    // Update wishlist count
-                    wishlistCountElement.textContent = wishlistCount;
-                    
-                    // If count reaches zero, show empty state
-                    if (wishlistCount === 0) {
-                        showEmptyWatchlist();
-                    }
-                });
-            });
-            
-            // Add to cart functionality
-            const addToCartButtons = document.querySelectorAll('.add-to-cart');
-            const cartBadge = document.querySelector('.icon-badge');
-            
-            addToCartButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    let count = parseInt(cartBadge.textContent);
-                    cartBadge.textContent = count + 1;
-                    
-                    // Animation
-                    button.textContent = '✓ Added!';
-                    button.style.backgroundColor = '#28a745';
-                    
-                    setTimeout(() => {
-                        button.textContent = 'Add to Cart';
-                        button.style.backgroundColor = '';
-                    }, 2000);
-                });
-            });
-            
-            // Clear all button
-            const clearAllBtn = document.querySelector('.btn-clear-all');
-            clearAllBtn.addEventListener('click', function() {
-                document.querySelectorAll('.wishlist-button.active').forEach(btn => {
-                    btn.classList.remove('active');
-                    btn.closest('.product-card').style.opacity = '0';
-                    btn.closest('.product-card').style.height = '0';
-                    btn.closest('.product-card').style.padding = '0';
-                    btn.closest('.product-card').style.margin = '0';
-                    
-                    setTimeout(() => {
-                        btn.closest('.product-card').remove();
-                    }, 300);
-                });
-                
-                wishlistCount = 0;
-                wishlistCountElement.textContent = wishlistCount;
-                showEmptyWatchlist();
-            });
-            
-            // Move all to cart button
-            const moveAllBtn = document.querySelector('.btn-move-all');
-            moveAllBtn.addEventListener('click', function() {
-                addToCartButtons.forEach(button => {
-                    let count = parseInt(cartBadge.textContent);
-                    cartBadge.textContent = count + 1;
-                    
-                    // Animation for each button
-                    button.textContent = '✓ Added!';
-                    button.style.backgroundColor = '#28a745';
-                    
-                    setTimeout(() => {
-                        button.textContent = 'Add to Cart';
-                        button.style.backgroundColor = '';
-                    }, 2000);
-                });
-                
-                // Show confirmation
-                this.innerHTML = '<i class="fas fa-check"></i> All Items Moved!';
-                this.style.background = '#28a745';
-                this.style.borderColor = '#28a745';
-                this.style.color = 'white';
-                
-                setTimeout(() => {
-                    this.innerHTML = '<i class="fas fa-shopping-cart"></i> Move All to Cart';
-                    this.style.background = '';
-                    this.style.borderColor = '';
-                    this.style.color = '';
-                }, 3000);
-            });
-            
-            // Show empty watchlist state
-            function showEmptyWatchlist() {
-                const productSection = document.querySelector('.product-section');
-                productSection.innerHTML = `
-                    <div class="empty-watchlist fade-in">
-                        <div class="empty-icon">
-                            <i class="fas fa-heart"></i>
-                        </div>
-                        <h2 class="empty-title">Your Watchlist is Empty</h2>
-                        <p class="empty-text">
-                            You haven't added any items to your watchlist yet. Start exploring our beautiful collection of Aso Oke and Aso Ofi fabrics and save your favorites!
-                        </p>
-                        <button class="btn-shop">
-                            <i class="fas fa-shopping-bag"></i> Start Shopping
-                        </button>
-                    </div>
-                `;
-            }
-        });
+        
     </script>
 </body>
 </html>

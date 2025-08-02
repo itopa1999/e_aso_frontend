@@ -7,27 +7,70 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/index.css">
     <style>
         
     </style>
 </head>
 <body>
+    <div class="preloader" id="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Loading your cart items</div>
+        <div class="preloader-dots">
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+        </div>
+    </div>
     <!-- Header -->
     <header class="header">
-        <div class="container h-100">
-            <div class="d-flex justify-content-between align-items-center h-100">
-                <div class="logo">AO</div>
-                <div class="header-icons d-flex">
-                    <div class="icon">
-                        <i class="fas fa-user"></i>
+        <div class="header-container">
+            <a href="index.html" class="logo">AO</a>
+            <div class="header-icons">
+                <a href="#" class="icon" id="user-icon">
+                    <i class="fas fa-user"></i>
+                </a>
+                <a href="#" class="icon" id="filter-button">
+                    <i class="fas fa-filter"></i>
+                </a>
+                <a href="cart-item.html" class="icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="icon-badge">3</span>
+                </a>
+            </div>
+            
+
+            <div class="user-dropdown" id="userDropdown">
+                <div class="user-header">
+                    <div class="user-avatar d-lg-none">AO</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Aminat Yusuf</div>
+                        <div class="user-email" id="userEmail">aminat.yusuf@example.com</div>
                     </div>
-                    <div class="icon" id="filter-button">
-                        <i class="fas fa-filter"></i>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="icon-badge">3</span>
-                    </div>
+                </div>
+                
+                <div class="dropdown-items">
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-user-circle"></i>
+                        <span>My Profile</span>
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>My Orders</span>
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-heart"></i>
+                        <span>My Wishlist</span>
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Account Settings</span>
+                    </a>
+                    
+                    <a href="#" class="dropdown-item logout-item" id="logoutButton">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -151,23 +194,23 @@
 
     <!-- Bottom Navbar -->
     <nav class="bottom-navbar">
-        <div class="nav-item active">
+        <a href="index.html" class="nav-item">
             <i class="fas fa-home nav-icon"></i>
             <span>Home</span>
-        </div>
-        <div class="nav-item">
+        </a>
+        <a href="search-result.html" class="nav-item">
             <i class="fas fa-search nav-icon"></i>
             <span>Search</span>
-        </div>
-        <div class="nav-item">
+        </a>
+        <a href="watchlist.html" class="nav-item">
             <i class="fas fa-heart nav-icon"></i>
             <span>Wishlist</span>
-            <span class="nav-badge" id="wishlist-count">0</span>
-        </div>
-        <div class="nav-item">
+            <span class="nav-badge" id="wishlist-count">4</span>
+        </a>
+        <a href="#" class="nav-item active">
             <i class="fas fa-user nav-icon"></i>
             <span>Profile</span>
-        </div>
+        </a>
     </nav>
 
     <!-- Filter Sidebar -->
@@ -294,107 +337,10 @@
     <div class="overlay" id="overlay"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/index.js"></script>
     <script>
-        // Filter sidebar functionality
-        const filterButton = document.getElementById('filter-button');
-        const filterSidebar = document.getElementById('filter-sidebar');
-        const closeFilter = document.getElementById('close-filter');
-        const overlay = document.getElementById('overlay');
         
-        filterButton.addEventListener('click', function() {
-            filterSidebar.classList.add('open');
-            overlay.classList.add('active');
-        });
-        
-        closeFilter.addEventListener('click', function() {
-            filterSidebar.classList.remove('open');
-            overlay.classList.remove('active');
-        });
-        
-        overlay.addEventListener('click', function() {
-            filterSidebar.classList.remove('open');
-            overlay.classList.remove('active');
-        });
-        
-        // Wishlist functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const wishlistButtons = document.querySelectorAll('.wishlist-button');
-            const wishlistCountElement = document.getElementById('wishlist-count');
-            let wishlistCount = 0;
-            let wishlistItems = [];
-            
-            wishlistButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const productId = this.getAttribute('data-id');
-                    const heartIcon = this.querySelector('i');
-                    
-                    if (heartIcon.classList.contains('far')) {
-                        // Add to wishlist
-                        heartIcon.classList.remove('far');
-                        heartIcon.classList.add('fas');
-                        this.classList.add('active');
-                        wishlistCount++;
-                        wishlistItems.push(productId);
-                    } else {
-                        // Remove from wishlist
-                        heartIcon.classList.remove('fas');
-                        heartIcon.classList.add('far');
-                        this.classList.remove('active');
-                        wishlistCount--;
-                        wishlistItems = wishlistItems.filter(id => id !== productId);
-                    }
-                    
-                    // Update wishlist count
-                    wishlistCountElement.textContent = wishlistCount;
-                    
-                    // Animation
-                    this.style.transform = 'scale(1.2)';
-                    setTimeout(() => {
-                        this.style.transform = 'scale(1)';
-                    }, 300);
-                });
-            });
-            
-            // Add to cart functionality
-            const addToCartButtons = document.querySelectorAll('.add-to-cart');
-            const cartBadge = document.querySelector('.icon-badge');
-            
-            addToCartButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    let count = parseInt(cartBadge.textContent);
-                    cartBadge.textContent = count + 1;
-                    
-                    // Animation
-                    button.textContent = '✓ Added!';
-                    button.style.backgroundColor = '#28a745';
-                    
-                    setTimeout(() => {
-                        button.textContent = 'Add to Cart';
-                        button.style.backgroundColor = '';
-                    }, 2000);
-                });
-            });
-            
-            // Price range slider value update
-            const priceRange = document.querySelector('.price-range');
-            const priceValue = document.querySelector('.price-values span:nth-child(2)');
-            
-            if (priceRange) {
-                priceRange.addEventListener('input', function() {
-                    const value = parseInt(this.value);
-                    priceValue.textContent = '₦' + value.toLocaleString();
-                });
-            }
-            
-            // Product card animations
-            const productCards = document.querySelectorAll('.product-card');
-            productCards.forEach(card => {
-                card.style.opacity = '0';
-                setTimeout(() => {
-                    card.style.opacity = '1';
-                }, 300);
-            });
-        });
     </script>
 </body>
 </html>
