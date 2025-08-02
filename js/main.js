@@ -116,3 +116,17 @@ function hidePreloader() {
         preloader.style.display = 'none';
     }, 500);
 }
+
+
+// Utility: format human-readable date
+function formatDateToHuman(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-NG', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    });
+}
+
+ADMIN_URL = "http://127.0.0.1:8000/admins/api/user"
+ASO_URL = "http://127.0.0.1:8000/aso/api/product"

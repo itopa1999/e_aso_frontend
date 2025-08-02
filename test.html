@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Aso Oke & Aso Ofi Marketplace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #8a4b38;
+            --secondary-color: #e8d0b3;
+            --accent-color: #d4a373;
+            --dark-color: #4a2c2a;
+            --light-color: #f9f5f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #faf8f5;
+            color: #333;
+            min-height: 100vh;
+            padding-top: 70px;
+            padding-bottom: 70px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f9f5f0"/><path d="M20,20 L80,80 M80,20 L20,80" stroke="%23e8d0b3" stroke-width="0.5" opacity="0.3"/></svg>');
+            background-size: 300px;
+        }
+        
+        /* Header Styles */
+        .header {
+            background: linear-gradient(to right, var(--primary-color), var(--dark-color));
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 70px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            height: 40px;
+            width: 40px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--dark-color);
+            font-size: 18px;
+            text-decoration: none;
+        }
+        
+        .header-icons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .header-icons .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .header-icons .icon:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .icon-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Profile Container */
+        .profile-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .profile-header h1 {
+            font-size: 2.2rem;
+            color: var(--dark-color);
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .profile-header h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--primary-color);
+        }
+        
+        /* Profile Content */
+        .profile-content {
+            display: flex;
+            gap: 40px;
+        }
+        
+        /* Profile Sidebar */
+        .profile-sidebar {
+            width: 300px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            align-self: flex-start;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(45deg, var(--primary-color), var(--dark-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+        }
+        
+        .profile-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+        
+        .profile-email {
+            color: #777;
+            font-size: 1.1rem;
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .profile-btn {
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .btn-edit {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-edit:hover {
+            background: var(--dark-color);
+            transform: translateY(-2px);
+        }
+        
+        .btn-settings {
+            background: white;
+            color: var(--dark-color);
+            border: 2px solid #ddd;
+        }
+        
+        .btn-settings:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        /* Profile Main Content */
+        .profile-main {
+            flex: 1;
+        }
+        
+        .profile-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .view-all {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .view-all:hover {
+            text-decoration: underline;
+        }
+        
+        /* Personal Info */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .info-item {
+            margin-bottom: 20px;
+        }
+        
+        .info-label {
+            font-weight: 500;
+            color: #777;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--dark-color);
+            padding: 10px 15px;
+            background: var(--light-color);
+            border-radius: 8px;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Bottom Navbar */
+        .bottom-navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            height: 70px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #777;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .nav-item.active, .nav-item:hover {
+            color: var(--primary-color);
+        }
+        
+        .nav-icon {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        
+        /* Edit Profile Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            background: linear-gradient(to right, var(--primary-color), var(--dark-color));
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .modal-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 30px;
+            height: 30px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #fcfbf9;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(138, 75, 56, 0.1);
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-cancel {
+            background: white;
+            color: var(--dark-color);
+            border: 2px solid #ddd;
+        }
+        
+        .btn-cancel:hover {
+            border-color: #777;
+        }
+        
+        .btn-save {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-save:hover {
+            background: var(--dark-color);
+        }
+        
+        /* Success notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 3000;
+            transform: translateX(150%);
+            transition: all 0.5s ease;
+        }
+        
+        .notification.active {
+            transform: translateX(0);
+        }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(40, 167, 69, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #28a745;
+            font-size: 20px;
+        }
+        
+        .notification-content h3 {
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+        
+        .notification-content p {
+            color: #777;
+            font-size: 14px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .profile-content {
+                flex-direction: column;
+            }
+            
+            .profile-sidebar {
+                width: 100%;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .profile-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .profile-name {
+                font-size: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+            
+            .modal {
+                max-width: 90%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .profile-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">AO</a>
+            <div class="header-icons">
+                <a href="#" class="icon">
+                    <i class="fas fa-user"></i>
+                </a>
+                <a href="#" class="icon">
+                    <i class="fas fa-filter"></i>
+                </a>
+                <a href="cart-item.html" class="icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="icon-badge">3</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Profile Container -->
+    <div class="profile-container">
+        <div class="profile-header">
+            <h1>My Profile</h1>
+        </div>
+        
+        <div class="profile-content">
+            <!-- Profile Sidebar -->
+            <div class="profile-sidebar">
+                <div class="profile-avatar">AY</div>
+                <div class="profile-info">
+                    <div class="profile-name" id="userName">Aminat Yusuf</div>
+                    <div class="profile-email" id="userEmail">aminat.yusuf@example.com</div>
+                </div>
+                
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">15</div>
+                        <div class="stat-label">Total Orders</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">₦1.2M</div>
+                        <div class="stat-label">Total Spent</div>
+                    </div>
+                </div>
+                
+                <div class="profile-actions">
+                    <button class="profile-btn btn-edit" id="editProfileBtn">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                    <button class="profile-btn btn-settings">
+                        <i class="fas fa-cog"></i> Account Settings
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Profile Main Content -->
+            <div class="profile-main">
+                <!-- Personal Information Section -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-user-circle"></i> Personal Information
+                        </h2>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">First Name</div>
+                            <div class="info-value" id="firstName">Aminat</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">Last Name</div>
+                            <div class="info-value" id="lastName">Yusuf</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">Email Address</div>
+                            <div class="info-value">aminat.yusuf@example.com</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">Phone Number</div>
+                            <div class="info-value">+234 812 345 6789</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">Account Created</div>
+                            <div class="info-value">October 15, 2023</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">Last Login</div>
+                            <div class="info-value">Today, 09:45 AM</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order History Section -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-shopping-bag"></i> Recent Orders
+                        </h2>
+                        <a href="order-history.html" class="view-all">View All</a>
+                    </div>
+                    
+                    <div class="order-list">
+                        <div class="order-item">
+                            <div class="order-info">
+                                <div class="order-image">AO-1</div>
+                                <div class="order-details">
+                                    <div class="order-title">Premium Handwoven Aso Oke Fabric</div>
+                                    <div class="order-id">Order #AO-2023-8765</div>
+                                    <div class="order-date">Delivered: Oct 18, 2023</div>
+                                </div>
+                            </div>
+                            <div class="order-price">₦226,895</div>
+                        </div>
+                        
+                        <div class="order-item">
+                            <div class="order-info">
+                                <div class="order-image">AO-3</div>
+                                <div class="order-details">
+                                    <div class="order-title">Embroidered Aso Oke for Special Occasions</div>
+                                    <div class="order-id">Order #AO-2023-7654</div>
+                                    <div class="order-date">Shipped: Oct 10, 2023</div>
+                                </div>
+                            </div>
+                            <div class="order-price">₦162,600</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navbar -->
+    <nav class="bottom-navbar">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Home</span>
+        </a>
+        <a href="search-result.html" class="nav-item">
+            <i class="fas fa-search nav-icon"></i>
+            <span>Search</span>
+        </a>
+        <a href="watchlist.html" class="nav-item">
+            <i class="fas fa-heart nav-icon"></i>
+            <span>Wishlist</span>
+            <span class="nav-badge">4</span>
+        </a>
+        <a href="#" class="nav-item active">
+            <i class="fas fa-user nav-icon"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Profile</h2>
+                <div class="close-modal" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            
+            <div class="modal-body">
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label class="form-label" for="editFirstName">First Name</label>
+                        <input type="text" class="form-control" id="editFirstName" value="Aminat">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="editLastName">Last Name</label>
+                        <input type="text" class="form-control" id="editLastName" value="Yusuf">
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-cancel" id="cancelEdit">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-save">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Notification -->
+    <div class="notification" id="successNotification">
+        <div class="notification-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        <div class="notification-content">
+            <h3>Profile Updated</h3>
+            <p>Your changes have been saved successfully</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const editProfileBtn = document.getElementById('editProfileBtn');
+            const editModal = document.getElementById('editModal');
+            const closeModal = document.getElementById('closeModal');
+            const cancelEdit = document.getElementById('cancelEdit');
+            const profileForm = document.getElementById('profileForm');
+            const successNotification = document.getElementById('successNotification');
+            
+            // User data
+            let userData = {
+                firstName: "Aminat",
+                lastName: "Yusuf",
+                email: "aminat.yusuf@example.com",
+                totalOrders: 15
+            };
+            
+            // Set user data on page load
+            function setUserData() {
+                document.getElementById('firstName').textContent = userData.firstName;
+                document.getElementById('lastName').textContent = userData.lastName;
+                document.getElementById('userName').textContent = `${userData.firstName} ${userData.lastName}`;
+                document.getElementById('userEmail').textContent = userData.email;
+            }
+            
+            setUserData();
+            
+            // Show modal
+            editProfileBtn.addEventListener('click', function() {
+                // Set current values in form
+                document.getElementById('editFirstName').value = userData.firstName;
+                document.getElementById('editLastName').value = userData.lastName;
+                
+                editModal.classList.add('active');
+            });
+            
+            // Close modal
+            function closeEditModal() {
+                editModal.classList.remove('active');
+            }
+            
+            closeModal.addEventListener('click', closeEditModal);
+            cancelEdit.addEventListener('click', closeEditModal);
+            
+            // Form submission
+            profileForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const firstName = document.getElementById('editFirstName').value.trim();
+                const lastName = document.getElementById('editLastName').value.trim();
+                
+                // Validate inputs
+                if (!firstName || !lastName) {
+                    alert('Please fill in both first name and last name');
+                    return;
+                }
+                
+                // Simulate sending to backend
+                const loadingIndicator = document.createElement('div');
+                loadingIndicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving changes...';
+                loadingIndicator.style.textAlign = 'center';
+                loadingIndicator.style.marginTop = '20px';
+                loadingIndicator.style.color = 'var(--primary-color)';
+                profileForm.appendChild(loadingIndicator);
+                
+                // Simulate backend request
+                setTimeout(() => {
+                    // Update user data
+                    userData.firstName = firstName;
+                    userData.lastName = lastName;
+                    
+                    // Update UI
+                    setUserData();
+                    
+                    // Remove loading indicator
+                    loadingIndicator.remove();
+                    
+                    // Close modal
+                    closeEditModal();
+                    
+                    // Show success notification
+                    successNotification.classList.add('active');
+                    
+                    // Hide notification after 3 seconds
+                    setTimeout(() => {
+                        successNotification.classList.remove('active');
+                    }, 3000);
+                    
+                    // In a real app, you would send the data to your backend:
+                    /*
+                    fetch('/api/update-profile', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            firstName: firstName,
+                            lastName: lastName
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Handle response
+                    });
+                    */
+                }, 1500);
+            });
+            
+            // Close modal when clicking outside
+            editModal.addEventListener('click', function(e) {
+                if (e.target === editModal) {
+                    closeEditModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

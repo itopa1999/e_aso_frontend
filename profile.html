@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile | Aso Oke & Aso Ofi Marketplace</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/profile.css">
@@ -62,21 +61,21 @@
         <div class="profile-content">
             <!-- Profile Sidebar -->
             <div class="profile-sidebar">
-                <div class="profile-avatar">AY</div>
+                <div class="profile-avatar" id="profile-pic">NN</div>
                 <div class="profile-info">
-                    <div class="profile-name" id="userName">Aminat Yusuf</div>
-                    <div class="profile-email" id="userEmail">aminat.yusuf@example.com</div>
+                    <div class="profile-name" id="profileUserName">Null</div>
+                    <div class="profile-email" id="profileUserEmail">Null</div>
                 </div>
                 
                 <div class="profile-stats">
                     <div class="stat-item">
-                        <div class="stat-value">15</div>
+                        <div class="stat-value" id="total_orders">0</div>
                         <div class="stat-label">Total Orders</div>
                     </div>
                 </div>
                 
                 <div class="profile-actions">
-                    <button class="profile-btn btn-edit">
+                    <button class="profile-btn btn-edit" id="editProfileBtn">
                         <i class="fas fa-edit"></i> Edit Profile
                     </button>
                 </div>
@@ -95,17 +94,17 @@
                     <div class="info-grid">
                         <div class="info-item">
                             <div class="info-label">First Name</div>
-                            <div class="info-value" id="firstName">Aminat</div>
+                            <div class="info-value" id="firstName">Null</div>
                         </div>
                         
                         <div class="info-item">
                             <div class="info-label">Last Name</div>
-                            <div class="info-value" id="lastName">Yusuf</div>
+                            <div class="info-value" id="lastName">Null</div>
                         </div>
                         
                         <div class="info-item">
                             <div class="info-label">Email Address</div>
-                            <div class="info-value">aminat.yusuf@example.com</div>
+                            <div class="info-value" id="emailAddress">Null</div>
                         </div>
                     </div>
                 </div>
@@ -116,54 +115,11 @@
                         <h2 class="section-title">
                             <i class="fas fa-shopping-bag"></i> Recent Orders
                         </h2>
-                        <a href="ordered-lists.html" class="view-all">View All</a>
+                        <a href="order-history.html" class="view-all">View All</a>
                     </div>
                     
                     <div class="order-list">
-                        <div class="order-item">
-                            <div class="order-info">
-                                <div class="order-image">AO-1</div>
-                                <div class="order-details">
-                                    <div class="order-title">Premium Handwoven Aso Oke Fabric</div>
-                                    <div class="order-id">Order #AO-2023-8765</div>
-                                    <div class="order-date">Delivered: Oct 18, 2023</div>
-                                </div>
-                            </div>
-                            <div class="order-right">
-                                <div class="order-status status-delivered">Delivered</div>
-                                <div class="order-price">₦226,895</div>
-                            </div>
-                        </div>
                         
-                        <div class="order-item">
-                            <div class="order-info">
-                                <div class="order-image">AO-3</div>
-                                <div class="order-details">
-                                    <div class="order-title">Embroidered Aso Oke for Special Occasions</div>
-                                    <div class="order-id">Order #AO-2023-7654</div>
-                                    <div class="order-date">Shipped: Oct 10, 2023</div>
-                                </div>
-                            </div>
-                            <div class="order-right">
-                                <div class="order-status status-delivered">Delivered</div>
-                                <div class="order-price">₦162,600</div>
-                            </div>
-                        </div>
-                        
-                        <div class="order-item">
-                            <div class="order-info">
-                                <div class="order-image">AO-4</div>
-                                <div class="order-details">
-                                    <div class="order-title">Traditional Aso Oke Complete Set</div>
-                                    <div class="order-id">Order #AO-2023-6543</div>
-                                    <div class="order-date">Delivered: Sep 30, 2023</div>
-                                </div>
-                            </div>
-                            <div class="order-right">
-                                <div class="order-status status-delivered">Delivered</div>
-                                <div class="order-price">₦148,000</div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -172,7 +128,7 @@
 
     <!-- Bottom Navbar -->
     <nav class="bottom-navbar">
-        <a href="index.html" class="nav-item active">
+        <a href="index.html" class="nav-item">
             <i class="fas fa-home nav-icon"></i>
             <span>Home</span>
         </a>
@@ -191,9 +147,44 @@
         </a>
     </nav>
 
+    <!-- Edit Profile Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Profile</h2>
+                <div class="close-modal" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            
+            <div class="modal-body">
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label class="form-label" for="editFirstName">First Name</label>
+                        <input type="text" class="form-control" id="editFirstName">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="editLastName">Last Name</label>
+                        <input type="text" class="form-control" id="editLastName">
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-cancel" id="cancelEdit">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-save">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/profile.js"></script>
+
     <script>
         
     </script>
