@@ -1,5 +1,10 @@
+const accessToken = getCookie("access");
+if (!accessToken) {
+    window.location.href = "auth.html";
+}
+
 function loadCartData() {
-    showPreloader("Loading your cart items");
+    showPreloader("Loading your ordered items");
     
     // Simulate API call to backend
     setTimeout(() => {

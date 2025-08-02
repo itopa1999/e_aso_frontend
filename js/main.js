@@ -9,7 +9,6 @@ const access = getCookie('access');
 const email = getCookie('email');
 const name = getCookie("name");
 
-console.log(email, access)
 
 // Helper to read cookies
 function getCookie(name) {
@@ -33,21 +32,17 @@ function updateDropdown() {
         userEmail.textContent = email;
 
         dropdownItems.innerHTML = `
-            <a href="#" class="dropdown-item">
+            <a href="profile.html" class="dropdown-item">
                 <i class="fas fa-user-circle"></i>
                 <span>My Profile</span>
             </a>
-            <a href="#" class="dropdown-item">
+            <a href="ordered-lists.html" class="dropdown-item">
                 <i class="fas fa-shopping-bag"></i>
                 <span>My Orders</span>
             </a>
-            <a href="#" class="dropdown-item">
+            <a href="watchlist.html" class="dropdown-item">
                 <i class="fas fa-heart"></i>
                 <span>My Wishlist</span>
-            </a>
-            <a href="#" class="dropdown-item">
-                <i class="fas fa-cog"></i>
-                <span>Account Settings</span>
             </a>
             <a href="#" class="dropdown-item logout-item" id="logoutButton">
                 <i class="fas fa-sign-out-alt"></i>

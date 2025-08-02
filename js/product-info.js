@@ -1,5 +1,5 @@
 function loadCartData() {
-    showPreloader("Loading your cart items");
+    showPreloader("Loading product info");
     
     // Simulate API call to backend
     setTimeout(() => {

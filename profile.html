@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Aso Oke & Aso Ofi Marketplace</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <style>
+        
+    </style>
+</head>
+<body>
+    <div class="preloader" id="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Loading.....</div>
+        <div class="preloader-dots">
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+        </div>
+    </div>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">AO</a>
+            <div class="header-icons">
+                <a href="#" class="icon" id="user-icon">
+                    <i class="fas fa-user"></i>
+                </a>
+                <a href="cart-item.html" class="icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="icon-badge">3</span>
+                </a>
+            </div>
+            
+
+            <div class="user-dropdown" id="userDropdown">
+                <div class="user-header">
+                    <div class="user-avatar d-lg-none">AO</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName"></div>
+                        <div class="user-email" id="userEmail"></div>
+                    </div>
+                </div>
+                
+                <div class="dropdown-items">
+                    
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Profile Container -->
+    <div class="profile-container">
+        <div class="profile-header">
+            <h1>My Profile</h1>
+        </div>
+        
+        <div class="profile-content">
+            <!-- Profile Sidebar -->
+            <div class="profile-sidebar">
+                <div class="profile-avatar">AY</div>
+                <div class="profile-info">
+                    <div class="profile-name" id="userName">Aminat Yusuf</div>
+                    <div class="profile-email" id="userEmail">aminat.yusuf@example.com</div>
+                </div>
+                
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">15</div>
+                        <div class="stat-label">Total Orders</div>
+                    </div>
+                </div>
+                
+                <div class="profile-actions">
+                    <button class="profile-btn btn-edit">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Profile Main Content -->
+            <div class="profile-main">
+                <!-- Personal Information Section -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-user-circle"></i> Personal Information
+                        </h2>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">First Name</div>
+                            <div class="info-value" id="firstName">Aminat</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">Last Name</div>
+                            <div class="info-value" id="lastName">Yusuf</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">Email Address</div>
+                            <div class="info-value">aminat.yusuf@example.com</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order History Section -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-shopping-bag"></i> Recent Orders
+                        </h2>
+                        <a href="ordered-lists.html" class="view-all">View All</a>
+                    </div>
+                    
+                    <div class="order-list">
+                        <div class="order-item">
+                            <div class="order-info">
+                                <div class="order-image">AO-1</div>
+                                <div class="order-details">
+                                    <div class="order-title">Premium Handwoven Aso Oke Fabric</div>
+                                    <div class="order-id">Order #AO-2023-8765</div>
+                                    <div class="order-date">Delivered: Oct 18, 2023</div>
+                                </div>
+                            </div>
+                            <div class="order-right">
+                                <div class="order-status status-delivered">Delivered</div>
+                                <div class="order-price">₦226,895</div>
+                            </div>
+                        </div>
+                        
+                        <div class="order-item">
+                            <div class="order-info">
+                                <div class="order-image">AO-3</div>
+                                <div class="order-details">
+                                    <div class="order-title">Embroidered Aso Oke for Special Occasions</div>
+                                    <div class="order-id">Order #AO-2023-7654</div>
+                                    <div class="order-date">Shipped: Oct 10, 2023</div>
+                                </div>
+                            </div>
+                            <div class="order-right">
+                                <div class="order-status status-delivered">Delivered</div>
+                                <div class="order-price">₦162,600</div>
+                            </div>
+                        </div>
+                        
+                        <div class="order-item">
+                            <div class="order-info">
+                                <div class="order-image">AO-4</div>
+                                <div class="order-details">
+                                    <div class="order-title">Traditional Aso Oke Complete Set</div>
+                                    <div class="order-id">Order #AO-2023-6543</div>
+                                    <div class="order-date">Delivered: Sep 30, 2023</div>
+                                </div>
+                            </div>
+                            <div class="order-right">
+                                <div class="order-status status-delivered">Delivered</div>
+                                <div class="order-price">₦148,000</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navbar -->
+    <nav class="bottom-navbar">
+        <a href="index.html" class="nav-item active">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Home</span>
+        </a>
+        <a href="search-result.html" class="nav-item">
+            <i class="fas fa-search nav-icon"></i>
+            <span>Search</span>
+        </a>
+        <a href="watchlist.html" class="nav-item">
+            <i class="fas fa-heart nav-icon"></i>
+            <span>Wishlist</span>
+            <span class="nav-badge" id="wishlist-count">4</span>
+        </a>
+        <a href="ordered-lists.html" class="nav-item">
+            <i class="fas fa-shopping-bag  nav-icon"></i>
+            <span>Orders</span>
+        </a>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/profile.js"></script>
+    <script>
+        
+    </script>
+</body>
+</html>
