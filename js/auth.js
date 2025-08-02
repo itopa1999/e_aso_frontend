@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         btnText.textContent = 'Signing In...';
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/admins/api/user/create/', {
+            const response = await fetch('http://127.0.0.1:8000/admins/api/user/magic-login/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -23,18 +23,19 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const data = await response.json();
+            console.log(data.message)
 
-            if (response.status == 201) {
+            if (response.ok) {
                 showNotification(
                     'success',
-                    'Account Creation Successfully', 
+                    'Account Sign-In', 
                     `${data.message}`
                 );
                 loginForm.reset();
             } else {
                 showNotification(
                     'error',
-                    'Account Creation Error',
+                    'Account Sign-In Error',
                     `${data.error}`
                 );
             }

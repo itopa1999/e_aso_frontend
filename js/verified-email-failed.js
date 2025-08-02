@@ -6,10 +6,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const urlParams = new URLSearchParams(window.location.search);
     const email = urlParams.get('email');
+    const is_login = urlParams.get('is_login');
     
     // Resend email functionality
     const resendBtn = document.getElementById('resendBtn');
     if (resendBtn && email) {
+
         resendBtn.addEventListener('click', async function() {
             // Show loading state
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
@@ -19,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const response = await fetch('http://127.0.0.1:8000/admins/api/user/resend-link/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email })
+                    body: JSON.stringify({ email: email, is_login : is_login })
                 });
                 const data = await response.json();
 

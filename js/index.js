@@ -5,7 +5,7 @@ function loadCartData() {
     setTimeout(() => {
         // After data is loaded
         hidePreloader();
-        cartContainer.style.display = 'block';
+        // cartContainer.style.display = 'block';
     }, 2500); // 2.5 seconds delay to simulate network request
 }
 
