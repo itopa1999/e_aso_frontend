@@ -32,12 +32,12 @@
                 </a>
                 <a href="cart-item.html" class="icon">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="icon-badge">3</span>
+                    <span class="icon-badge" id="cart-count">0</span>
                 </a>
             </div>
         <div class="user-dropdown" id="userDropdown">
                 <div class="user-header">
-                    <div class="user-avatar d-lg-none">AO</div>
+                    <div class="user-avatar d-lg-none" id="main-profile-pic">AO</div>
                     <div class="user-info">
                         <div class="user-name" id="userName"></div>
                         <div class="user-email" id="userEmail"></div>
@@ -69,113 +69,7 @@
     <!-- Product Grid -->
     <section class="product-section">
         <div class="products-grid">
-            <!-- Product 1 -->
-            <div class="product-card fade-in">
-                <div class="product-badge">Best Seller</div>
-                <button class="wishlist-button active">
-                    <i class="fas fa-heart"></i>
-                </button>
-                <div class="product-image" style="background: linear-gradient(to bottom right, #8a4b38, #d4a373);"></div>
-                <div class="product-details">
-                    <h3 class="product-title">Premium Handwoven Aso Oke Fabric - Royal Blue</h3>
-                    <p class="product-features">Traditional Yoruba weaving • Premium cotton • 6 yards</p>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <span>(287)</span>
-                    </div>
-                    <div class="price">
-                        <span class="current-price">₦132,368</span>
-                        <span class="original-price">₦443,159</span>
-                        <span class="discount">-70%</span>
-                    </div>
-                    <button class="add-to-cart">Add to Cart</button>
-                </div>
-            </div>
             
-            <!-- Product 2 -->
-            <div class="product-card fade-in">
-                <div class="product-badge">Limited</div>
-                <button class="wishlist-button active">
-                    <i class="fas fa-heart"></i>
-                </button>
-                <div class="product-image" style="background: linear-gradient(to bottom right, #4a2c2a, #b08968);"></div>
-                <div class="product-details">
-                    <h3 class="product-title">Aso Ofi Gold Pattern Traditional Fabric</h3>
-                    <p class="product-features">Hand-dyed threads • Intricate patterns • 5 yards</p>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <span>(89)</span>
-                    </div>
-                    <div class="price">
-                        <span class="current-price">₦98,500</span>
-                        <span class="original-price">₦150,000</span>
-                        <span class="discount">-34%</span>
-                    </div>
-                    <button class="add-to-cart">Add to Cart</button>
-                </div>
-            </div>
-            
-            <!-- Product 3 -->
-            <div class="product-card fade-in">
-                <div class="product-badge">New</div>
-                <button class="wishlist-button active">
-                    <i class="fas fa-heart"></i>
-                </button>
-                <div class="product-image" style="background: linear-gradient(to bottom right, #7f5539, #e6ccb2);"></div>
-                <div class="product-details">
-                    <h3 class="product-title">Embroidered Aso Oke for Special Occasions</h3>
-                    <p class="product-features">Hand embroidery • Silk blend • 7 yards</p>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span>(42)</span>
-                    </div>
-                    <div class="price">
-                        <span class="current-price">₦145,000</span>
-                        <span class="original-price">₦210,000</span>
-                        <span class="discount">-31%</span>
-                    </div>
-                    <button class="add-to-cart">Add to Cart</button>
-                </div>
-            </div>
-            
-            <!-- Product 4 -->
-            <div class="product-card fade-in">
-                <div class="product-badge">App Only</div>
-                <button class="wishlist-button active">
-                    <i class="fas fa-heart"></i>
-                </button>
-                <div class="product-image" style="background: linear-gradient(to bottom right, #9c6644, #ddb892);"></div>
-                <div class="product-details">
-                    <h3 class="product-title">Traditional Aso Oke Complete Set</h3>
-                    <p class="product-features">Complete outfit set • Matching accessories • Free delivery</p>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <span>(156)</span>
-                    </div>
-                    <div class="price">
-                        <span class="current-price">₦185,000</span>
-                        <span class="original-price">₦250,000</span>
-                        <span class="discount">-26%</span>
-                    </div>
-                    <button class="add-to-cart">Add to Cart</button>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -192,7 +86,7 @@
         <a href="watchlist.html" class="nav-item active">
             <i class="fas fa-heart nav-icon"></i>
             <span>Wishlist</span>
-            <span class="nav-badge">4</span>
+            <span class="nav-badge" id="watchlist-count">0</span>
         </a>
         <a href="ordered-lists.html" class="nav-item">
             <i class="fas fa-shopping-bag  nav-icon"></i>

@@ -96,6 +96,16 @@
     font-size: 0.9rem;
 }
 
+.status-placed {
+    background: rgba(23, 162, 184, 0.1);
+    color: #b81795fd;
+}
+
+.status-in_transit {
+    background: rgba(255, 193, 7, 0.1);
+    color: #bdff07;
+}
+
 .status-delivered {
     background: rgba(40, 167, 69, 0.1);
     color: #28a745;

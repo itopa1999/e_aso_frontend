@@ -3,105 +3,244 @@ if (!accessToken) {
     window.location.href = "auth.html";
 }
 
-function loadCartData() {
-    showPreloader("Loading your ordered details");
-    
-    // Simulate API call to backend
-    setTimeout(() => {
-        // After data is loaded
+showPreloader("Loading your ordered details");
+
+const orderId = getQueryParam('id');
+if (!orderId) {
+    window.location.href = "404.html";
+}
+async function fetchOrderDetails() {
+    try {
+        const response = await fetch(`${ASO_URL}/order-details/${orderId}/`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${accessToken}`,
+                "Accept": "application/json"
+            }
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch order");
+
+        const data = await response.json();
+        renderOrderDetails(data);
+    } catch (error) {
+        alert("Failed to load order: " + error.message);
+    }
+    finally{
         hidePreloader();
-        cartContainer.style.display = 'block';
-    }, 2500); // 2.5 seconds delay to simulate network request
+    }
 }
 
-// Initialize cart
-loadCartData();
+function renderOrderDetails(order) {
+    document.querySelector('.order-id').textContent = order.order_number;
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Update progress bar based on status
-    function updateProgressBar() {
-        const progressBar = document.getElementById('progressBar');
-        const activeStep = document.querySelector('.step-active');
-        
-        if (activeStep) {
-            const stepIndex = Array.from(document.querySelectorAll('.timeline-step')).indexOf(activeStep);
-            const percentage = (stepIndex / 4) * 100;
-            progressBar.style.height = percentage + '%';
-        }
-    }
+    const statusText = document.querySelector('.status-title');
+    const statusSubtitle = document.querySelector('.status-subtitle');
+    const statusBadge = document.querySelector('.order-status');
+
+    statusText.textContent = order.order_status || "Placed";
+    statusBadge.textContent = statusText.textContent;
+    statusBadge.className = `order-status status-${statusText.textContent.toLowerCase()}`;
     
-    // Simulate delivery status update
-    function simulateDeliveryUpdate() {
+    const deliveryDate = order.delivery_date
+        ? formatDateToHuman(order.delivery_date)
+        : null;
+
+    statusSubtitle.textContent = deliveryDate
+        ? "Estimated delivery: " + deliveryDate
+        : "Estimated delivery: Not set yet";
+
+
+    // Update tracking info
+    document.querySelector('.shipping-info').innerHTML = `
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <i class="fas fa-box" style="font-size: 1.2rem; color: var(--primary-color);"></i>
+            <div>
+                <div style="font-weight: 600; margin-bottom: 5px;">Tracking Number: ${order.tracking_number}</div>
+                <div style="color: #777;">Carrier: ${order.carrier}</div>
+            </div>
+        </div>
+    `;
+
+    // Populate items
+    const itemsContainer = document.querySelector('.order-items');
+    itemsContainer.innerHTML = "";
+    order.items.forEach(item => {
+        itemsContainer.innerHTML += `
+            <div class="order-item">
+                <div class="order-item-image">
+                    <a href="product-info.html?id=${item.product_id}">
+                        <img src="${item.product_image}" alt="${item.product_name}" style="width: 60px; border-radius: 10px;" />
+                    </a>
+                </div>
+                <div class="order-item-details">
+                    <a style="text-decoration:none" href="product-info.html?id=${item.product_id}">
+                        <div class="order-item-name">${item.product_name}</div>
+                    </a>
+                        <div class="order-item-price">₦${item.price}</div>
+                    <div class="order-item-qty">Quantity: ${item.quantity}</div>
+                </div>
+            </div>
+        `;
+    });
+
+    // Totals
+    document.querySelector('.order-summary').innerHTML = `
+        <div class="summary-row"><div class="summary-label">Subtotal</div><div class="summary-value">₦${order.subtotal}</div></div>
+        <div class="summary-row"><div class="summary-label">Shipping</div><div class="summary-value">₦${order.shipping_fee}</div></div>
+        <div class="summary-row"><div class="summary-label">Discount</div><div class="summary-value" style="color:#28a745;">-₦${order.discount}</div></div>
+        <div class="summary-total"><div>Total</div><div>₦${order.total}</div></div>
+    `;
+
+    // Shipping address
+    const addr = order.shipping_address;
+    document.querySelector('.address-details').innerHTML = `
+        <div class="address-name">${addr.full_name}</div>
+        <div class="address-line">${addr.first_name} ${addr.last_name}</div>
+        <div class="address-line">${addr.address}</div>
+        <div class="address-line">Apartment: ${addr.apartment}</div>
+        <div class="address-line">${addr.city}, ${addr.state}</div>
+        <div class="address-line">Nigeria</div>
+        <div class="address-line" style="margin-top: 10px;">
+            <i class="fas fa-phone"></i> ${addr.phone}
+        </div>
+        <div class="address-line">
+            <i class="fas fa-phone"></i> Alt: ${addr.alt_phone}
+        </div>
+        <div class="address-line">
+            <i class="fas fa-envelope"></i> ${addr.email}
+        </div>
+    `;
+
+    // Payment info
+    const payment = order.payment_detail;
+    document.querySelector('.payment-info').innerHTML = `
+        <div class="payment-name">${payment.method} ending in ${payment.card_last4}</div>
+        <div class="payment-details">Expires ${payment.expiry_date}</div>
+    `;
+
+    updateProgressBarFromBackend(order.order_status, order.tracking || []);
+
+    function updateProgressBarFromBackend(orderStatus, trackingList) {
         const steps = document.querySelectorAll('.timeline-step');
+        const progressBar = document.getElementById('progressBar');
         const statusBar = document.querySelector('.status-bar');
         const statusTitle = statusBar.querySelector('.status-title');
         const statusSubtitle = statusBar.querySelector('.status-subtitle');
         const statusBadge = statusBar.querySelector('.order-status');
-        
-        // Simulate status updates every 5 seconds
-        let currentStep = 2; // Start at Shipped
-        
-        const updateInterval = setInterval(() => {
-            if (currentStep < 4) {
-                // Remove active class from all steps
-                steps.forEach(step => {
-                    step.classList.remove('step-active');
-                });
-                
-                // Move to next step
-                currentStep++;
-                steps[currentStep].classList.add('step-active');
-                
-                // Update status bar
-                if (currentStep === 3) {
-                    statusTitle.textContent = "In Transit";
-                    statusSubtitle.textContent = "Estimated delivery: October 25, 2023";
-                    statusBadge.textContent = "In Transit";
-                    statusBadge.className = "order-status status-processing";
-                } else if (currentStep === 4) {
-                    statusTitle.textContent = "Delivered";
-                    statusSubtitle.textContent = "Delivered on October 24, 2023";
-                    statusBadge.textContent = "Delivered";
-                    statusBadge.className = "order-status status-delivered";
-                    clearInterval(updateInterval); // Stop simulation when delivered
-                }
-                
-                updateProgressBar();
+
+        const statusOrder = ['placed', 'processing', 'shipped', 'in_transit', 'delivered'];
+        const currentStepIndex = statusOrder.indexOf(orderStatus.toLowerCase());
+
+        // Update timeline UI
+        steps.forEach((step, index) => {
+            const matchingTrack = trackingList.find(t => statusOrder[index] === t.status.toLowerCase());
+            const stepIcon = step.querySelector('.step-icon i');
+            const stepTitle = step.querySelector('.step-title');
+            const stepDate = step.querySelector('.step-date');
+            const stepDesc = step.querySelector('.step-description');
+
+            step.classList.remove('step-completed', 'step-active');
+
+            if (index < currentStepIndex) {
+                step.classList.add('step-completed');
+            } else if (index === currentStepIndex) {
+                step.classList.add('step-active');
             }
-        }, 5000);
+
+            if (matchingTrack) {
+                const date = new Date(matchingTrack.date).toLocaleString();
+                stepTitle.textContent = capitalizeWords(matchingTrack.status.replace(/_/g, " "));
+                stepDate.textContent = date;
+                stepDesc.textContent = matchingTrack.description || "Updated";
+            } else {
+                stepTitle.textContent = capitalizeWords(statusOrder[index].replace(/_/g, " "));
+                stepDate.textContent = "";
+                stepDesc.textContent = "";
+            }
+        });
+
+        // Update progress bar height
+        const percent = (currentStepIndex / (statusOrder.length - 1)) * 100;
+        progressBar.style.height = `${percent}%`;
+
+        // Update top status bar
+        const formattedStatus = capitalizeWords(orderStatus.replace(/_/g, " "));
+        statusTitle.textContent = formattedStatus;
+        statusBadge.textContent = formattedStatus;
     }
+
+    function capitalizeWords(text) {
+        return text.replace(/\b\w/g, char => char.toUpperCase());
+    }
+
+}
+
+fetchOrderDetails()
+
+document.addEventListener('DOMContentLoaded', function() {
     
-    // Initialize progress bar
-    updateProgressBar();
-    
-    // Start simulation (would be replaced with real data in production)
-    simulateDeliveryUpdate();
+
     
     // Reorder button functionality
     const reorderBtn = document.querySelector('.btn-reorder');
-    const cartBadge = document.querySelector('.icon-badge');
-    
-    reorderBtn.addEventListener('click', function() {
-        let count = parseInt(cartBadge.textContent);
-        cartBadge.textContent = count + 2;
-        
-        // Animation
-        this.innerHTML = '<i class="fas fa-check"></i> Added to Cart!';
-        this.style.background = '#28a745';
-        
-        setTimeout(() => {
-            this.innerHTML = '<i class="fas fa-sync-alt"></i> Reorder Items';
-            this.style.background = '';
-        }, 2000);
+    const cartBadge = document.getElementById("cart-count");
+
+    reorderBtn.addEventListener('click', async function () {
+
+        try {
+            showPreloader("Adding to cart");
+
+            const response = await fetch(`${ASO_URL}/cart/reorder/?order_id=${orderId}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) throw new Error("Failed to reorder items");
+
+            const data = await response.json();
+            const itemsAdded = data.items_added || 0;
+
+            // Update cart count
+            let currentCount = parseInt(cartBadge.textContent) || 0;
+            cartBadge.textContent = currentCount + itemsAdded;
+
+            // Success UI feedback
+            this.innerHTML = '<i class="fas fa-check"></i> Added to Cart!';
+            this.style.background = '#28a745';
+
+            } catch (error) {
+                console.error(error);
+                alert("Failed to reorder items: " + error.message);
+                this.innerHTML = '<i class="fas fa-exclamation-circle"></i> Try Again';
+                this.style.background = '#dc3545';
+            } finally {
+                hidePreloader();
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-sync-alt"></i> Reorder Items';
+                    this.style.background = '';
+                    this.disabled = false;
+                }, 2000);
+            }
     });
+
     
     // Contact seller button
     document.querySelector('.btn-contact').addEventListener('click', function() {
         alert('Contacting seller...\nYou would be redirected to a chat with the seller.');
     });
     
-    // Return button
-    document.querySelector('.btn-return').addEventListener('click', function() {
-        alert('Return request initiated\nYou will receive instructions for returning items.');
+    document.querySelector('.btn-return').addEventListener('click', function () {
+        const currentStatus = document.querySelector('.status-title').textContent.trim().toLowerCase();
+        
+        if (currentStatus === 'delivered') {
+            alert('Return request initiated\nYou will receive instructions for returning items.');
+        } else {
+            alert('Return is only available after delivery.');
+        }
     });
 });

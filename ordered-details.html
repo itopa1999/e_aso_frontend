@@ -32,12 +32,12 @@
                 </a>
                 <a href="cart-item.html" class="icon">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="icon-badge">3</span>
+                    <span class="icon-badge" id="cart-count">0</span>
                 </a>
             </div>
         <div class="user-dropdown" id="userDropdown">
                 <div class="user-header">
-                    <div class="user-avatar d-lg-none">AO</div>
+                    <div class="user-avatar d-lg-none" id="main-profile-pic">AO</div>
                     <div class="user-info">
                         <div class="user-name" id="userName"></div>
                         <div class="user-email" id="userEmail"></div>
@@ -53,12 +53,12 @@
 
     <!-- Order Details Header -->
     <div class="order-details-header">
-        <a href="order-history.html" class="back-to-orders">
+        <a href="ordered-lists.html" class="back-to-orders">
             <i class="fas fa-arrow-left"></i> Back to Orders
         </a>
         <div>
             <h2 class="order-details-title">Order Details</h2>
-            <div class="order-id">Order #AO-2023-8765</div>
+            <div class="order-id">Null</div>
         </div>
     </div>
 
@@ -70,10 +70,10 @@
                 <i class="fas fa-truck"></i>
             </div>
             <div class="status-text">
-                <div class="status-title">Shipped</div>
-                <div class="status-subtitle">Estimated delivery: October 25, 2023</div>
+                <div class="status-title">Null</div>
+                <div class="status-subtitle">Null</div>
             </div>
-            <div class="order-status status-shipped">Shipped</div>
+            <div class="order-status status-shipped">Null</div>
         </div>
 
         <!-- Tracking Section -->
@@ -91,9 +91,9 @@
                             <i class="fas fa-shopping-cart"></i>
                         </div>
                         <div class="step-content">
-                            <div class="step-title">Order Placed</div>
-                            <div class="step-date">October 15, 2023 • 10:30 AM</div>
-                            <div class="step-description">Your order has been confirmed</div>
+                            <div class="step-title">Null</div>
+                            <div class="step-date">Null</div>
+                            <div class="step-description">Null</div>
                         </div>
                     </div>
                     
@@ -102,9 +102,9 @@
                             <i class="fas fa-cog"></i>
                         </div>
                         <div class="step-content">
-                            <div class="step-title">Processing</div>
-                            <div class="step-date">October 16, 2023 • 09:15 AM</div>
-                            <div class="step-description">Seller is preparing your order</div>
+                            <div class="step-title">Null</div>
+                            <div class="step-date">Null</div>
+                            <div class="step-description">Null</div>
                         </div>
                     </div>
                     
@@ -113,9 +113,9 @@
                             <i class="fas fa-shipping-fast"></i>
                         </div>
                         <div class="step-content">
-                            <div class="step-title">Shipped</div>
-                            <div class="step-date">October 18, 2023 • 02:45 PM</div>
-                            <div class="step-description">Your order is on the way</div>
+                            <div class="step-title">Null</div>
+                            <div class="step-date">Null</div>
+                            <div class="step-description">Null</div>
                         </div>
                     </div>
                     
@@ -124,9 +124,9 @@
                             <i class="fas fa-truck"></i>
                         </div>
                         <div class="step-content">
-                            <div class="step-title">In Transit</div>
-                            <div class="step-date">Estimated: October 23, 2023</div>
-                            <div class="step-description">Package is moving through network</div>
+                            <div class="step-title">Null</div>
+                            <div class="step-date">Null</div>
+                            <div class="step-description">Null</div>
                         </div>
                     </div>
                     
@@ -136,8 +136,8 @@
                         </div>
                         <div class="step-content">
                             <div class="step-title">Delivered</div>
-                            <div class="step-date">Estimated: October 25, 2023</div>
-                            <div class="step-description">Package will be delivered to your address</div>
+                            <div class="step-date">Null</div>
+                            <div class="step-description">Null</div>
                         </div>
                     </div>
                 </div>
@@ -147,8 +147,8 @@
                 <div style="display: flex; gap: 15px; align-items: center;">
                     <i class="fas fa-box" style="font-size: 1.2rem; color: var(--primary-color);"></i>
                     <div>
-                        <div style="font-weight: 600; margin-bottom: 5px;">Tracking Number: AO-8765-2023</div>
-                        <div style="color: #777;">Carrier: Aso Oke Express • Standard Shipping</div>
+                        <div style="font-weight: 600; margin-bottom: 5px;"> Null</div>
+                        <div style="color: #777;">Null</div>
                     </div>
                 </div>
             </div>
@@ -161,41 +161,25 @@
                 <h3 class="section-title"><i class="fas fa-box-open"></i> Order Items</h3>
                 
                 <div class="order-items">
-                    <div class="order-item">
-                        <div class="order-item-image">AO-1</div>
-                        <div class="order-item-details">
-                            <div class="order-item-name">Premium Handwoven Aso Oke Fabric - Royal Blue</div>
-                            <div class="order-item-price">₦132,368</div>
-                            <div class="order-item-qty">Quantity: 1</div>
-                        </div>
-                    </div>
-                    
-                    <div class="order-item">
-                        <div class="order-item-image">AO-3</div>
-                        <div class="order-item-details">
-                            <div class="order-item-name">Embroidered Aso Oke for Special Occasions</div>
-                            <div class="order-item-price">₦145,000</div>
-                            <div class="order-item-qty">Quantity: 1</div>
-                        </div>
-                    </div>
+
                 </div>
                 
                 <div class="order-summary">
                     <div class="summary-row">
                         <div class="summary-label">Subtotal</div>
-                        <div class="summary-value">₦277,368</div>
+                        <div class="summary-value">₦0</div>
                     </div>
                     <div class="summary-row">
                         <div class="summary-label">Shipping</div>
-                        <div class="summary-value">₦5,000</div>
+                        <div class="summary-value">₦0</div>
                     </div>
                     <div class="summary-row">
                         <div class="summary-label">Discount</div>
-                        <div class="summary-value" style="color:#28a745;">-₦55,473</div>
+                        <div class="summary-value" style="color:#28a745;">-₦0</div>
                     </div>
                     <div class="summary-total">
                         <div>Total</div>
-                        <div>₦226,895</div>
+                        <div>₦0</div>
                     </div>
                 </div>
             </div>
@@ -269,7 +253,7 @@
         <a href="#" class="nav-item">
             <i class="fas fa-heart nav-icon"></i>
             <span>Watchlist</span>
-            <span class="nav-badge">4</span>
+            <span class="nav-badge" id="watchlist-count">0</span>
         </a>
         <a href="ordered-lists.html" class="nav-item active">
             <i class="fas fa-shopping-bag  nav-icon"></i>

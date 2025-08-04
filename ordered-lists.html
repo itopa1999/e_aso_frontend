@@ -32,12 +32,12 @@
                 </a>
                 <a href="cart-item.html" class="icon">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="icon-badge">3</span>
+                    <span class="icon-badge" id="cart-count">0</span>
                 </a>
             </div>
         <div class="user-dropdown" id="userDropdown">
                 <div class="user-header">
-                    <div class="user-avatar d-lg-none">AO</div>
+                    <div class="user-avatar d-lg-none" id="main-profile-pic">AO</div>
                     <div class="user-info">
                         <div class="user-name" id="userName"></div>
                         <div class="user-email" id="userEmail"></div>
@@ -56,9 +56,10 @@
         <h1 class="order-history-title">Your Orders</h1>
         
         <div class="filter-options">
-            <button class="filter-btn active">All Orders</button>
+            <button class="filter-btn">All Orders</button>
             <button class="filter-btn">Processing</button>
             <button class="filter-btn">Shipped</button>
+            <button class="filter-btn">In Transit</button>
             <button class="filter-btn">Delivered</button>
             <button class="filter-btn">Cancelled</button>
         </div>
@@ -66,179 +67,7 @@
 
     <!-- Orders Container -->
     <div class="orders-container">
-        <!-- Order 1 -->
-        <div class="order-card fade-in">
-            <div class="order-header">
-                <div>
-                    <div class="order-id">Order #AO-2023-8765</div>
-                    <div class="order-date">Placed on October 15, 2023</div>
-                </div>
-                <div class="order-status status-delivered">Delivered</div>
-            </div>
-            
-            <div class="order-body">
-                <div class="order-items">
-                    <div class="order-item">
-                        <div class="order-item-image">AO-1</div>
-                        <div class="order-item-details">
-                            <div class="order-item-name">Premium Handwoven Aso Oke Fabric - Royal Blue</div>
-                            <div class="order-item-price">₦132,368</div>
-                            <div class="order-item-qty">Quantity: 1</div>
-                        </div>
-                    </div>
-                    
-                    <div class="order-item">
-                        <div class="order-item-image">AO-3</div>
-                        <div class="order-item-details">
-                            <div class="order-item-name">Embroidered Aso Oke for Special Occasions</div>
-                            <div class="order-item-price">₦145,000</div>
-                            <div class="order-item-qty">Quantity: 1</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="order-summary">
-                    <div class="summary-row">
-                        <div class="summary-label">Subtotal</div>
-                        <div class="summary-value">₦277,368</div>
-                    </div>
-                    <div class="summary-row">
-                        <div class="summary-label">Shipping</div>
-                        <div class="summary-value">₦5,000</div>
-                    </div>
-                    <div class="summary-row">
-                        <div class="summary-label">Discount</div>
-                        <div class="summary-value" style="color:#28a745;">-₦55,473</div>
-                    </div>
-                    <div class="summary-total">
-                        <div>Total</div>
-                        <div>₦226,895</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="order-actions">
-                <button class="action-btn btn-view">
-                    <i class="fas fa-file-alt"></i> View Details
-                </button>
-                <button class="action-btn btn-reorder">
-                    <i class="fas fa-sync-alt"></i> Reorder
-                </button>
-                <button class="action-btn btn-track">
-                    <i class="fas fa-truck"></i> Track Order
-                </button>
-            </div>
-        </div>
         
-        <!-- Order 2 -->
-        <div class="order-card fade-in">
-            <div class="order-header">
-                <div>
-                    <div class="order-id">Order #AO-2023-7654</div>
-                    <div class="order-date">Placed on October 5, 2023</div>
-                </div>
-                <div class="order-status status-shipped">Shipped</div>
-            </div>
-            
-            <div class="order-body">
-                <div class="order-items">
-                    <div class="order-item">
-                        <div class="order-item-image">AO-2</div>
-                        <div class="order-item-details">
-                            <div class="order-item-name">Aso Ofi Gold Pattern Traditional Fabric</div>
-                            <div class="order-item-price">₦98,500</div>
-                            <div class="order-item-qty">Quantity: 2</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="order-summary">
-                    <div class="summary-row">
-                        <div class="summary-label">Subtotal</div>
-                        <div class="summary-value">₦197,000</div>
-                    </div>
-                    <div class="summary-row">
-                        <div class="summary-label">Shipping</div>
-                        <div class="summary-value">₦5,000</div>
-                    </div>
-                    <div class="summary-row">
-                        <div class="summary-label">Discount</div>
-                        <div class="summary-value" style="color:#28a745;">-₦39,400</div>
-                    </div>
-                    <div class="summary-total">
-                        <div>Total</div>
-                        <div>₦162,600</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="order-actions">
-                <button class="action-btn btn-view">
-                    <i class="fas fa-file-alt"></i> View Details
-                </button>
-                <button class="action-btn btn-reorder">
-                    <i class="fas fa-sync-alt"></i> Reorder
-                </button>
-                <button class="action-btn btn-track">
-                    <i class="fas fa-truck"></i> Track Order
-                </button>
-            </div>
-        </div>
-        
-        <!-- Order 3 -->
-        <div class="order-card fade-in">
-            <div class="order-header">
-                <div>
-                    <div class="order-id">Order #AO-2023-6543</div>
-                    <div class="order-date">Placed on September 28, 2023</div>
-                </div>
-                <div class="order-status status-delivered">Delivered</div>
-            </div>
-            
-            <div class="order-body">
-                <div class="order-items">
-                    <div class="order-item">
-                        <div class="order-item-image">AO-4</div>
-                        <div class="order-item-details">
-                            <div class="order-item-name">Traditional Aso Oke Complete Set</div>
-                            <div class="order-item-price">₦185,000</div>
-                            <div class="order-item-qty">Quantity: 1</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="order-summary">
-                    <div class="summary-row">
-                        <div class="summary-label">Subtotal</div>
-                        <div class="summary-value">₦185,000</div>
-                    </div>
-                    <div class="summary-row">
-                        <div class="summary-label">Shipping</div>
-                        <div class="summary-value">Free</div>
-                    </div>
-                    <div class="summary-row">
-                        <div class="summary-label">Discount</div>
-                        <div class="summary-value" style="color:#28a745;">-₦37,000</div>
-                    </div>
-                    <div class="summary-total">
-                        <div>Total</div>
-                        <div>₦148,000</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="order-actions">
-                <button class="action-btn btn-view">
-                    <i class="fas fa-file-alt"></i> View Details
-                </button>
-                <button class="action-btn btn-reorder">
-                    <i class="fas fa-sync-alt"></i> Reorder
-                </button>
-                <button class="action-btn btn-track">
-                    <i class="fas fa-truck"></i> Track Order
-                </button>
-            </div>
-        </div>
     </div>
 
     <!-- Bottom Navbar -->
@@ -254,7 +83,7 @@
         <a href="#" class="nav-item">
             <i class="fas fa-heart nav-icon"></i>
             <span>Watchlist</span>
-            <span class="nav-badge">4</span>
+            <span class="nav-badge" id="watchlist-count">0</span>
         </a>
         <a href="ordered-lists.html" class="nav-item active">
             <i class="fas fa-shopping-bag  nav-icon"></i>
