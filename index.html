@@ -60,115 +60,35 @@
     <main class="container">
         <div class="section-title">Premium Aso Oke Collection</div>
         <div class="tagline">Traditional Nigerian fabrics with modern elegance</div>
+
+        <div class="filter-wrapper">
+    <button class="arrow-btn left-arrow">&#10094;</button>
+
+    <div class="filter-options2">
+        <button class="filter-btn">All Orders</button>
+        <button class="filter-btn">Processing</button>
+        <button class="filter-btn">Shipped</button>
+        <button class="filter-btn">In Transit</button>
+        <button class="filter-btn">Delivered</button>
+        <button class="filter-btn">Cancelled</button>
+    </div>
+
+    <button class="arrow-btn right-arrow">&#10095;</button>
+</div>
+
         
         <div class="product-grid">
-            <!-- Product 1 -->
-            <div class="product-card fade-in">
-                <div class="product-badge">App Only</div>
-                <button class="wishlist-button" data-id="1">
-                    <i class="far fa-heart"></i>
-                </button>
-                <div class="product-image" style="background: linear-gradient(to bottom right, #8a4b38, #d4a373);"></div>
-                <div class="product-details">
-                    <h3 class="product-title">SED BACKPACK</h3>
-                    <p class="product-features">Capacity increased by 20% • Vacuum compression • Airplane approved</p>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span>(30)</span>
-                    </div>
-                    <div class="price">
-                        <span class="current-price">₦72,671</span>
-                        <span class="original-price">₦130,029</span>
-                        <span class="discount">-44%</span>
-                    </div>
-                    <button class="add-to-cart">Add to Cart</button>
-                </div>
-            </div>
             
-            <!-- Product 2 -->
-            <div class="product-card fade-in">
-                <div class="product-badge">Best Seller</div>
-                <button class="wishlist-button" data-id="2">
-                    <i class="far fa-heart"></i>
-                </button>
-                <div class="product-image" style="background: linear-gradient(to bottom right, #4a2c2a, #b08968);"></div>
-                <div class="product-details">
-                    <h3 class="product-title">Vacuum Compression</h3>
-                    <p class="product-features">Suitable for women and university use • Premium quality fabric</p>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <span>(287)</span>
-                    </div>
-                    <div class="price">
-                        <span class="current-price">₦132,368</span>
-                        <span class="original-price">₦443,159</span>
-                        <span class="discount">-70%</span>
-                    </div>
-                    <button class="add-to-cart">Add to Cart</button>
-                </div>
-            </div>
-            
-            <!-- Product 3 -->
-            <div class="product-card fade-in">
-                <div class="product-badge">New</div>
-                <button class="wishlist-button" data-id="3">
-                    <i class="far fa-heart"></i>
-                </button>
-                <div class="product-image" style="background: linear-gradient(to bottom right, #7f5539, #e6ccb2);"></div>
-                <div class="product-details">
-                    <h3 class="product-title">COMPRESSION BACKPACK</h3>
-                    <p class="product-features">Including manual air pump • Box convenient storage</p>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <span>(37)</span>
-                    </div>
-                    <div class="price">
-                        <span class="current-price">₦76,821</span>
-                        <span class="original-price">₦120,304</span>
-                        <span class="discount">-36%</span>
-                    </div>
-                    <button class="add-to-cart">Add to Cart</button>
-                </div>
-            </div>
-            
-            <!-- Product 4 -->
-            <div class="product-card fade-in">
-                <div class="product-badge">Limited</div>
-                <button class="wishlist-button" data-id="4">
-                    <i class="far fa-heart"></i>
-                </button>
-                <div class="product-image" style="background: linear-gradient(to bottom right, #9c6644, #ddb892);"></div>
-                <div class="product-details">
-                    <h3 class="product-title">Expandable Vacuum</h3>
-                    <p class="product-features">Extension layer • 100 degrees open • Individual computer room</p>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span>(466)</span>
-                    </div>
-                    <div class="price">
-                        <span class="current-price">₦72,050</span>
-                        <span class="original-price">₦306,568</span>
-                        <span class="discount">-76%</span>
-                    </div>
-                    <button class="add-to-cart">Add to Cart</button>
-                </div>
-            </div>
+        </div>
+        <div class="pagination">
+            <div class="pagination-btn"><i class="fas fa-chevron-left"></i></div>
+            <div class="pagination-btn active">1</div>
+            <div class="pagination-btn">2</div>
+            <div class="pagination-btn">3</div>
+            <div class="pagination-btn">4</div>
+            <div class="pagination-btn"><i class="fas fa-ellipsis-h"></i></div>
+            <div class="pagination-btn">8</div>
+            <div class="pagination-btn"><i class="fas fa-chevron-right"></i></div>
         </div>
     </main>
 
@@ -195,123 +115,75 @@
 
     <!-- Filter Sidebar -->
     <div class="filter-sidebar" id="filter-sidebar">
-        <div class="filter-header">
-            <h2 class="filter-title">Filters</h2>
-            <button class="close-filter" id="close-filter">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <div class="filter-section">
-            <h3><i class="fas fa-list"></i> Category</h3>
-            <div class="filter-options">
-                <div class="filter-option">
-                    <input type="checkbox" id="category1" checked>
-                    <label for="category1">Aso Oke</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="category2" checked>
-                    <label for="category2">Aso Ofi</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="category3">
-                    <label for="category3">Accessories</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="category4">
-                    <label for="category4">Traditional Outfits</label>
-                </div>
-            </div>
-        </div>
-        
-        <div class="filter-section">
-            <h3><i class="fas fa-tag"></i> Price Range</h3>
-            <input type="range" class="price-range" min="0" max="500000" value="200000">
-            <div class="price-values">
-                <span>₦0</span>
-                <span>₦200,000</span>
-                <span>₦500,000</span>
-            </div>
-        </div>
-        
-        <div class="filter-section">
-            <h3><i class="fas fa-venus-mars"></i> Gender</h3>
-            <div class="filter-options">
-                <div class="filter-option">
-                    <input type="checkbox" id="gender1" checked>
-                    <label for="gender1">Men</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="gender2" checked>
-                    <label for="gender2">Women</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="gender3">
-                    <label for="gender3">Unisex</label>
-                </div>
-            </div>
-        </div>
-        
-        <div class="filter-section">
-            <h3><i class="fas fa-ruler"></i> Size</h3>
-            <div class="filter-options">
-                <div class="filter-option">
-                    <input type="checkbox" id="size1">
-                    <label for="size1">Small</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="size2" checked>
-                    <label for="size2">Medium</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="size3" checked>
-                    <label for="size3">Large</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="size4">
-                    <label for="size4">Extra Large</label>
-                </div>
-            </div>
-        </div>
-        
-        <div class="filter-section">
-            <h3><i class="fas fa-star"></i> Rating</h3>
-            <div class="filter-options">
-                <div class="filter-option">
-                    <input type="checkbox" id="rating1">
-                    <label for="rating1">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i> (4.5+)
-                    </label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="rating2" checked>
-                    <label for="rating2">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i> (4.0+)
-                    </label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="rating3">
-                    <label for="rating3">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <i class="far fa-star"></i> (3.0+)
-                    </label>
-                </div>
-            </div>
-        </div>
-        
-        <button class="apply-filters">Apply Filters</button>
+    <div class="filter-header">
+        <h2 class="filter-title">Filters</h2>
+        <button class="close-filter" id="close-filter">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
+
+    <!-- 🔍 Search by title or product number -->
+    <div class="filter-section">
+        <h3><i class="fas fa-search"></i> Title or Product #</h3>
+        <input type="text" id="search-title-or-number" placeholder="Search by title or product #" class="filter-input">
+    </div>
+
+    <!-- 🏷️ Filter by badge -->
+    <div class="filter-section">
+        <h3><i class="fas fa-certificate"></i> Badge</h3>
+        <select id="badge-filter" class="filter-input">
+            <option value="">All</option>
+            <option value="New">New</option>
+            <option value="Best Seller">Best Seller</option>
+            <option value="Limited">Limited</option>
+        </select>
+    </div>
+
+    <!-- 💰 Price Range -->
+    <div class="filter-section">
+        <h3><i class="fas fa-tag"></i> Price Range</h3>
+        <input type="range" class="price-range" min="0" max="500000" value="200000">
+        <div class="price-values">
+            <span>₦0</span>
+            <span>₦200,000</span>
+            <span>₦500,000</span>
+        </div>
+    </div>
+
+    <!-- ⭐ Rating -->
+    <div class="filter-section">
+        <h3><i class="fas fa-star"></i> Rating</h3>
+        <div class="filter-options">
+            <div class="filter-option">
+                <input type="checkbox" id="rating1">
+                <label for="rating1">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i> (4.5+)
+                </label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="rating2" checked>
+                <label for="rating2">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <i class="far fa-star"></i> (4.0+)
+                </label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="rating3">
+                <label for="rating3">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <i class="far fa-star"></i> (3.0+)
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <button class="apply-filters">Apply Filters</button>
+</div>
+
     
     <!-- Overlay for sidebar -->
     <div class="overlay" id="overlay"></div>

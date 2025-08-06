@@ -513,3 +513,47 @@
         grid-template-columns: 1fr;
     }
 }
+
+.empty-cart-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--dark-color);
+    margin-top: 40px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.empty-cart-message .fa-shopping-cart {
+    font-size: 48px;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.empty-cart-message p {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.empty-cart-message small {
+    display: block;
+    margin-top: 5px;
+    font-size: 14px;
+    color: var(--dark-color);
+}
+
+.start-shopping-btn {
+    display: inline-block;
+    margin-top: 20px;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+
+
+

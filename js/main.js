@@ -222,8 +222,8 @@ document.addEventListener('keydown', (e) => {
 
 });
 
-ADMIN_URL = "http://127.0.0.1:8000/admins/api/user"
-ASO_URL = "http://127.0.0.1:8000/aso/api/product"
+ADMIN_URL = "http://172.20.10.2:8000/admins/api/user"
+ASO_URL = "http://172.20.10.2:8000/aso/api/product"
 
 
 function getStarHTML(rating) {

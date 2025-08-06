@@ -50,9 +50,13 @@ function renderList(data) {
             <button class="wishlist-button active" data-id="${product.id}">
                 <i class="fas fa-heart"></i>
             </button>
-            <div class="product-image" style="background-image: url('${product.main_image}'); background-size: cover;"></div>
+            <a href="product-info.html?id=${product.id}">
+                <div class="product-image" style="background-image: url('${product.main_image}'); background-size: cover;"></div>
+            </a>
             <div class="product-details">
-                <h3 class="product-title">${product.title}</h3>
+                <a href="product-info.html?id=${product.id}" style="text-decoration:none">
+                    <h3 class="product-title">${product.title}</h3>
+                </a>
                 <p class="product-features">${product.short_description}</p>
                 <div class="rating">${starsHTML}<span>(${reviewFormatted})</span></div>
                 <div class="price">
@@ -71,45 +75,42 @@ function renderList(data) {
 
     const cartBadge = document.getElementById("cart-count");
     document.querySelectorAll('.add-to-cart').forEach(btn => {
-    btn.addEventListener('click', async function () {  // ✅ Make this function async
-        const product_id = this.getAttribute('data-id');
-        try {
-            showPreloader("Adding items to cart...");
+        btn.addEventListener('click', async function () {  // ✅ Make this function async
+            const product_id = this.getAttribute('data-id');
+            try {
+                showPreloader("Adding items to cart...");
 
-            const res = await fetch(`${ASO_URL}/add-to-cart/?product_id=${product_id}`, {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${accessToken}`,
-                    "Content-Type": "application/json"
-                }
-            });
+                const res = await fetch(`${ASO_URL}/add-to-cart/?product_id=${product_id}`, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`,
+                        "Content-Type": "application/json"
+                    }
+                });
 
-            if (!res.ok) throw new Error("Failed to move items to cart");
+                if (!res.ok) throw new Error("Failed to move items to cart");
 
-            const data = await res.json();
-            const itemsMoved = data.items_added;
-            let currentCount = parseInt(cartBadge.textContent) || 0;
-            cartBadge.textContent = currentCount + itemsMoved;
+                const data = await res.json();
+                const itemsMoved = data.items_added;
+                let currentCount = parseInt(cartBadge.textContent) || 0;
+                cartBadge.textContent = currentCount + itemsMoved;
 
-            // Animation
-            btn.textContent = '✓ Added!';
-            btn.style.backgroundColor = '#28a745';
+                // Animation
+                btn.textContent = '✓ Added!';
+                btn.style.backgroundColor = '#28a745';
 
-        } catch (error) {
-            console.error(error);
-            alert("Error moving items to cart.");
-        } finally {
-            hidePreloader();
-            setTimeout(() => {
-                btn.textContent = 'Add to Cart';
-                btn.style.backgroundColor = '';
-            }, 2000);
-        }
+            } catch (error) {
+                console.error(error);
+                alert("Error moving items to cart.");
+            } finally {
+                hidePreloader();
+                setTimeout(() => {
+                    btn.textContent = 'Add to Cart';
+                    btn.style.backgroundColor = '';
+                }, 2000);
+            }
+        });
     });
-});
-
-
-
 }
 
 function attachWatchlistEvents() {
@@ -122,8 +123,8 @@ function attachWatchlistEvents() {
             const productId = this.dataset.id;
             try {
                 showPreloader("Removing watchlist items");
-                const res = await fetch(`${ASO_URL}/remove-from-watchlist/${productId}/`, {
-                    method: "DELETE",
+                const res = await fetch(`${ASO_URL}/toggle-watchlist/${productId}/`, {
+                    method: "PUT",
                     headers: {
                         "Authorization": `Bearer ${accessToken}`
                     }
@@ -259,9 +260,11 @@ function showEmptyWatchlist() {
             <p class="empty-text">
                 You haven't added any items to your watchlist yet. Start exploring our beautiful collection of Aso Oke and Aso Ofi fabrics and save your favorites!
             </p>
-            <button class="btn-shop">
-                <i class="fas fa-shopping-bag"></i> Start Shopping
-            </button>
+            <a href="index.html">
+                <button class="btn-shop">
+                    <i class="fas fa-shopping-bag"></i> Start Shopping
+                </button>
+            </a>
         </div>
     `;
 }

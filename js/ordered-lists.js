@@ -45,10 +45,14 @@ function renderOrders(orders) {
         const itemHtml = order.order_items.map(item => `
             <div class="order-item">
                 <div class="order-item-image">
-                    <img src="${item.product_image}" alt="${item.product_name}" style="width: 60px; height: 60px; object-fit: cover;">
+                    <a href="product-info.html?id=${item.product_id}">
+                        <img src="${item.product_image}" alt="${item.product_name}" style="width: 60px; height: 60px; object-fit: cover;">
+                    </a>
                 </div>
                 <div class="order-item-details">
-                    <div class="order-item-name">${item.product_name}</div>
+                    <a href="product-info.html?id=${item.product_id}" style="text-decoration:none">
+                        <div class="order-item-name">${item.product_name}</div>
+                    </a>
                     <div class="order-item-price">₦${parseFloat(item.price).toLocaleString()}</div>
                     <div class="order-item-qty">Quantity: ${item.quantity}</div>
                 </div>
@@ -92,7 +96,7 @@ function renderOrders(orders) {
 
             <div class="order-actions">
                 <button class="action-btn btn-view" data-id="${order.id}"><i class="fas fa-file-alt"></i> View Details</button>
-                <button class="action-btn btn-reorder"><i class="fas fa-sync-alt"></i> Reorder</button>
+                <button class="action-btn btn-reorder" data-id="${order.id}"><i class="fas fa-sync-alt"></i> Reorder</button>
                 <button class="action-btn btn-track" data-id="${order.id}"><i class="fas fa-truck"></i> Track Order</button>
             </div>
         `;
@@ -106,21 +110,47 @@ function renderOrders(orders) {
 // Handle Buttons After Rendering
 function attachActionHandlers() {
     const cartBadge = document.querySelector('.icon-badge');
+    
 
     document.querySelectorAll('.btn-reorder').forEach(btn => {
-        btn.addEventListener('click', function () {
-            let count = parseInt(cartBadge.textContent) || 0;
-            cartBadge.textContent = count + 1;
+        btn.addEventListener('click', async function () {
+            const orderId = this.getAttribute('data-id');
+            try {
+                showPreloader("Adding to cart");
 
-            this.innerHTML = '<i class="fas fa-check"></i> Added to Cart!';
-            this.style.background = '#28a745';
-            this.style.borderColor = '#28a745';
+                const response = await fetch(`${ASO_URL}/cart/reorder/?order_id=${orderId}`, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`,
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }
+                });
 
-            setTimeout(() => {
-                this.innerHTML = '<i class="fas fa-sync-alt"></i> Reorder';
-                this.style.background = '';
-                this.style.borderColor = '';
-            }, 2000);
+                if (!response.ok) throw new Error("Failed to reorder items");
+
+                const data = await response.json();
+                const itemsAdded = data.items_added || 0;
+
+                // Update cart count
+                let currentCount = parseInt(cartBadge.textContent) || 0;
+                cartBadge.textContent = currentCount + itemsAdded;
+
+                this.innerHTML = '<i class="fas fa-check"></i> Added to Cart!';
+                this.style.background = '#28a745';
+                this.style.borderColor = '#28a745';
+            } catch (error) {
+                alert("Failed to reorder items: " + error.message);
+                this.innerHTML = '<i class="fas fa-exclamation-circle"></i> Try Again';
+                this.style.background = '#dc3545';
+            } finally {
+                hidePreloader();
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-sync-alt"></i> Reorder';
+                    this.style.background = '';
+                    this.style.borderColor = '';
+                }, 2000);
+            }
         });
     });
 

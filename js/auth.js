@@ -1,3 +1,5 @@
+ADMIN_URL = "http://172.20.10.2:8000/admins/api/user"
+
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('login-form');
     const submitBtn = document.getElementById('submit-btn');
@@ -13,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         btnText.textContent = 'Signing In...';
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/admins/api/user/magic-login/', {
+            const response = await fetch(`${ADMIN_URL}/magic-login/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
