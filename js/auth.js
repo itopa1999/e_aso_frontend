@@ -1,4 +1,4 @@
-ADMIN_URL = "http://127.0.0.1:8000/admins/api/user"
+ADMIN_URL = "https://luck1999.pythonanywhere.com/admins/api/user"
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('login-form');
     const submitBtn = document.getElementById('submit-btn');
