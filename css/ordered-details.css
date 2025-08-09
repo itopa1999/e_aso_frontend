@@ -158,6 +158,12 @@
     background: var(--primary-color);
     border-color: var(--primary-color);
     color: white;
+    animation: blink-pulse 1.2s infinite ease-in-out;
+}
+
+@keyframes blink-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.1); }
 }
 
 .step-completed .step-icon {

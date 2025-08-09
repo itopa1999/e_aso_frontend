@@ -1,5 +1,4 @@
-ADMIN_URL = "http://172.20.10.2:8000/admins/api/user"
-
+ADMIN_URL = "http://127.0.0.1:8000/admins/api/user"
 document.addEventListener('DOMContentLoaded', function() {
     // Simulate a slight delay for verification
     setTimeout(() => {
@@ -20,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.disabled = true;
 
             try {
-                const response = await fetch(`${ASO_URL}/resend-link/`, {
+                const response = await fetch(`${ADMIN_URL}/resend-link/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: email, is_login : is_login })

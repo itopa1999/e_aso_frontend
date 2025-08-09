@@ -2,9 +2,8 @@
 /* Product Grid */
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 25px;
-    padding: 20px;
 }
 
 .product-card {
@@ -260,7 +259,7 @@
     align-items: center;
 }
 
-.filter-option input[type="checkbox"] {
+.filter-option input[type="radio"] {
     margin-right: 10px;
     accent-color: var(--primary-color);
 }
@@ -348,15 +347,6 @@
         width: 280px;
         right: -280px;
     }
-    .pagination {
-        gap: 3px;
-    }
-    
-    .pagination-btn {
-        width: 35px;
-        height: 35px;
-        font-size: 0.9rem;
-    }
 }
 
 @media (max-width: 576px) {
@@ -442,31 +432,55 @@
     }
 }
 
-/* Pagination */
-.pagination {
+.no-products-wrapper {
     display: flex;
     justify-content: center;
-    margin: 50px 0 30px;
-    flex-wrap: wrap;
-    gap: 5px;
+    align-items: center;
+    height: 60vh;
 }
 
-.pagination-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: white;
-    border: 1px solid #ddd;
-    color: #666;
+
+.no-products-message {
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+    margin-top: 2rem;
+}
+
+.no-products-message i {
+    font-size: 4rem;
+    color: var(--accent-color);
+    margin-bottom: 1.5rem;
+}
+
+.no-products-message h2 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+.no-products-message p {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    max-width: 500px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+}
+
+.clear-filters-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
-.pagination-btn.active, .pagination-btn:hover {
-    background: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
+.clear-filters-btn:hover {
+    background-color: var(--dark-color);
+    transform: translateY(-2px);
 }

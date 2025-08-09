@@ -365,6 +365,10 @@
     transition: all 0.3s ease;
 }
 
+select{
+    height: 50px;
+}
+
 .form-control:focus {
     border-color: var(--primary-color);
     outline: none;

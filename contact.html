@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Aso Oke & Aso Ofi Marketplace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        
+        /* Page Container */
+        .page-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: var(--dark-color);
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .page-header h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        .page-subtitle {
+            color: #777;
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 20px auto 0;
+            line-height: 1.6;
+        }
+        
+        /* Contact Content */
+        .contact-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--dark-color);
+            font-weight: 600;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-title i {
+            color: var(--primary-color);
+        }
+        
+        .contact-content {
+            display: flex;
+            gap: 40px;
+        }
+        
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-form {
+            flex: 1;
+        }
+        
+        /* Contact Cards */
+        .contact-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .contact-card {
+            background: var(--light-color);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(138, 75, 56, 0.1);
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        
+        .contact-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .contact-title {
+            font-size: 1.4rem;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+        }
+        
+        .contact-detail {
+            color: #666;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .hours-list {
+            text-align: left;
+            margin-top: 20px;
+        }
+        
+        .hours-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        /* Contact Form */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #fcfbf9;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(138, 75, 56, 0.1);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .form-btn {
+            padding: 16px 40px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .form-btn:hover {
+            background: var(--dark-color);
+            transform: translateY(-2px);
+        }
+        
+        /* Map Section */
+        .map-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .map-container {
+            display: flex;
+            gap: 40px;
+            margin-top: 30px;
+        }
+        
+        .map {
+            flex: 1;
+            height: 350px;
+            background: linear-gradient(45deg, var(--primary-color), var(--dark-color));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .locations {
+            flex: 1;
+        }
+        
+        .location-item {
+            padding: 25px;
+            background: var(--light-color);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .location-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .location-title {
+            font-size: 1.3rem;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .location-address {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .location-phone {
+            color: var(--primary-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .faq-container {
+            margin-top: 30px;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item.active {
+            border-color: var(--accent-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .faq-question {
+            padding: 20px;
+            background: var(--light-color);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            color: #666;
+            line-height: 1.7;
+        }
+        
+        .faq-item.active .faq-answer {
+            padding: 20px;
+            max-height: 300px;
+        }
+        
+        .faq-toggle {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-item.active .faq-toggle {
+            transform: rotate(180deg);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .contact-content {
+                flex-direction: column;
+            }
+            
+            .map-container {
+                flex-direction: column;
+            }
+            
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .contact-section, .map-section, .faq-section {
+                padding: 30px 20px;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .contact-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">AO</a>
+            <div class="header-icons">
+                <a href="#" class="icon">
+                    <i class="fas fa-user"></i>
+                </a>
+                <a href="#" class="icon">
+                    <i class="fas fa-filter"></i>
+                </a>
+                <a href="cart-item.html" class="icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="icon-badge" id="cart-count">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Container -->
+    <div class="page-container">
+        <div class="page-header">
+            <h1>Contact Us</h1>
+            <div class="page-subtitle">
+                We'd love to hear from you! Reach out with any questions, feedback, or inquiries about our traditional fabrics.
+            </div>
+        </div>
+        
+        <!-- Contact Section -->
+        <div class="contact-section">
+            <h2 class="section-title">
+                <i class="fas fa-envelope"></i> Get in Touch
+            </h2>
+            
+            <div class="contact-cards">
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3 class="contact-title">Visit Us</h3>
+                    <p class="contact-detail">
+                        14 Aso Oke Avenue,<br>
+                        Lagos Island, Lagos<br>
+                        Nigeria
+                    </p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h3 class="contact-title">Call Us</h3>
+                    <p class="contact-detail">
+                        +234 812 345 6789<br>
+                        +234 901 234 5678
+                    </p>
+                    <p class="contact-detail">
+                        Mon-Fri: 9am-6pm<br>
+                        Sat: 10am-4pm
+                    </p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3 class="contact-title">Email Us</h3>
+                    <p class="contact-detail">
+                        info@aso-oke-marketplace.com<br>
+                        support@aso-oke-marketplace.com
+                    </p>
+                </div>
+            </div>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2 class="section-title">
+                        <i class="fas fa-comments"></i> Send a Message
+                    </h2>
+                    <p>
+                        Have questions about our fabrics? Need assistance with an order? Our team is ready to help you with any inquiries you may have.
+                    </p>
+                    <div class="hours-list">
+                        <div class="hours-item">
+                            <span>Monday - Friday</span>
+                            <span>9:00 AM - 6:00 PM</span>
+                        </div>
+                        <div class="hours-item">
+                            <span>Saturday</span>
+                            <span>10:00 AM - 4:00 PM</span>
+                        </div>
+                        <div class="hours-item">
+                            <span>Sunday</span>
+                            <span>Closed</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label class="form-label" for="name">Full Name</label>
+                            <input type="text" class="form-control" id="name" placeholder="Enter your name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email Address</label>
+                            <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="subject">Subject</label>
+                            <input type="text" class="form-control" id="subject" placeholder="What is this regarding?">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="message">Message</label>
+                            <textarea class="form-control" id="message" placeholder="Type your message here..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="form-btn">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Map Section -->
+        <div class="map-section">
+            <h2 class="section-title">
+                <i class="fas fa-store"></i> Our Locations
+            </h2>
+            
+            <div class="map-container">
+                <div class="map">
+                    Lagos Store Location
+                </div>
+                <div class="locations">
+                    <div class="location-item">
+                        <h3 class="location-title"><i class="fas fa-map-pin"></i> Lagos Store</h3>
+                        <p class="location-address">
+                            14 Aso Oke Avenue, Lagos Island, Lagos<br>
+                            Opposite Heritage Plaza
+                        </p>
+                        <p class="location-phone">
+                            <i class="fas fa-phone"></i> +234 812 345 6789
+                        </p>
+                    </div>
+                    
+                    <div class="location-item">
+                        <h3 class="location-title"><i class="fas fa-map-pin"></i> Ibadan Store</h3>
+                        <p class="location-address">
+                            8 Traditional Textile Road, Dugbe, Ibadan<br>
+                            Near Cocoa House
+                        </p>
+                        <p class="location-phone">
+                            <i class="fas fa-phone"></i> +234 803 456 7890
+                        </p>
+                    </div>
+                    
+                    <div class="location-item">
+                        <h3 class="location-title"><i class="fas fa-map-pin"></i> Abuja Store</h3>
+                        <p class="location-address">
+                            22 Cultural Heritage Way, Wuse 2, Abuja<br>
+                            Beside National Museum
+                        </p>
+                        <p class="location-phone">
+                            <i class="fas fa-phone"></i> +234 809 876 5432
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2 class="section-title">
+                <i class="fas fa-question-circle"></i> Frequently Asked Questions
+            </h2>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How do I place a custom order for traditional fabrics?
+                        <i class="fas fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        We specialize in custom orders! Contact us through the form above or call our support line. Provide details about the fabric type, design, measurements, and deadline. Our team will guide you through the process and provide a quote.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        What is your return policy for fabrics?
+                        <i class="fas fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Due to the custom nature of our fabrics, returns are accepted within 14 days only for unused fabrics in original condition. Custom orders are non-returnable. Please contact us for a return authorization before sending anything back.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Do you ship internationally?
+                        <i class="fas fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Yes, we ship worldwide! International orders typically take 7-14 business days. Shipping costs vary by destination and order weight. We handle all customs documentation for a smooth delivery process.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How can I verify the authenticity of your fabrics?
+                        <i class="fas fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        All our fabrics come with a Certificate of Authenticity. We work directly with traditional weaving communities and provide detailed information about the origin and weaving techniques. You can also request a sample before purchasing.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Do you offer wholesale prices for bulk orders?
+                        <i class="fas fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Absolutely! We offer special pricing for designers, boutiques, and event planners. Contact our wholesale department at wholesale@aso-oke-marketplace.com for a customized quote based on your quantity and fabric requirements.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navbar -->
+    <nav class="bottom-navbar">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Home</span>
+        </a>
+        <a href="search-result.html" class="nav-item">
+            <i class="fas fa-search nav-icon"></i>
+            <span>Search</span>
+        </a>
+        <a href="watchlist.html" class="nav-item">
+            <i class="fas fa-heart nav-icon"></i>
+            <span>Wishlist</span>
+            <span class="nav-badge" id="watchlist-count">0</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-user nav-icon"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle form submission
+            const contactForm = document.getElementById('contactForm');
+            
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const subject = document.getElementById('subject').value.trim();
+                const message = document.getElementById('message').value.trim();
+                
+                // Validate inputs
+                if (!name || !email || !subject || !message) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                // Show loading state
+                const submitBtn = contactForm.querySelector('button');
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                submitBtn.disabled = true;
+                
+                // Simulate form submission
+                setTimeout(() => {
+                    // Reset form
+                    contactForm.reset();
+                    
+                    // Show success message
+                    alert('Thank you for your message! We will get back to you within 24 hours.');
+                    
+                    // Restore button
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                }, 1500);
+            });
+            
+            // FAQ accordion functionality
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                
+                question.addEventListener('click', () => {
+                    // Close all other items
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle current item
+                    item.classList.toggle('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

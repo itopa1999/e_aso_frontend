@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - ASO Marketplace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #8a4b38;
+            --secondary-color: #e8d0b3;
+            --accent-color: #d4a373;
+            --dark-color: #4a2c2a;
+            --light-color: #f9f5f0;
+            --success-color: #28a745;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf8f5;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f9f5f0"/><path d="M20,20 L80,80 M80,20 L20,80" stroke="%23e8d0b3" stroke-width="0.5" opacity="0.3"/></svg>');
+            background-size: 300px;
+            padding: 20px;
+        }
+
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 30px;
+            background: var(--accent-color);
+            top: 0;
+            opacity: 0;
+            animation: confetti-drop 4s ease-in-out infinite;
+        }
+
+        .confetti-piece:nth-child(1) {
+            left: 7%;
+            transform: rotate(-40deg);
+            animation-delay: 0s;
+            background-color: var(--primary-color);
+        }
+        
+        .confetti-piece:nth-child(2) {
+            left: 14%;
+            transform: rotate(4deg);
+            animation-delay: 0.5s;
+            background-color: var(--success-color);
+            height: 20px;
+        }
+        
+        .confetti-piece:nth-child(3) {
+            left: 21%;
+            transform: rotate(-51deg);
+            animation-delay: 1.3s;
+            height: 25px;
+        }
+        
+        .confetti-piece:nth-child(4) {
+            left: 28%;
+            transform: rotate(61deg);
+            animation-delay: 0.8s;
+            background-color: var(--dark-color);
+        }
+        
+        .confetti-piece:nth-child(5) {
+            left: 35%;
+            transform: rotate(-52deg);
+            animation-delay: 0.3s;
+        }
+        
+        .confetti-piece:nth-child(6) {
+            left: 42%;
+            transform: rotate(38deg);
+            animation-delay: 2.3s;
+            background-color: var(--success-color);
+            height: 17px;
+        }
+        
+        .confetti-piece:nth-child(7) {
+            left: 49%;
+            transform: rotate(11deg);
+            animation-delay: 1.7s;
+        }
+        
+        .confetti-piece:nth-child(8) {
+            left: 56%;
+            transform: rotate(49deg);
+            animation-delay: 2s;
+            background-color: var(--dark-color);
+            height: 27px;
+        }
+        
+        .confetti-piece:nth-child(9) {
+            left: 63%;
+            transform: rotate(-72deg);
+            animation-delay: 1s;
+        }
+        
+        .confetti-piece:nth-child(10) {
+            left: 70%;
+            transform: rotate(10deg);
+            animation-delay: 1.5s;
+            background-color: var(--primary-color);
+        }
+        
+        .confetti-piece:nth-child(11) {
+            left: 77%;
+            transform: rotate(4deg);
+            animation-delay: 0.5s;
+        }
+        
+        .confetti-piece:nth-child(12) {
+            left: 84%;
+            transform: rotate(42deg);
+            animation-delay: 2.5s;
+            background-color: var(--success-color);
+        }
+        
+        .confetti-piece:nth-child(13) {
+            left: 91%;
+            transform: rotate(-72deg);
+            animation-delay: 1.8s;
+            height: 22px;
+        }
+
+        .order-container {
+            width: 100%;
+            max-width: 520px;
+            padding: 50px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(74, 44, 42, 0.1);
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .order-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(to right, var(--primary-color), var(--dark-color));
+            z-index: 2;
+        }
+
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            background: rgba(40, 167, 69, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        .success-icon i {
+            font-size: 60px;
+            color: var(--success-color);
+        }
+
+        .order-header {
+            margin-bottom: 20px;
+        }
+
+        .order-header h1 {
+            font-size: 32px;
+            color: var(--dark-color);
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .order-header p {
+            color: #555;
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .order-details {
+            background: var(--light-color);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: left;
+            animation: fadeIn 0.8s ease-out 0.3s forwards;
+            opacity: 0;
+        }
+
+        .detail-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(138, 75, 56, 0.1);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .detail-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-right: 15px;
+            color: var(--dark-color);
+        }
+
+        .detail-content h3 {
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+
+        .detail-content p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary-color), var(--dark-color));
+            color: white;
+            box-shadow: 0 5px 15px rgba(138, 75, 56, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(138, 75, 56, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            margin-left: 15px;
+        }
+
+        .btn-outline:hover {
+            background: rgba(138, 75, 56, 0.05);
+        }
+
+        .action-buttons {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        /* Decorative elements */
+        .nigerian-pattern {
+            position: absolute;
+            opacity: 0.05;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .pattern-1 {
+            bottom: -50px;
+            right: -50px;
+            font-size: 200px;
+            transform: rotate(25deg);
+            color: var(--primary-color);
+        }
+
+        .pattern-2 {
+            top: -50px;
+            left: -50px;
+            font-size: 180px;
+            transform: rotate(-15deg);
+            color: var(--accent-color);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4);
+            }
+            70% {
+                transform: scale(1.01);
+                box-shadow: 0 0 0 20px rgba(40, 167, 69, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes confetti-drop {
+            0% {
+                opacity: 1;
+                top: -100px;
+            }
+            100% {
+                opacity: 0;
+                top: 100%;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .order-container {
+                padding: 40px 30px;
+            }
+            
+            .success-icon {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .success-icon i {
+                font-size: 50px;
+            }
+            
+            .order-header h1 {
+                font-size: 28px;
+            }
+            
+            .order-header p {
+                font-size: 16px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .btn-outline {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .order-container {
+                padding: 35px 20px;
+                border-radius: 15px;
+            }
+            
+            .success-icon {
+                width: 90px;
+                height: 90px;
+                margin-bottom: 25px;
+            }
+            
+            .success-icon i {
+                font-size: 45px;
+            }
+            
+            .order-header h1 {
+                font-size: 24px;
+            }
+            
+            .order-header p {
+                font-size: 15px;
+            }
+            
+            .order-details {
+                padding: 20px 15px;
+            }
+            
+            .detail-item {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .detail-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+                padding: 14px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Confetti animation -->
+    <div class="confetti">
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+    </div>
+    
+    <!-- Order confirmation container -->
+    <div class="order-container">
+        <!-- Decorative patterns -->
+        <div class="nigerian-pattern pattern-1">&#10022;&#10022;&#10022;</div>
+        <div class="nigerian-pattern pattern-2">&#10022;&#10022;</div>
+        
+        <!-- Success icon -->
+        <div class="success-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        
+        <!-- Order header -->
+        <div class="order-header">
+            <h1>Congratulations! Order Successful</h1>
+            <p>Thank you for your purchase. Your order has been confirmed and will be processed shortly.</p>
+        </div>
+        
+        
+        
+        <!-- Action buttons -->
+        <div class="action-buttons fade-in" style="animation-delay: 0.5s;">
+            <a href="ordered-lists.html">
+                <button class="btn btn-primary">
+                    <i class="fas fa-file-invoice"></i> View Orders
+                </button>
+            </a>
+            <a href="index.html">
+                <button class="btn btn-outline">
+                    <i class="fas fa-shopping-bag"></i> Continue Shopping
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Add animation to confetti pieces
+        document.querySelectorAll('.confetti-piece').forEach((piece, index) => {
+            piece.style.animationDelay = `${Math.random() * 3}s`;
+            piece.style.left = `${Math.random() * 100}%`;
+        });
+        
+        // Add a subtle bounce to the success icon
+        setTimeout(() => {
+            const icon = document.querySelector('.success-icon');
+            icon.style.animation = 'pulse 2s infinite, bounce 0.8s ease-out';
+            
+            // Create keyframes for bounce
+            const styleSheet = document.styleSheets[0];
+            styleSheet.insertRule(`
+                @keyframes bounce {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.15); }
+                    100% { transform: scale(1); }
+                }
+            `, styleSheet.cssRules.length);
+        }, 300);
+    </script>
+</body>
+</html>

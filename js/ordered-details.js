@@ -68,11 +68,14 @@ function renderOrderDetails(order) {
     order.items.forEach(item => {
         itemsContainer.innerHTML += `
             <div class="order-item">
-                <div class="order-item-image">
-                    <a href="product-info.html?id=${item.product_id}">
-                        <img src="${item.product_image}" alt="${item.product_name}" style="width: 60px; border-radius: 10px;" />
-                    </a>
-                </div>
+                <a href="product-info.html?id=${item.product_id}">
+                    <div class="order-item-image" 
+                        style="background: ${item.product_image 
+                            ? `url('${item.product_image}')` 
+                            : 'linear-gradient(to bottom right, #6b2c1e, #a86448)'}; 
+                            background-size: cover;">
+                    </div>
+                </a>
                 <div class="order-item-details">
                     <a style="text-decoration:none" href="product-info.html?id=${item.product_id}">
                         <div class="order-item-name">${item.product_name}</div>
@@ -107,17 +110,17 @@ function renderOrderDetails(order) {
         <div class="address-line">
             <i class="fas fa-phone"></i> Alt: ${addr.alt_phone}
         </div>
-        <div class="address-line">
-            <i class="fas fa-envelope"></i> ${addr.email}
-        </div>
     `;
 
     // Payment info
     const payment = order.payment_detail;
     document.querySelector('.payment-info').innerHTML = `
-        <div class="payment-name">${payment.method} ending in ${payment.card_last4}</div>
-        <div class="payment-details">Expires ${payment.expiry_date}</div>
+        <div class="payment-name">${payment.method}</div>
     `;
+
+    document.getElementById("total-payment").innerText  = `₦${order.total}`;
+
+
 
     updateProgressBarFromBackend(order.order_status, order.tracking || []);
 

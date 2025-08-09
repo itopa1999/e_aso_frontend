@@ -16,6 +16,11 @@ async function loadLists() {
             }
         });
 
+        if (res.status === 401) {
+            window.location.href = "auth.html";
+            return;
+        }
+
         const data = await res.json();
         renderList(data);
     } catch (error) {
@@ -51,7 +56,7 @@ function renderList(data) {
                 <i class="fas fa-heart"></i>
             </button>
             <a href="product-info.html?id=${product.id}">
-                <div class="product-image" style="background-image: url('${product.main_image}'); background-size: cover;"></div>
+                <div class="product-image" style="background: ${product.main_image ? `url('${product.main_image}')` : 'linear-gradient(to bottom right, #6b2c1e, #a86448)'}; background-size: cover;"></div>
             </a>
             <div class="product-details">
                 <a href="product-info.html?id=${product.id}" style="text-decoration:none">
@@ -61,8 +66,14 @@ function renderList(data) {
                 <div class="rating">${starsHTML}<span>(${reviewFormatted})</span></div>
                 <div class="price">
                     <span class="current-price">₦${formatNumber(product.current_price)}</span>
-                    <span class="original-price">₦${formatNumber(product.original_price)}</span>
-                    <span class="discount">-${product.discount_percent}%</span>
+                    ${
+                        product.discount_percent && parseFloat(product.discount_percent) > 0
+                        ? `
+                            <span class="original-price">₦${formatNumber(product.original_price)}</span>
+                            <span class="discount">-${product.discount_percent}%</span>
+                        `
+                        : ''
+                    }
                 </div>
                 <button class="add-to-cart" data-id="${product.id}">Add to Cart</button>
             </div>

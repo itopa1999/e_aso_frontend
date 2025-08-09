@@ -15,6 +15,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         });
 
+        if (response.status === 401) {
+            window.location.href = "auth.html";
+            return;
+        }
+
         const data = await response.json();
 
         if (response.ok) {
@@ -136,6 +141,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             const result = await res.json();
 
             if (res.ok) {
+                showNotification(
+                    'success',
+                    'Profile Update',
+                    'Successfully changed'
+                );
                 userData.firstName = firstName;
                 userData.lastName = lastName;
                 setUserData();

@@ -44,6 +44,14 @@ function updateDropdown() {
                 <i class="fas fa-heart"></i>
                 <span>My Wishlist</span>
             </a>
+            <a href="about.html" class="dropdown-item">
+                <i class="fas fa-info-circle"></i>
+                <span>About Us</span>
+            </a>
+            <a href="contact.html" class="dropdown-item">
+                <i class="fas fa-envelope"></i>
+                <span>Contact Us</span>
+            </a>
             <a href="#" class="dropdown-item logout-item" id="logoutButton">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
@@ -55,13 +63,17 @@ function updateDropdown() {
         userEmail.textContent = "Please log in";
 
         dropdownItems.innerHTML = `
+            <a href="about.html" class="dropdown-item">
+                <i class="fas fa-info-circle"></i>
+                <span>About Us</span>
+            </a>
+            <a href="contact.html" class="dropdown-item">
+                <i class="fas fa-envelope"></i>
+                <span>Contact Us</span>
+            </a>
             <a href="auth.html" class="dropdown-item">
                 <i class="fas fa-sign-in-alt"></i>
                 <span>Sign In</span>
-            </a>
-            <a href="auth.html" class="dropdown-item">
-                <i class="fas fa-user-plus"></i>
-                <span>Create Account</span>
             </a>
         `;
     }
@@ -222,8 +234,8 @@ document.addEventListener('keydown', (e) => {
 
 });
 
-ADMIN_URL = "http://172.20.10.2:8000/admins/api/user"
-ASO_URL = "http://172.20.10.2:8000/aso/api/product"
+ADMIN_URL = "http://127.0.0.1:8000/admins/api/user"
+ASO_URL = "http://127.0.0.1:8000/aso/api/product"
 
 
 function getStarHTML(rating) {
@@ -281,6 +293,18 @@ async function updateCartAndWatchlistCounts() {
         console.error("Error fetching cart/watchlist counts:", error);
     }
 }
+
+
+const btn = document.getElementById("goToTopBtn");
+
+window.onscroll = function () {
+    btn.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
+};
+
+// Scroll to top when clicked
+btn.onclick = function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
 
 // Call it after DOM loads
 document.addEventListener("DOMContentLoaded", updateCartAndWatchlistCounts);

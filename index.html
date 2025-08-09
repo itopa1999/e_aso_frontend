@@ -76,20 +76,20 @@
     <button class="arrow-btn right-arrow">&#10095;</button>
 </div>
 
-        
+        <div class="no-products-wrapper" style="display: none;">
+            <div class="no-products-message">
+                <i class="fas fa-search"></i>
+                <h3>No products found</h3>
+                <p>Try adjusting your filters or search terms</p>
+                <button class="clear-filters-btn">Clear All Filters</button>
+            </div>
+        </div>
         <div class="product-grid">
             
         </div>
-        <div class="pagination">
-            <div class="pagination-btn"><i class="fas fa-chevron-left"></i></div>
-            <div class="pagination-btn active">1</div>
-            <div class="pagination-btn">2</div>
-            <div class="pagination-btn">3</div>
-            <div class="pagination-btn">4</div>
-            <div class="pagination-btn"><i class="fas fa-ellipsis-h"></i></div>
-            <div class="pagination-btn">8</div>
-            <div class="pagination-btn"><i class="fas fa-chevron-right"></i></div>
-        </div>
+        <span style="display: block; text-align: center; font-weight: bold; color: #888; margin: 20px 0;">
+        -------- End of products --------
+        </span>
     </main>
 
     <!-- Bottom Navbar -->
@@ -142,7 +142,7 @@
     <!-- 💰 Price Range -->
     <div class="filter-section">
         <h3><i class="fas fa-tag"></i> Price Range</h3>
-        <input type="range" class="price-range" min="0" max="500000" value="200000">
+        <input type="range" class="price-range" min="0" max="500000" value="500000">
         <div class="price-values">
             <span>₦0</span>
             <span>₦200,000</span>
@@ -155,15 +155,15 @@
         <h3><i class="fas fa-star"></i> Rating</h3>
         <div class="filter-options">
             <div class="filter-option">
-                <input type="checkbox" id="rating1">
+                <input type="radio" id="rating1" name="rating" value="5.0">
                 <label for="rating1">
                     <i class="fas fa-star"></i><i class="fas fa-star"></i>
                     <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i> (4.5+)
+                    <i class="fas fa-star"></i> (5.0+)
                 </label>
             </div>
             <div class="filter-option">
-                <input type="checkbox" id="rating2" checked>
+                <input type="radio" id="rating2" name="rating" value="4.0">
                 <label for="rating2">
                     <i class="fas fa-star"></i><i class="fas fa-star"></i>
                     <i class="fas fa-star"></i><i class="fas fa-star"></i>
@@ -171,15 +171,24 @@
                 </label>
             </div>
             <div class="filter-option">
-                <input type="checkbox" id="rating3">
+                <input type="radio" id="rating3" name="rating" value="3.0">
                 <label for="rating3">
                     <i class="fas fa-star"></i><i class="fas fa-star"></i>
                     <i class="fas fa-star"></i><i class="far fa-star"></i>
                     <i class="far fa-star"></i> (3.0+)
                 </label>
             </div>
+            <div class="filter-option">
+                <input type="radio" id="rating4" name="rating" value="2.0">
+                <label for="rating4">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <i class="far fa-star"></i><i class="far fa-star"></i>
+                    <i class="far fa-star"></i> (2.0+)
+                </label>
+            </div>
         </div>
     </div>
+
 
     <button class="apply-filters">Apply Filters</button>
 </div>
@@ -187,6 +196,9 @@
     
     <!-- Overlay for sidebar -->
     <div class="overlay" id="overlay"></div>
+
+    <button id="goToTopBtn" title="Go to top">&#8679;</button>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>
