@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
             cartItem.setAttribute("data-item-id", item.id);
             cartItem.innerHTML = `
                 <a href="product-info.html?id=${item.product_id}">
-                    <div class="cart-item-image" style="background: ${item.product_image ? `url('${item.product_image}')` : 'linear-gradient(to bottom right, #6b2c1e, #a86448)'}; background-size: cover; object-fit: cover;"></div>
+                    <div class="cart-item-image" style="background-image: url('${item.product_image || "/img/product_image.jpeg"}');"></div>
                 </a>
                 </div>
                 <div class="cart-item-details">
@@ -104,11 +104,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const totalPrice = parseFloat(item.product_price) * item.quantity;
             cartItem.innerHTML = `
             <div class="order-item-info">
-                <div class="order-item-image">
-                    <a href="product-info.html?id=${item.product_id}">
-                        <img src="${item.product_image}" alt="${item.product_title}" style="width: 60px; height: 60px; object-fit: cover;">
-                    </a>
-                </div>
+                <a href="product-info.html?id=${item.product_id}">
+                    <div class="order-item-image" style="background-image: url('${item.product_image || "/img/product_image.jpeg"}');"></div>
+                </a>
                 <div class="order-item-details">
                     <a href="product-info.html?id=${item.product_id}" style="text-decoration:none">
                         <div class="order-item-name">${item.product_title}</div>
@@ -116,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="order-item-price">₦${parseFloat(item.product_price).toLocaleString()} × ${item.quantity}</div>
                 </div>
             </div>
-            <div class="order-item-total">₦${totalPrice.toLocaleString()}</div>
+            <div class="order-item-total"><b>₦${totalPrice.toLocaleString()}</b></div>
 
             `;
             summaryContainer.appendChild(cartItem);

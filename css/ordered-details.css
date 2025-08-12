@@ -260,6 +260,9 @@
     color: white;
     font-weight: bold;
     flex-shrink: 0;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .order-item-details {

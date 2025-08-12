@@ -14,6 +14,10 @@ async function fetchProductDetails() {
                 "Accept": "application/json"
             }
         });
+        if (response.status === 404) {
+            window.location.href = "404.html";
+            return;
+        }
         const data = await response.json();
         renderProductDetails(data);
     } catch (error) {
@@ -87,11 +91,13 @@ function renderProductDetails(data) {
 
     if (data.main_image) {
         mainImage.style.background = `url('${data.main_image}')`;
-        mainImage.style.backgroundSize = 'cover';
-        mainImage.style.backgroundPosition = 'center';
     } else {
-        mainImage.style.background = 'linear-gradient(to bottom right, #6b2c1e, #a86448)';
-    }    
+        mainImage.style.background = `url("/img/product_image.jpeg")`;
+    }
+
+    mainImage.style.backgroundSize = 'contain';
+    mainImage.style.backgroundPosition = 'center';
+    mainImage.style.backgroundRepeat = 'no-repeat';
 
     const thumbnailContainer = document.getElementById('thumbnailContainer');
     thumbnailContainer.innerHTML = '';
@@ -158,7 +164,7 @@ function renderProductDetails(data) {
         productItem.className = 'product-card';
         productItem.innerHTML = `
             <a href="product-info.html?id=${product.id}">
-                <div class="product-card-image" style="background: ${product.product_image ? `url('${product.product_image}')` : 'linear-gradient(to bottom right, #6b2c1e, #a86448)'}; background-size: cover; object-fit: cover;"></div>
+                <div class="product-card-image" style="background-image: url('${product.main_image || "/img/product_image.jpeg"}');"></div>
             </a>
             <div class="product-card-details">
                 <a style='text-decoration:none'; href="product-info.html?id=${product.id}">

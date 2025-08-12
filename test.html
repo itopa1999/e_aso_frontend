@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile | Aso Oke & Aso Ofi Marketplace</title>
+    <title>Dispatch Rider | Aso Oke & Aso Ofi Marketplace</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -26,7 +26,6 @@
             color: #333;
             min-height: 100vh;
             padding-top: 70px;
-            padding-bottom: 70px;
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f9f5f0"/><path d="M20,20 L80,80 M80,20 L20,80" stroke="%23e8d0b3" stroke-width="0.5" opacity="0.3"/></svg>');
             background-size: 300px;
         }
@@ -65,6 +64,12 @@
             color: var(--dark-color);
             font-size: 18px;
             text-decoration: none;
+        }
+        
+        .header-title {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
         }
         
         .header-icons {
@@ -107,54 +112,30 @@
             justify-content: center;
         }
         
-        /* Profile Container */
-        .profile-container {
+        /* Page Container */
+        .page-container {
             max-width: 1200px;
             margin: 40px auto;
             padding: 0 20px;
         }
         
-        .profile-header {
-            text-align: center;
-            margin-bottom: 40px;
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
         }
         
-        .profile-header h1 {
-            font-size: 2.2rem;
-            color: var(--dark-color);
-            font-weight: 700;
-            position: relative;
-            padding-bottom: 15px;
-        }
-        
-        .profile-header h1::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: var(--primary-color);
-        }
-        
-        /* Profile Content */
-        .profile-content {
-            display: flex;
-            gap: 40px;
-        }
-        
-        /* Profile Sidebar */
-        .profile-sidebar {
-            width: 300px;
+        /* Rider Profile */
+        .rider-card {
             background: white;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             padding: 30px;
+            text-align: center;
             align-self: flex-start;
         }
         
-        .profile-avatar {
+        .rider-avatar {
             width: 120px;
             height: 120px;
             background: linear-gradient(45deg, var(--primary-color), var(--dark-color));
@@ -162,37 +143,35 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 25px;
+            margin: 0 auto 20px;
             color: white;
             font-size: 48px;
-            font-weight: bold;
         }
         
-        .profile-info {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .profile-name {
-            font-size: 1.8rem;
-            font-weight: 600;
+        .rider-name {
+            font-size: 1.5rem;
             color: var(--dark-color);
             margin-bottom: 5px;
+            font-weight: 600;
         }
         
-        .profile-email {
-            color: #777;
-            font-size: 1.1rem;
+        .rider-id {
+            color: var(--primary-color);
+            font-weight: 500;
+            margin-bottom: 25px;
         }
         
-        .profile-stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 25px 0;
+        .rider-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
         }
         
         .stat-item {
-            text-align: center;
+            background: var(--light-color);
+            padding: 15px;
+            border-radius: 10px;
         }
         
         .stat-value {
@@ -207,59 +186,18 @@
             font-size: 0.9rem;
         }
         
-        .profile-actions {
+        /* Dashboard Main */
+        .dashboard-main {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-top: 30px;
+            gap: 30px;
         }
         
-        .profile-btn {
-            padding: 14px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            border: none;
-            font-size: 1rem;
-        }
-        
-        .btn-edit {
-            background: var(--primary-color);
-            color: white;
-        }
-        
-        .btn-edit:hover {
-            background: var(--dark-color);
-            transform: translateY(-2px);
-        }
-        
-        .btn-settings {
-            background: white;
-            color: var(--dark-color);
-            border: 2px solid #ddd;
-        }
-        
-        .btn-settings:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
-        
-        /* Profile Main Content */
-        .profile-main {
-            flex: 1;
-        }
-        
-        .profile-section {
+        .section {
             background: white;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             padding: 30px;
-            margin-bottom: 30px;
         }
         
         .section-header {
@@ -280,82 +218,118 @@
             gap: 10px;
         }
         
-        .view-all {
-            color: var(--primary-color);
-            text-decoration: none;
+        /* Orders Table */
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            display: table;
+        }
+        
+        .orders-table th {
+            text-align: left;
+            padding: 15px;
+            background: var(--light-color);
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        
+        .orders-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .order-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: 500;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-delivering {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        .status-delivered {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .action-btn {
+            padding: 8px 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
         
-        .view-all:hover {
-            text-decoration: underline;
+        .action-btn:hover {
+            background: var(--dark-color);
+            transform: translateY(-2px);
         }
         
-        /* Personal Info */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+        /* Order List for Mobile */
+        .orders-list {
+            display: none;
         }
         
-        .info-item {
-            margin-bottom: 20px;
+        .order-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--primary-color);
         }
         
-        .info-label {
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .order-id {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .order-status-mobile {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
             font-weight: 500;
-            color: #777;
-            margin-bottom: 8px;
-            font-size: 0.95rem;
         }
         
-        .info-value {
-            font-size: 1.1rem;
+        .order-detail {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .detail-label {
             font-weight: 500;
             color: var(--dark-color);
-            padding: 10px 15px;
-            background: var(--light-color);
-            border-radius: 8px;
-            min-height: 45px;
-            display: flex;
-            align-items: center;
+            min-width: 100px;
         }
         
-        /* Bottom Navbar */
-        .bottom-navbar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            height: 70px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 1000;
+        .detail-value {
+            flex: 1;
+            color: #555;
         }
         
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #777;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
+        .order-action {
+            margin-top: 15px;
+            text-align: right;
         }
         
-        .nav-item.active, .nav-item:hover {
-            color: var(--primary-color);
-        }
-        
-        .nav-icon {
-            font-size: 1.3rem;
-            margin-bottom: 5px;
-        }
-        
-        /* Edit Profile Modal */
+        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -382,10 +356,12 @@
             border-radius: 15px;
             box-shadow: 0 15px 30px rgba(0,0,0,0.2);
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             overflow: hidden;
             transform: translateY(20px);
             transition: all 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         
         .modal-overlay.active .modal {
@@ -430,6 +406,14 @@
             padding: 30px;
         }
         
+        .step {
+            display: none;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
         .form-group {
             margin-bottom: 25px;
         }
@@ -457,12 +441,6 @@
             box-shadow: 0 0 0 3px rgba(138, 75, 56, 0.1);
         }
         
-        .modal-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
         .btn {
             padding: 14px 30px;
             border-radius: 10px;
@@ -471,116 +449,263 @@
             transition: all 0.3s ease;
             border: none;
             font-size: 1rem;
-            flex: 1;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
         }
         
-        .btn-cancel {
-            background: white;
-            color: var(--dark-color);
-            border: 2px solid #ddd;
-        }
-        
-        .btn-cancel:hover {
-            border-color: #777;
-        }
-        
-        .btn-save {
+        .btn-primary {
             background: var(--primary-color);
             color: white;
+            width: 100%;
         }
         
-        .btn-save:hover {
+        .btn-primary:hover {
             background: var(--dark-color);
         }
         
-        /* Success notification */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            padding: 15px 25px;
+        .btn-primary:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+        
+        .message.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+        
+        .message.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Order Details */
+        .order-details {
+            background: var(--light-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .detail-label {
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        /* Order Items */
+        .order-item {
             display: flex;
             align-items: center;
-            gap: 15px;
-            z-index: 3000;
-            transform: translateX(150%);
-            transition: all 0.5s ease;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
         }
         
-        .notification.active {
-            transform: translateX(0);
-        }
-        
-        .notification-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(40, 167, 69, 0.1);
+        .item-image {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, var(--primary-color), var(--dark-color));
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #28a745;
-            font-size: 20px;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
         }
         
-        .notification-content h3 {
-            color: var(--dark-color);
+        .item-details {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-weight: 600;
             margin-bottom: 5px;
         }
         
-        .notification-content p {
+        .item-price {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .item-quantity {
             color: #777;
-            font-size: 14px;
+        }
+        
+        /* Success Screen */
+        .success-screen {
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: #e8f5e9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            color: #4caf50;
+            font-size: 48px;
+        }
+        
+        /* Bottom Navbar */
+        .bottom-navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            height: 70px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #777;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .nav-item.active, .nav-item:hover {
+            color: var(--primary-color);
+        }
+        
+        .nav-icon {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
         }
         
         /* Responsive adjustments */
         @media (max-width: 992px) {
-            .profile-content {
-                flex-direction: column;
+            .dashboard {
+                grid-template-columns: 1fr;
             }
             
-            .profile-sidebar {
+            .rider-card {
                 width: 100%;
             }
             
-            .info-grid {
-                grid-template-columns: 1fr;
+            .rider-stats {
+                grid-template-columns: repeat(4, 1fr);
             }
         }
         
         @media (max-width: 768px) {
-            .profile-stats {
-                flex-direction: column;
-                gap: 20px;
+            .section {
+                padding: 20px;
             }
             
-            .profile-name {
-                font-size: 1.5rem;
+            .rider-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            /* Hide table on mobile */
+            .orders-table {
+                display: none;
+            }
+            
+            /* Show list on mobile */
+            .orders-list {
+                display: block;
+            }
+            
+            .modal {
+                width: 95%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .header-title {
+                font-size: 1rem;
             }
             
             .section-title {
                 font-size: 1.3rem;
             }
             
-            .modal {
-                max-width: 90%;
+            .rider-name {
+                font-size: 1.3rem;
+            }
+            
+            .rider-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .action-btn {
+                padding: 8px 12px;
+                font-size: 0.9rem;
             }
         }
         
-        @media (max-width: 576px) {
-            .profile-header h1 {
-                font-size: 1.8rem;
+        @media (max-width: 480px) {
+            .header-container {
+                padding: 0 10px;
             }
             
-            .modal-actions {
-                flex-direction: column;
+            .header-icons .icon {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .page-container {
+                padding: 0 10px;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+            
+            .section-title {
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -590,132 +715,251 @@
     <header class="header">
         <div class="header-container">
             <a href="index.html" class="logo">AO</a>
+            <div class="header-title">Dispatch Rider Portal</div>
             <div class="header-icons">
                 <a href="#" class="icon">
-                    <i class="fas fa-user"></i>
+                    <i class="fas fa-bell"></i>
+                    <span class="icon-badge">3</span>
                 </a>
                 <a href="#" class="icon">
-                    <i class="fas fa-filter"></i>
-                </a>
-                <a href="cart-item.html" class="icon">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="icon-badge" id="cart-count">0</span>
+                    <i class="fas fa-cog"></i>
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- Profile Container -->
-    <div class="profile-container">
-        <div class="profile-header">
-            <h1>My Profile</h1>
-        </div>
-        
-        <div class="profile-content">
-            <!-- Profile Sidebar -->
-            <div class="profile-sidebar">
-                <div class="profile-avatar">AY</div>
-                <div class="profile-info">
-                    <div class="profile-name" id="userName">Aminat Yusuf</div>
-                    <div class="profile-email" id="userEmail">aminat.yusuf@example.com</div>
+    <!-- Page Container -->
+    <div class="page-container">
+        <div class="dashboard">
+            <!-- Rider Profile -->
+            <div class="rider-card">
+                <div class="rider-avatar">
+                    <i class="fas fa-motorcycle"></i>
                 </div>
+                <div class="rider-name">Tunde Adebayo</div>
+                <div class="rider-id">Rider ID: DR-2345</div>
                 
-                <div class="profile-stats">
+                <div class="rider-stats">
                     <div class="stat-item">
-                        <div class="stat-value">15</div>
-                        <div class="stat-label">Total Orders</div>
+                        <div class="stat-value">128</div>
+                        <div class="stat-label">Deliveries</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">97%</div>
+                        <div class="stat-label">On Time</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">4.8</div>
+                        <div class="stat-label">Rating</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-value">₦1.2M</div>
-                        <div class="stat-label">Total Spent</div>
+                        <div class="stat-label">Earnings</div>
                     </div>
                 </div>
                 
-                <div class="profile-actions">
-                    <button class="profile-btn btn-edit" id="editProfileBtn">
-                        <i class="fas fa-edit"></i> Edit Profile
-                    </button>
-                    <button class="profile-btn btn-settings">
-                        <i class="fas fa-cog"></i> Account Settings
-                    </button>
-                </div>
+                <button class="action-btn" id="startDeliveryBtn">
+                    <i class="fas fa-check-circle"></i> Confirm Delivery
+                </button>
             </div>
             
-            <!-- Profile Main Content -->
-            <div class="profile-main">
-                <!-- Personal Information Section -->
-                <div class="profile-section">
+            <!-- Dashboard Main -->
+            <div class="dashboard-main">
+                <!-- Today's Deliveries -->
+                <div class="section">
                     <div class="section-header">
                         <h2 class="section-title">
-                            <i class="fas fa-user-circle"></i> Personal Information
+                            <i class="fas fa-truck"></i> Today's Deliveries
                         </h2>
+                        <span>5 orders</span>
                     </div>
                     
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-label">First Name</div>
-                            <div class="info-value" id="firstName">Aminat</div>
+                    <!-- Desktop Table -->
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Address</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AO-2023-8765</td>
+                                <td>Aminat Yusuf</td>
+                                <td>14 Aso Oke Ave, Lagos</td>
+                                <td>₦226,895</td>
+                                <td><span class="order-status status-delivering">Delivering</span></td>
+                                <td><button class="action-btn confirm-order" data-order="AO-2023-8765">Confirm</button></td>
+                            </tr>
+                            <tr>
+                                <td>AO-2023-7654</td>
+                                <td>Chinedu Okoro</td>
+                                <td>22 Heritage Way, Abuja</td>
+                                <td>₦162,600</td>
+                                <td><span class="order-status status-pending">Pending</span></td>
+                                <td><button class="action-btn confirm-order" data-order="AO-2023-7654">Confirm</button></td>
+                            </tr>
+                            <tr>
+                                <td>AO-2023-6543</td>
+                                <td>Fatima Bello</td>
+                                <td>8 Textile Road, Ibadan</td>
+                                <td>₦189,750</td>
+                                <td><span class="order-status status-pending">Pending</span></td>
+                                <td><button class="action-btn confirm-order" data-order="AO-2023-6543">Confirm</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <!-- Mobile Order List -->
+                    <div class="orders-list">
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div class="order-id">AO-2023-8765</div>
+                                <div class="order-status-mobile status-delivering">Delivering</div>
+                            </div>
+                            <div class="order-detail">
+                                <div class="detail-label">Customer:</div>
+                                <div class="detail-value">Aminat Yusuf</div>
+                            </div>
+                            <div class="order-detail">
+                                <div class="detail-label">Address:</div>
+                                <div class="detail-value">14 Aso Oke Ave, Lagos</div>
+                            </div>
+                            <div class="order-detail">
+                                <div class="detail-label">Amount:</div>
+                                <div class="detail-value">₦226,895</div>
+                            </div>
+                            <div class="order-action">
+                                <button class="action-btn confirm-order" data-order="AO-2023-8765">Confirm</button>
+                            </div>
                         </div>
                         
-                        <div class="info-item">
-                            <div class="info-label">Last Name</div>
-                            <div class="info-value" id="lastName">Yusuf</div>
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div class="order-id">AO-2023-7654</div>
+                                <div class="order-status-mobile status-pending">Pending</div>
+                            </div>
+                            <div class="order-detail">
+                                <div class="detail-label">Customer:</div>
+                                <div class="detail-value">Chinedu Okoro</div>
+                            </div>
+                            <div class="order-detail">
+                                <div class="detail-label">Address:</div>
+                                <div class="detail-value">22 Heritage Way, Abuja</div>
+                            </div>
+                            <div class="order-detail">
+                                <div class="detail-label">Amount:</div>
+                                <div class="detail-value">₦162,600</div>
+                            </div>
+                            <div class="order-action">
+                                <button class="action-btn confirm-order" data-order="AO-2023-7654">Confirm</button>
+                            </div>
                         </div>
                         
-                        <div class="info-item">
-                            <div class="info-label">Email Address</div>
-                            <div class="info-value">aminat.yusuf@example.com</div>
-                        </div>
-                        
-                        <div class="info-item">
-                            <div class="info-label">Phone Number</div>
-                            <div class="info-value">+234 812 345 6789</div>
-                        </div>
-                        
-                        <div class="info-item">
-                            <div class="info-label">Account Created</div>
-                            <div class="info-value">October 15, 2023</div>
-                        </div>
-                        
-                        <div class="info-item">
-                            <div class="info-label">Last Login</div>
-                            <div class="info-value">Today, 09:45 AM</div>
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div class="order-id">AO-2023-6543</div>
+                                <div class="order-status-mobile status-pending">Pending</div>
+                            </div>
+                            <div class="order-detail">
+                                <div class="detail-label">Customer:</div>
+                                <div class="detail-value">Fatima Bello</div>
+                            </div>
+                            <div class="order-detail">
+                                <div class="detail-label">Address:</div>
+                                <div class="detail-value">8 Textile Road, Ibadan</div>
+                            </div>
+                            <div class="order-detail">
+                                <div class="detail-label">Amount:</div>
+                                <div class="detail-value">₦189,750</div>
+                            </div>
+                            <div class="order-action">
+                                <button class="action-btn confirm-order" data-order="AO-2023-6543">Confirm</button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Order History Section -->
-                <div class="profile-section">
+                <!-- Recent Deliveries -->
+                <div class="section">
                     <div class="section-header">
                         <h2 class="section-title">
-                            <i class="fas fa-shopping-bag"></i> Recent Orders
+                            <i class="fas fa-history"></i> Recent Deliveries
                         </h2>
-                        <a href="order-history.html" class="view-all">View All</a>
+                        <span>View All</span>
                     </div>
                     
-                    <div class="order-list">
-                        <div class="order-item">
-                            <div class="order-info">
-                                <div class="order-image">AO-1</div>
-                                <div class="order-details">
-                                    <div class="order-title">Premium Handwoven Aso Oke Fabric</div>
-                                    <div class="order-id">Order #AO-2023-8765</div>
-                                    <div class="order-date">Delivered: Oct 18, 2023</div>
-                                </div>
+                    <!-- Desktop Table -->
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AO-2023-5432</td>
+                                <td>Emeka Nwosu</td>
+                                <td>Oct 18, 2023</td>
+                                <td>₦145,300</td>
+                                <td><span class="order-status status-delivered">Delivered</span></td>
+                            </tr>
+                            <tr>
+                                <td>AO-2023-4321</td>
+                                <td>Bisi Adekunle</td>
+                                <td>Oct 17, 2023</td>
+                                <td>₦210,500</td>
+                                <td><span class="order-status status-delivered">Delivered</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <!-- Mobile Order List -->
+                    <div class="orders-list">
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div class="order-id">AO-2023-5432</div>
+                                <div class="order-status-mobile status-delivered">Delivered</div>
                             </div>
-                            <div class="order-price">₦226,895</div>
+                            <div class="order-detail">
+                                <div class="detail-label">Customer:</div>
+                                <div class="detail-value">Emeka Nwosu</div>
+                            </div>
+                            <div class="order-detail">
+                                <div class="detail-label">Date:</div>
+                                <div class="detail-value">Oct 18, 2023</div>
+                            </div>
+                            <div class="order-detail">
+                                <div class="detail-label">Amount:</div>
+                                <div class="detail-value">₦145,300</div>
+                            </div>
                         </div>
                         
-                        <div class="order-item">
-                            <div class="order-info">
-                                <div class="order-image">AO-3</div>
-                                <div class="order-details">
-                                    <div class="order-title">Embroidered Aso Oke for Special Occasions</div>
-                                    <div class="order-id">Order #AO-2023-7654</div>
-                                    <div class="order-date">Shipped: Oct 10, 2023</div>
-                                </div>
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div class="order-id">AO-2023-4321</div>
+                                <div class="order-status-mobile status-delivered">Delivered</div>
                             </div>
-                            <div class="order-price">₦162,600</div>
+                            <div class="order-detail">
+                                <div class="detail-label">Customer:</div>
+                                <div class="detail-value">Bisi Adekunle</div>
+                            </div>
+                            <div class="order-detail">
+                                <div class="detail-label">Date:</div>
+                                <div class="detail-value">Oct 17, 2023</div>
+                            </div>
+                            <div class="order-detail">
+                                <div class="detail-label">Amount:</div>
+                                <div class="detail-value">₦210,500</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -725,185 +969,287 @@
 
     <!-- Bottom Navbar -->
     <nav class="bottom-navbar">
-        <a href="index.html" class="nav-item">
+        <a href="#" class="nav-item">
             <i class="fas fa-home nav-icon"></i>
             <span>Home</span>
         </a>
-        <a href="search-result.html" class="nav-item">
-            <i class="fas fa-search nav-icon"></i>
-            <span>Search</span>
-        </a>
-        <a href="watchlist.html" class="nav-item">
-            <i class="fas fa-heart nav-icon"></i>
-            <span>Wishlist</span>
-            <span class="nav-badge" id="watchlist-count">0</span>
-        </a>
         <a href="#" class="nav-item active">
+            <i class="fas fa-tasks nav-icon"></i>
+            <span>Deliveries</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-history nav-icon"></i>
+            <span>History</span>
+        </a>
+        <a href="#" class="nav-item">
             <i class="fas fa-user nav-icon"></i>
             <span>Profile</span>
         </a>
     </nav>
 
-    <!-- Edit Profile Modal -->
-    <div class="modal-overlay" id="editModal">
+    <!-- Delivery Confirmation Modal -->
+    <div class="modal-overlay" id="deliveryModal">
         <div class="modal">
             <div class="modal-header">
-                <h2 class="modal-title">Edit Profile</h2>
+                <h2 class="modal-title">Confirm Order Delivery</h2>
                 <div class="close-modal" id="closeModal">
                     <i class="fas fa-times"></i>
                 </div>
             </div>
             
             <div class="modal-body">
-                <form id="profileForm">
+                <!-- Step 1: Order Number -->
+                <div class="step active" id="step1">
                     <div class="form-group">
-                        <label class="form-label" for="editFirstName">First Name</label>
-                        <input type="text" class="form-control" id="editFirstName" value="Aminat">
+                        <label class="form-label" for="orderNumber">Order Number</label>
+                        <input type="text" class="form-control" id="orderNumber" placeholder="Enter order number (e.g. AO-2023-8765)">
+                    </div>
+                    
+                    <div class="message error" id="orderError">
+                        <i class="fas fa-exclamation-circle"></i> Order not found. Please check the order number and try again.
+                    </div>
+                    
+                    <button class="btn btn-primary" id="submitOrderBtn">
+                        Verify Order
+                    </button>
+                </div>
+                
+                <!-- Step 2: OTP Verification -->
+                <div class="step" id="step2">
+                    <div class="message success">
+                        <i class="fas fa-envelope"></i> 
+                        <p>An OTP has been sent to the customer's email. Please ask the customer for the 6-digit code to verify delivery.</p>
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label" for="editLastName">Last Name</label>
-                        <input type="text" class="form-control" id="editLastName" value="Yusuf">
+                        <label class="form-label" for="otpCode">OTP Code</label>
+                        <input type="text" class="form-control" id="otpCode" placeholder="Enter 6-digit OTP" maxlength="6">
                     </div>
                     
-                    <div class="modal-actions">
-                        <button type="button" class="btn btn-cancel" id="cancelEdit">
-                            <i class="fas fa-times"></i> Cancel
-                        </button>
-                        <button type="submit" class="btn btn-save">
-                            <i class="fas fa-save"></i> Save Changes
-                        </button>
+                    <div class="message error" id="otpError">
+                        <i class="fas fa-exclamation-circle"></i> Invalid OTP. Please check and try again.
                     </div>
-                </form>
+                    
+                    <button class="btn btn-primary" id="submitOtpBtn">
+                        Verify OTP
+                    </button>
+                </div>
+                
+                <!-- Step 3: Order Details -->
+                <div class="step" id="step3">
+                    <div class="order-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Order ID:</span>
+                            <span class="detail-value">AO-2023-8765</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Customer:</span>
+                            <span class="detail-value">Aminat Yusuf</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Delivery Address:</span>
+                            <span class="detail-value">14 Aso Oke Avenue, Lagos Island, Lagos</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Contact:</span>
+                            <span class="detail-value">+234 812 345 6789</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Order Date:</span>
+                            <span class="detail-value">Oct 18, 2023</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Total Amount:</span>
+                            <span class="detail-value">₦226,895</span>
+                        </div>
+                    </div>
+                    
+                    <h3>Order Items</h3>
+                    <div class="order-item">
+                        <div class="item-image">AO-1</div>
+                        <div class="item-details">
+                            <div class="item-name">Premium Handwoven Aso Oke Fabric</div>
+                            <div class="item-price">₦226,895</div>
+                            <div class="item-quantity">Quantity: 1</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="deliveryNotes">Delivery Notes (Optional)</label>
+                        <textarea class="form-control" id="deliveryNotes" placeholder="Add any notes about the delivery..." rows="3"></textarea>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="completeDeliveryBtn">
+                        <i class="fas fa-check-circle"></i> Mark as Delivered
+                    </button>
+                </div>
+                
+                <!-- Step 4: Success Screen -->
+                <div class="step" id="step4">
+                    <div class="success-screen">
+                        <div class="success-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <h2>Delivery Confirmed!</h2>
+                        <p>Order AO-2023-8765 has been successfully marked as delivered.</p>
+                        <p>The customer has been notified and your delivery record has been updated.</p>
+                        
+                        <div style="margin-top: 30px;">
+                            <button class="action-btn" id="closeSuccessBtn" style="width: auto; padding: 10px 30px;">
+                                <i class="fas fa-times"></i> Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Success Notification -->
-    <div class="notification" id="successNotification">
-        <div class="notification-icon">
-            <i class="fas fa-check"></i>
-        </div>
-        <div class="notification-content">
-            <h3>Profile Updated</h3>
-            <p>Your changes have been saved successfully</p>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // DOM Elements
-            const editProfileBtn = document.getElementById('editProfileBtn');
-            const editModal = document.getElementById('editModal');
+            const deliveryModal = document.getElementById('deliveryModal');
             const closeModal = document.getElementById('closeModal');
-            const cancelEdit = document.getElementById('cancelEdit');
-            const profileForm = document.getElementById('profileForm');
-            const successNotification = document.getElementById('successNotification');
+            const startDeliveryBtn = document.getElementById('startDeliveryBtn');
+            const submitOrderBtn = document.getElementById('submitOrderBtn');
+            const submitOtpBtn = document.getElementById('submitOtpBtn');
+            const completeDeliveryBtn = document.getElementById('completeDeliveryBtn');
+            const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+            const orderNumberInput = document.getElementById('orderNumber');
+            const otpCodeInput = document.getElementById('otpCode');
+            const orderError = document.getElementById('orderError');
+            const otpError = document.getElementById('otpError');
+            const step1 = document.getElementById('step1');
+            const step2 = document.getElementById('step2');
+            const step3 = document.getElementById('step3');
+            const step4 = document.getElementById('step4');
+            const confirmButtons = document.querySelectorAll('.confirm-order');
             
-            // User data
-            let userData = {
-                firstName: "Aminat",
-                lastName: "Yusuf",
-                email: "aminat.yusuf@example.com",
-                totalOrders: 15
-            };
-            
-            // Set user data on page load
-            function setUserData() {
-                document.getElementById('firstName').textContent = userData.firstName;
-                document.getElementById('lastName').textContent = userData.lastName;
-                document.getElementById('userName').textContent = `${userData.firstName} ${userData.lastName}`;
-                document.getElementById('userEmail').textContent = userData.email;
-            }
-            
-            setUserData();
-            
-            // Show modal
-            editProfileBtn.addEventListener('click', function() {
-                // Set current values in form
-                document.getElementById('editFirstName').value = userData.firstName;
-                document.getElementById('editLastName').value = userData.lastName;
-                
-                editModal.classList.add('active');
+            // Show modal from main button
+            startDeliveryBtn.addEventListener('click', function() {
+                resetModal();
+                deliveryModal.classList.add('active');
             });
             
-            // Close modal
-            function closeEditModal() {
-                editModal.classList.remove('active');
+            // Show modal from table buttons
+            confirmButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const orderId = this.getAttribute('data-order');
+                    resetModal();
+                    orderNumberInput.value = orderId;
+                    deliveryModal.classList.add('active');
+                });
+            });
+            
+            // Reset modal to initial state
+            function resetModal() {
+                step1.classList.add('active');
+                step2.classList.remove('active');
+                step3.classList.remove('active');
+                step4.classList.remove('active');
+                orderError.style.display = 'none';
+                otpError.style.display = 'none';
+                orderNumberInput.value = '';
+                otpCodeInput.value = '';
             }
             
-            closeModal.addEventListener('click', closeEditModal);
-            cancelEdit.addEventListener('click', closeEditModal);
+            // Close modal
+            function closeDeliveryModal() {
+                deliveryModal.classList.remove('active');
+            }
             
-            // Form submission
-            profileForm.addEventListener('submit', function(e) {
-                e.preventDefault();
+            closeModal.addEventListener('click', closeDeliveryModal);
+            closeSuccessBtn.addEventListener('click', closeDeliveryModal);
+            
+            // Order number submission
+            submitOrderBtn.addEventListener('click', function() {
+                const orderNumber = orderNumberInput.value.trim();
                 
-                // Get form values
-                const firstName = document.getElementById('editFirstName').value.trim();
-                const lastName = document.getElementById('editLastName').value.trim();
+                // Show loading state
+                const originalText = submitOrderBtn.innerHTML;
+                submitOrderBtn.innerHTML = '<div class="loading"></div> Verifying...';
+                submitOrderBtn.disabled = true;
                 
-                // Validate inputs
-                if (!firstName || !lastName) {
-                    alert('Please fill in both first name and last name');
-                    return;
-                }
-                
-                // Simulate sending to backend
-                const loadingIndicator = document.createElement('div');
-                loadingIndicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving changes...';
-                loadingIndicator.style.textAlign = 'center';
-                loadingIndicator.style.marginTop = '20px';
-                loadingIndicator.style.color = 'var(--primary-color)';
-                profileForm.appendChild(loadingIndicator);
-                
-                // Simulate backend request
+                // Simulate backend verification
                 setTimeout(() => {
-                    // Update user data
-                    userData.firstName = firstName;
-                    userData.lastName = lastName;
+                    if (orderNumber && orderNumber.includes('AO')) {
+                        // Valid order number - proceed to OTP step
+                        orderError.style.display = 'none';
+                        step1.classList.remove('active');
+                        step2.classList.add('active');
+                    } else {
+                        // Invalid order number
+                        orderError.style.display = 'block';
+                    }
                     
-                    // Update UI
-                    setUserData();
+                    // Restore button
+                    submitOrderBtn.innerHTML = originalText;
+                    submitOrderBtn.disabled = false;
+                }, 1500);
+            });
+            
+            // OTP submission
+            submitOtpBtn.addEventListener('click', function() {
+                const otpCode = otpCodeInput.value.trim();
+                
+                // Show loading state
+                const originalText = submitOtpBtn.innerHTML;
+                submitOtpBtn.innerHTML = '<div class="loading"></div> Verifying...';
+                submitOtpBtn.disabled = true;
+                
+                // Simulate OTP verification
+                setTimeout(() => {
+                    if (otpCode === '123456') {
+                        // Valid OTP - show order details
+                        otpError.style.display = 'none';
+                        step2.classList.remove('active');
+                        step3.classList.add('active');
+                    } else {
+                        // Invalid OTP
+                        otpError.style.display = 'block';
+                    }
                     
-                    // Remove loading indicator
-                    loadingIndicator.remove();
+                    // Restore button
+                    submitOtpBtn.innerHTML = originalText;
+                    submitOtpBtn.disabled = false;
+                }, 1500);
+            });
+            
+            // Complete delivery
+            completeDeliveryBtn.addEventListener('click', function() {
+                // Show loading state
+                const originalText = completeDeliveryBtn.innerHTML;
+                completeDeliveryBtn.innerHTML = '<div class="loading"></div> Processing...';
+                completeDeliveryBtn.disabled = true;
+                
+                // Simulate backend processing
+                setTimeout(() => {
+                    // Show success screen
+                    step3.classList.remove('active');
+                    step4.classList.add('active');
                     
-                    // Close modal
-                    closeEditModal();
+                    // Update the order status in the table
+                    const orderRow = document.querySelector(`.confirm-order[data-order="AO-2023-8765"]`).closest('tr');
+                    const statusCell = orderRow.querySelector('.order-status');
+                    statusCell.textContent = 'Delivered';
+                    statusCell.className = 'order-status status-delivered';
                     
-                    // Show success notification
-                    successNotification.classList.add('active');
+                    // Remove the action button
+                    const actionCell = orderRow.querySelector('td:last-child');
+                    actionCell.innerHTML = '<span class="order-status status-delivered">Completed</span>';
                     
-                    // Hide notification after 3 seconds
-                    setTimeout(() => {
-                        successNotification.classList.remove('active');
-                    }, 3000);
-                    
-                    // In a real app, you would send the data to your backend:
-                    /*
-                    fetch('/api/update-profile', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            firstName: firstName,
-                            lastName: lastName
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        // Handle response
-                    });
-                    */
+                    // Update the mobile list view
+                    const mobileCards = document.querySelectorAll('.order-card');
+                    mobileCards[0].querySelector('.order-status-mobile').textContent = 'Delivered';
+                    mobileCards[0].querySelector('.order-status-mobile').className = 'order-status-mobile status-delivered';
+                    mobileCards[0].querySelector('.order-action').innerHTML = '<span class="order-status-mobile status-delivered">Completed</span>';
                 }, 1500);
             });
             
             // Close modal when clicking outside
-            editModal.addEventListener('click', function(e) {
-                if (e.target === editModal) {
-                    closeEditModal();
+            deliveryModal.addEventListener('click', function(e) {
+                if (e.target === deliveryModal) {
+                    closeDeliveryModal();
                 }
             });
         });

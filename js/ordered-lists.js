@@ -50,7 +50,16 @@ function renderOrders(orders) {
     ordersContainer.innerHTML = "";
 
     if (!orders.length) {
-        ordersContainer.innerHTML = "<p>No orders found.</p>";
+        ordersContainer.innerHTML = `
+            <div class="empty-cart-message">
+                <i class="fas fa-shopping-bag"></i>
+                <p>Your Order is empty</p>
+                <small>Looks like you haven’t Ordered anything yet.</small>
+                <a href="index.html" class="start-shopping-btn">
+                    <i class="fas fa-store"></i> Start Shopping
+                </a>
+            </div>
+        `;
         return;
     }
 
@@ -61,10 +70,7 @@ function renderOrders(orders) {
             <div class="order-item">
                 <a href="product-info.html?id=${item.product_id}">
                     <div class="order-item-image" 
-                        style="background: ${item.product_image 
-                            ? `url('${item.product_image}')` 
-                            : 'linear-gradient(to bottom right, #6b2c1e, #a86448)'}; 
-                            background-size: cover;">
+                        style="background-image: url('${item.product_image || "/img/product_image.jpeg"}');">
                     </div>
                 </a>
 

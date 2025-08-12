@@ -78,10 +78,7 @@ function renderList(data, append = false) {
             </button>
             <a href="product-info.html?id=${product.id}">
                 <div class="product-image" 
-                    style="background: ${product.main_image 
-                        ? `url('${product.main_image}')` 
-                        : 'linear-gradient(to bottom right, #6b2c1e, #a86448)'}; 
-                        background-size: cover; background-position: center;">
+                    style="background-image: url('${product.main_image || "/img/product_image.jpeg"}');">
                 </div>
             </a>
             <div class="product-details">

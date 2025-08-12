@@ -19,6 +19,11 @@ async function fetchOrderDetails() {
             }
         });
 
+        if (response.status === 404) {
+            window.location.href = "404.html";
+            return;
+        }
+
         if (!response.ok) throw new Error("Failed to fetch order");
 
         const data = await response.json();
@@ -70,10 +75,7 @@ function renderOrderDetails(order) {
             <div class="order-item">
                 <a href="product-info.html?id=${item.product_id}">
                     <div class="order-item-image" 
-                        style="background: ${item.product_image 
-                            ? `url('${item.product_image}')` 
-                            : 'linear-gradient(to bottom right, #6b2c1e, #a86448)'}; 
-                            background-size: cover;">
+                        style="background-image: url('${item.product_image || "/img/product_image.jpeg"}');">
                     </div>
                 </a>
                 <div class="order-item-details">

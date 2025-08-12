@@ -5,7 +5,6 @@ if (!accessToken) {
 showPreloader("Loading your profile");
 
 document.addEventListener('DOMContentLoaded', async function() {
-
     try {
         const response = await fetch(`${ADMIN_URL}/profile/`, {
             method: "GET",
@@ -14,6 +13,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                 "Accept": "application/json"
             }
         });
+
+        if (response.status === 404) {
+            window.location.href = "404.html";
+            return;
+        }
 
         if (response.status === 401) {
             window.location.href = "auth.html";

@@ -410,6 +410,9 @@
 .product-card-image {
     height: 200px;
     background: linear-gradient(to bottom right, #8a4b38, #d4a373);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .product-card-details {
