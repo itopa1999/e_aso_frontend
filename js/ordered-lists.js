@@ -201,6 +201,7 @@ async function reorderItems(btn) {
 // ================== FILTER ==================
 function setupFilterButtons() {
     const filterBtns = document.querySelectorAll('.filter-btn');
+    const noOrdersMsg = document.getElementById('noOrdersMessage'); // Create this in HTML
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', function () {
@@ -212,10 +213,23 @@ function setupFilterButtons() {
             const filter = this.textContent.trim().toLowerCase();
             const cards = document.querySelectorAll('.order-card');
 
+            let visibleCount = 0;
             cards.forEach(card => {
                 const status = card.dataset.status.replace(/_/g, ' ').toLowerCase();
-                card.style.display = (filter === 'all orders' || status === filter) ? 'block' : 'none';
+                if (filter === 'all orders' || status === filter) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
             });
+
+            // Show or hide the "No orders" message
+            if (visibleCount === 0) {
+                noOrdersMsg.style.display = 'block';
+            } else {
+                noOrdersMsg.style.display = 'none';
+            }
 
             hidePreloader();
         });

@@ -8,6 +8,7 @@ const userEmail = document.getElementById('userEmail');
 const access = getCookie('access');
 const email = getCookie('email');
 const name = getCookie("name");
+const group = getCookie("group")?.toLowerCase();
 
 
 // Helper to read cookies
@@ -30,6 +31,16 @@ function updateDropdown() {
         // Authenticated view
         userName.textContent = name.length > 15 ? name.slice(0, 12) + '...' : name || "User";
         userEmail.textContent = email;
+        
+        let riderLink = "";
+        if (group === "rider") {
+        riderLink = `
+            <a href="rider-page.html" class="dropdown-item">
+                <i class="fas fa-motorcycle"></i>
+                <span>Go to Rider</span>
+            </a>
+        `;
+        }
 
         dropdownItems.innerHTML = `
             <a href="profile.html" class="dropdown-item">
@@ -44,6 +55,7 @@ function updateDropdown() {
                 <i class="fas fa-heart"></i>
                 <span>My Wishlist</span>
             </a>
+            ${riderLink}
             <a href="about.html" class="dropdown-item">
                 <i class="fas fa-info-circle"></i>
                 <span>About Us</span>

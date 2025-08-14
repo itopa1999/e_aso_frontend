@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispatch Rider | Aso Oke & Aso Ofi Marketplace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/img/logo.jpeg">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/rider.css">
+    <style>
+       
+    </style>
+</head>
+<body>
+    <div class="preloader" id="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Loading.....</div>
+        <div class="preloader-dots">
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+        </div>
+    </div>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo"></a>
+        </div>
+    </header>
+
+    <!-- Page Container -->
+    <div class="page-container">
+        <div class="dashboard">
+            <!-- Rider Profile -->
+            <div class="rider-card">
+                <div class="rider-avatar">
+                    <i class="fas fa-motorcycle"></i>
+                </div>
+                <div class="rider-name">Null</div>
+                <div class="rider-id">Null</div>
+                
+                <div class="rider-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">Null</div>
+                        <div class="stat-label">Deliveries</div>
+                    </div>
+                </div>
+                
+                <button class="action-btn" id="startDeliveryBtn">
+                    <i class="fas fa-check-circle"></i> Confirm Delivery
+                </button>
+            </div>
+            
+            <!-- Dashboard Main -->
+            <div class="dashboard-main">                
+                <!-- Recent Deliveries -->
+                <div class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-history"></i> Recent Deliveries
+                        </h2>
+                        <span>View All</span>
+                    </div>
+                    
+                    <!-- Desktop Table -->
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                        </tbody>
+                    </table>
+                    
+                    <!-- Mobile Order List -->
+                    <div class="orders-list">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delivery Confirmation Modal -->
+    <div class="modal-overlay" id="deliveryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Order Delivery</h2>
+                <div class="close-modal" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Step 1: Order Number -->
+                <div class="step active" id="step1">
+                    <div class="form-group">
+                        <label class="form-label" for="orderNumber">Order Number</label>
+                        <input type="text" class="form-control" id="orderNumber" placeholder="Enter order number (e.g. AO-2023-8765)">
+                    </div>
+                    
+                    <div class="message error" id="orderError">
+                        <i class="fas fa-exclamation-circle"></i> Order not found. Please check the order number and try again.
+                    </div>
+                    
+                    <button class="btn btn-primary" id="submitOrderBtn">
+                        Verify Order
+                    </button>
+                </div>
+                
+                <!-- Step 2: OTP Verification -->
+                <div class="step" id="step2">
+                    <div class="message success">
+                        <i class="fas fa-envelope"></i> 
+                        <p>An OTP has been sent to the customer's email. Please ask the customer for the 6-digit code to verify delivery.</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="otpCode">OTP Code</label>
+                        <input type="text" class="form-control" id="otpCode" placeholder="Enter 6-digit OTP" maxlength="6">
+                    </div>
+                    
+                    <div class="message error" id="otpError">
+                        <i class="fas fa-exclamation-circle"></i> Invalid OTP. Please check and try again.
+                    </div>
+                    
+                    <button class="btn btn-primary" id="submitOtpBtn">
+                        Verify OTP
+                    </button>
+                </div>
+                
+                <!-- Step 3: Order Details -->
+                <div class="step" id="step3">
+                    <div class="order-details">
+                        
+                    </div>
+                    
+                    <h3>Order Items</h3>
+                    <div class="order-item">
+                        <div class="item-image">AO-1</div>
+                        <div class="item-details">
+                            <div class="item-name">Premium Handwoven Aso Oke Fabric</div>
+                            <div class="item-price">₦226,895</div>
+                            <div class="item-quantity">Quantity: 1</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="deliveryNotes">Delivery Notes (Optional)</label>
+                        <textarea class="form-control" id="deliveryNotes" placeholder="Add any notes about the delivery..." rows="3"></textarea>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="completeDeliveryBtn">
+                        <i class="fas fa-check-circle"></i> Mark as Delivered
+                    </button>
+                </div>
+                
+                <!-- Step 4: Success Screen -->
+                <div class="step" id="step4">
+                    <div class="success-screen">
+                        <div class="success-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <h2>Delivery Confirmed!</h2>
+                        <p>Order AO-2023-8765 has been successfully marked as delivered.</p>
+                        <p>The customer has been notified and your delivery record has been updated.</p>
+                        
+                        <div style="margin-top: 30px;">
+                            <button class="action-btn" id="closeSuccessBtn" style="width: auto; padding: 10px 30px;">
+                                <i class="fas fa-times"></i> Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/rider.js"></script>
+    <script>
+        
+    </script>
+</body>
+</html>
