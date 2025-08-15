@@ -5,7 +5,7 @@ if (!accessToken) {
     window.location.href = "404.html";
 }
 
-ASO_URL = "http://127.0.0.1:8000/aso/api/product"
+ASO_URL = "https://luck1999.pythonanywhere.com/aso/api/product"
 
 let nextPageUrl = `${ASO_URL}/rider/`; // First page endpoint
 let isLoading = false;
@@ -80,7 +80,6 @@ function renderProfile(data, append = false) {
                 <td>${delivery.order_number}</td>
                 <td>${delivery.customer_first_name} ${delivery.customer_last_name}</td>
                 <td>${formatDate(delivery.delivery_date)}</td>
-                <td>₦${Number(delivery.amount).toLocaleString()}</td>
                 <td><span class="order-status status-delivered">Delivered</span></td>
             </tr>
         `;
@@ -100,10 +99,6 @@ function renderProfile(data, append = false) {
                 <div class="order-detail">
                     <div class="detail-label">Date:</div>
                     <div class="detail-value">${formatDate(delivery.delivery_date)}</div>
-                </div>
-                <div class="order-detail">
-                    <div class="detail-label">Amount:</div>
-                    <div class="detail-value">₦${Number(delivery.amount).toLocaleString()}</div>
                 </div>
             </div>
         `;
