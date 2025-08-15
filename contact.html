@@ -363,21 +363,42 @@
     </style>
 </head>
 <body>
+    <div class="preloader" id="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Loading.....</div>
+        <div class="preloader-dots">
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+        </div>
+    </div>
     <!-- Header -->
     <header class="header">
         <div class="header-container">
             <a href="index.html" class="logo"></a>
             <div class="header-icons">
-                <a href="#" class="icon">
+                <a href="#" class="icon" id="user-icon">
                     <i class="fas fa-user"></i>
-                </a>
-                <a href="#" class="icon">
-                    <i class="fas fa-filter"></i>
                 </a>
                 <a href="cart-item.html" class="icon">
                     <i class="fas fa-shopping-cart"></i>
                     <span class="icon-badge" id="cart-count">0</span>
                 </a>
+            </div>
+            
+
+            <div class="user-dropdown" id="userDropdown">
+                <div class="user-header">
+                    <div class="user-avatar d-lg-none" id="main-profile-pic">AO</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName"></div>
+                        <div class="user-email" id="userEmail"></div>
+                    </div>
+                </div>
+                
+                <div class="dropdown-items">
+                    
+                </div>
             </div>
         </div>
     </header>
@@ -387,7 +408,7 @@
         <div class="page-header">
             <h1>Contact Us</h1>
             <div class="page-subtitle">
-                We'd love to hear from you! Reach out with any questions, feedback, or inquiries about our traditional fabrics.
+                <!-- We'd love to hear from you! Reach out with any questions, feedback, or inquiries about our traditional fabrics. -->
             </div>
         </div>
         
@@ -512,28 +533,6 @@
                             <i class="fas fa-phone"></i> +234 812 345 6789
                         </p>
                     </div>
-                    
-                    <div class="location-item">
-                        <h3 class="location-title"><i class="fas fa-map-pin"></i> Ibadan Store</h3>
-                        <p class="location-address">
-                            8 Traditional Textile Road, Dugbe, Ibadan<br>
-                            Near Cocoa House
-                        </p>
-                        <p class="location-phone">
-                            <i class="fas fa-phone"></i> +234 803 456 7890
-                        </p>
-                    </div>
-                    
-                    <div class="location-item">
-                        <h3 class="location-title"><i class="fas fa-map-pin"></i> Abuja Store</h3>
-                        <p class="location-address">
-                            22 Cultural Heritage Way, Wuse 2, Abuja<br>
-                            Beside National Museum
-                        </p>
-                        <p class="location-phone">
-                            <i class="fas fa-phone"></i> +234 809 876 5432
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>
@@ -567,11 +566,11 @@
                 
                 <div class="faq-item">
                     <div class="faq-question">
-                        Do you ship internationally?
+                        Do you delivered to all states?
                         <i class="fas fa-chevron-down faq-toggle"></i>
                     </div>
                     <div class="faq-answer">
-                        Yes, we ship worldwide! International orders typically take 7-14 business days. Shipping costs vary by destination and order weight. We handle all customs documentation for a smooth delivery process.
+                        Yes, we delivered to all state! International orders typically take 7-14 business days. Shipping costs vary by destination and order weight. We handle all customs documentation for a smooth delivery process.
                     </div>
                 </div>
                 
@@ -591,7 +590,7 @@
                         <i class="fas fa-chevron-down faq-toggle"></i>
                     </div>
                     <div class="faq-answer">
-                        Absolutely! We offer special pricing for designers, boutiques, and event planners. Contact our wholesale department at wholesale@aso-oke-marketplace.com for a customized quote based on your quantity and fabric requirements.
+                        Absolutely! We offer special pricing for designers, boutiques, and event planners. Contact us now for a customized quote based on your quantity and fabric requirements.
                     </div>
                 </div>
             </div>
@@ -600,7 +599,7 @@
 
     <!-- Bottom Navbar -->
     <nav class="bottom-navbar">
-        <a href="index.html" class="nav-item">
+        <a href="index.html" class="nav-item active">
             <i class="fas fa-home nav-icon"></i>
             <span>Home</span>
         </a>
@@ -613,14 +612,20 @@
             <span>Wishlist</span>
             <span class="nav-badge" id="watchlist-count">0</span>
         </a>
-        <a href="#" class="nav-item">
-            <i class="fas fa-user nav-icon"></i>
-            <span>Profile</span>
+        <a href="ordered-lists.html" class="nav-item">
+            <i class="fas fa-shopping-bag  nav-icon"></i>
+            <span>Orders</span>
         </a>
     </nav>
 
+    <button id="goToTopBtn" title="Go to top">&#8679;</button>
+
+
+    <script src="js/main.js"></script>
     <script>
+        showPreloader("Loading page....");
         document.addEventListener('DOMContentLoaded', function() {
+            hidePreloader()
             // Handle form submission
             const contactForm = document.getElementById('contactForm');
             

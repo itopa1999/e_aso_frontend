@@ -47,8 +47,8 @@ function renderOrderDetails(order) {
     statusBadge.textContent = statusText.textContent;
     statusBadge.className = `order-status status-${statusText.textContent.toLowerCase()}`;
     
-    const deliveryDate = order.delivery_date
-        ? formatDateToHuman(order.delivery_date)
+    const deliveryDate = order.estimated_delivery_date
+        ? formatDateToHuman(order.estimated_delivery_date)
         : null;
 
     statusSubtitle.textContent = deliveryDate

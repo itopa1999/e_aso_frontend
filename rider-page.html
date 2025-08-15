@@ -55,14 +55,18 @@
             </div>
             
             <!-- Dashboard Main -->
-            <div class="dashboard-main">                
+            <div class="dashboard-main">
+                                
                 <!-- Recent Deliveries -->
                 <div class="section">
                     <div class="section-header">
                         <h2 class="section-title">
                             <i class="fas fa-history"></i> Recent Deliveries
                         </h2>
-                        <span>View All</span>
+                        <div class="search-container">
+                            <input class="form-control" type="text" id="orderSearch" placeholder="Search orders..." />
+                            <!-- <button class="btn btn-secondary" id="searchBtn"><i class="fas fa-search"></i></button> -->
+                        </div>
                     </div>
                     
                     <!-- Desktop Table -->
@@ -105,11 +109,11 @@
                 <div class="step active" id="step1">
                     <div class="form-group">
                         <label class="form-label" for="orderNumber">Order Number</label>
-                        <input type="text" class="form-control" id="orderNumber" placeholder="Enter order number (e.g. AO-2023-8765)">
+                        <input type="text" class="form-control" id="orderNumber" placeholder="Enter order number (e.g. AO-OD-8765)">
                     </div>
                     
                     <div class="message error" id="orderError">
-                        <i class="fas fa-exclamation-circle"></i> Order not found. Please check the order number and try again.
+                        
                     </div>
                     
                     <button class="btn btn-primary" id="submitOrderBtn">
@@ -119,8 +123,8 @@
                 
                 <!-- Step 2: OTP Verification -->
                 <div class="step" id="step2">
-                    <div class="message success">
-                        <i class="fas fa-envelope"></i> 
+                    <div class="message success" id="otpMessage">
+                        <i class="fas fa-envelop"></i> 
                         <p>An OTP has been sent to the customer's email. Please ask the customer for the 6-digit code to verify delivery.</p>
                     </div>
                     
@@ -130,7 +134,7 @@
                     </div>
                     
                     <div class="message error" id="otpError">
-                        <i class="fas fa-exclamation-circle"></i> Invalid OTP. Please check and try again.
+                        
                     </div>
                     
                     <button class="btn btn-primary" id="submitOtpBtn">
@@ -143,17 +147,29 @@
                     <div class="order-details">
                         
                     </div>
-                    
-                    <h3>Order Items</h3>
-                    <div class="order-item">
-                        <div class="item-image">AO-1</div>
-                        <div class="item-details">
-                            <div class="item-name">Premium Handwoven Aso Oke Fabric</div>
-                            <div class="item-price">₦226,895</div>
-                            <div class="item-quantity">Quantity: 1</div>
+                    <span id="orderItemContainer">
+                        
+                    </span>
+                   
+                    <div class="form-group">
+                        <label class="form-label">Rate this delivery</label>
+                       <div class="star-rating">
+                            <input type="radio" name="rating" id="star1" value="1">
+                            <label class="star" for="star1">★</label>
+
+                            <input type="radio" name="rating" id="star2" value="2">
+                            <label class="star" for="star2">★</label>
+
+                            <input type="radio" name="rating" id="star3" value="3">
+                            <label class="star" for="star3">★</label>
+
+                            <input type="radio" name="rating" id="star4" value="4">
+                            <label class="star" for="star4">★</label>
+
+                            <input type="radio" name="rating" id="star5" value="5">
+                            <label class="star" for="star5">★</label>
                         </div>
                     </div>
-                    
                     <div class="form-group">
                         <label class="form-label" for="deliveryNotes">Delivery Notes (Optional)</label>
                         <textarea class="form-control" id="deliveryNotes" placeholder="Add any notes about the delivery..." rows="3"></textarea>

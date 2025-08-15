@@ -11,13 +11,14 @@ let nextPageUrl = `${ASO_URL}/rider/`; // First page endpoint
 let isLoading = false;
 
 // Fetch rider info (supports pagination)
-async function fetchRiderInfo(url = `${ASO_URL}/rider/`, append = false) {
+async function fetchRiderInfo(url = `${ASO_URL}/rider/`, append = false, searchTerm = "") {
     if (isLoading || !url) return; // Prevent duplicate loads
     isLoading = true;
     showPreloader("loading rider info");
 
     try {
-        const response = await fetch(url, {
+        const finalUrl = searchTerm ? `${url}?search=${encodeURIComponent(searchTerm)}` : url;
+        const response = await fetch(finalUrl, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${accessToken}`,
@@ -110,6 +111,23 @@ function renderProfile(data, append = false) {
     });
 }
 
+
+const searchInput = document.getElementById("orderSearch");
+const searchBtn = document.getElementById("searchBtn");
+
+// searchBtn.addEventListener("click", () => {
+//     const term = searchInput.value.trim();
+//     fetchRiderInfo(`${ASO_URL}/rider/`, false, term);
+// });
+
+searchInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        const term = searchInput.value.trim();
+        fetchRiderInfo(`${ASO_URL}/rider/`, false, term);
+    }
+});
+
+
 // Helper function to format date
 function formatDate(dateStr) {
     const date = new Date(dateStr);
@@ -140,8 +158,6 @@ fetchRiderInfo(nextPageUrl, false);
 document.addEventListener('DOMContentLoaded', function() {
 
     
-
-    
     // DOM Elements
     const deliveryModal = document.getElementById('deliveryModal');
     const closeModal = document.getElementById('closeModal');
@@ -154,11 +170,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const otpCodeInput = document.getElementById('otpCode');
     const orderError = document.getElementById('orderError');
     const otpError = document.getElementById('otpError');
+    const otpSuccess = document.getElementById('otpMessage');
     const step1 = document.getElementById('step1');
     const step2 = document.getElementById('step2');
     const step3 = document.getElementById('step3');
     const step4 = document.getElementById('step4');
-    const confirmButtons = document.querySelectorAll('.confirm-order');
     
     // Show modal from main button
     startDeliveryBtn.addEventListener('click', function() {
@@ -166,15 +182,6 @@ document.addEventListener('DOMContentLoaded', function() {
         deliveryModal.classList.add('active');
     });
     
-    // Show modal from table buttons
-    confirmButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const orderId = this.getAttribute('data-order');
-            resetModal();
-            orderNumberInput.value = orderId;
-            deliveryModal.classList.add('active');
-        });
-    });
     
     // Reset modal to initial state
     function resetModal() {
@@ -184,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
         step4.classList.remove('active');
         orderError.style.display = 'none';
         otpError.style.display = 'none';
+        otpSuccess.style.display = 'none';
         orderNumberInput.value = '';
         otpCodeInput.value = '';
     }
@@ -197,90 +205,225 @@ document.addEventListener('DOMContentLoaded', function() {
     closeSuccessBtn.addEventListener('click', closeDeliveryModal);
     
     // Order number submission
-    submitOrderBtn.addEventListener('click', function() {
+    submitOrderBtn.addEventListener('click', function () {
         const orderNumber = orderNumberInput.value.trim();
-        
+
         // Show loading state
         const originalText = submitOrderBtn.innerHTML;
         submitOrderBtn.innerHTML = '<div class="loading"></div> Verifying...';
         submitOrderBtn.disabled = true;
-        
-        // Simulate backend verification
-        setTimeout(() => {
-            if (orderNumber && orderNumber.includes('AO')) {
-                // Valid order number - proceed to OTP step
+
+        // Basic check before hitting backend
+        if (!orderNumber || !orderNumber.includes('OD')) {
+            orderError.innerHTML = `<i class="fas fa-exclamation-circle"></i> Invalid order number format.`;
+            orderError.style.display = 'block';
+            submitOrderBtn.innerHTML = originalText;
+            submitOrderBtn.disabled = false;
+            return;
+        }
+
+        // Hit backend to send OTP
+        fetch(`${ASO_URL}/orders/send-otp/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({ order_number: orderNumber })
+        })
+        .then(res => {
+            if (res.status === 401) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            return res.json();
+        })
+        .then(data => {
+            if (!data) return; // stop if redirected
+            if (data.message) {
+                // OTP sent successfully
                 orderError.style.display = 'none';
                 step1.classList.remove('active');
                 step2.classList.add('active');
+                otpSuccess.style.display = 'block';
             } else {
-                // Invalid order number
+                orderError.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.error || "Order not found. Please check the order number and try again."}`;
                 orderError.style.display = 'block';
             }
-            
-            // Restore button
+        })
+        .catch(error => {
+            console.error('Error sending OTP:', error);
+            orderError.innerHTML = `<i class="fas fa-exclamation-circle"></i> Something went wrong. Please try again.`;
+            orderError.style.display = 'block';
+        })
+        .finally(() => {
             submitOrderBtn.innerHTML = originalText;
             submitOrderBtn.disabled = false;
-        }, 1500);
+        });
     });
-    
+
     // OTP submission
     submitOtpBtn.addEventListener('click', function() {
         const otpCode = otpCodeInput.value.trim();
-        
+        const orderNumber = orderNumberInput.value.trim();
+
         // Show loading state
         const originalText = submitOtpBtn.innerHTML;
         submitOtpBtn.innerHTML = '<div class="loading"></div> Verifying...';
         submitOtpBtn.disabled = true;
-        
-        // Simulate OTP verification
-        setTimeout(() => {
-            if (otpCode === '123456') {
-                // Valid OTP - show order details
+
+        fetch(`${ASO_URL}/orders/verify-otp/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+                order_number: orderNumber,
+                otp: otpCode
+            })
+        })
+        .then(res => {
+            if (res.status === 401) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            return res.json();
+        })
+        .then(data => {
+            if (!data) return; // stop if redirected
+            if (data && data.message) {
+                console.log(data)
                 otpError.style.display = 'none';
                 step2.classList.remove('active');
                 step3.classList.add('active');
+
+                // Fill order details
+            const details = data.order_details;
+            document.querySelector('#step3 .order-details').innerHTML = `
+                <div class="detail-row">
+                    <span class="detail-label">Order ID:</span>
+                    <span class="detail-value">${details.order_id}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Customer:</span>
+                    <span class="detail-value">${details.customer}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Delivery Address:</span>
+                    <span class="detail-value">${details.delivery_address}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Contact:</span>
+                    <span class="detail-value">${details.contact}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Order Date:</span>
+                    <span class="detail-value">${details.order_date}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Total Amount:</span>
+                    <span class="detail-value">${details.total_amount}</span>
+                </div>
+            `;
+
+            // Fill order items
+            const itemsContainer = document.getElementById('orderItemContainer');
+            itemsContainer.innerHTML = `<br><br><h3>Order Items</h3>`;
+            details.items.forEach(item => {
+                itemsContainer.innerHTML += `
+                    <div class="order-item">
+                        <a href="product-info.html?id=${item.product_id}">
+                            <div class="item-image" 
+                                style="background-image: url('${item.image || "/img/product_image.jpeg"}');">
+                            </div>
+                        </a>
+                        <div class="item-details">
+                            <a style="text-decoration:none" href="product-info.html?id=${item.product_id}">
+                                <div class="item-name">${item.product}</div>
+                            </a>
+                            <div class="item-price">${item.price}</div>
+                            <div class="item-quantity">Quantity: ${item.quantity}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.querySelector('#step3').appendChild(itemsContainer);
+
+            
             } else {
-                // Invalid OTP
+                otpError.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.error || "Invalid OTP. Please check and try again."}`;
                 otpError.style.display = 'block';
             }
-            
-            // Restore button
+        })
+        .catch(error => {
+            console.error('Error verifying OTP:', error);
+            otpError.style.display = 'block';
+        })
+        .finally(() => {
             submitOtpBtn.innerHTML = originalText;
             submitOtpBtn.disabled = false;
-        }, 1500);
+        });
     });
     
     // Complete delivery
     completeDeliveryBtn.addEventListener('click', function() {
+        const selectedStars = document.querySelector('input[name="rating"]:checked')?.value || null;
+        const deliveryNotes = document.getElementById('deliveryNotes').value.trim();
+        const orderNumber = orderNumberInput.value.trim();
+
+        if (selectedStars === null) {
+            alert("Please select a rating before submitting!");
+        }
+
         // Show loading state
         const originalText = completeDeliveryBtn.innerHTML;
         completeDeliveryBtn.innerHTML = '<div class="loading"></div> Processing...';
         completeDeliveryBtn.disabled = true;
-        
-        // Simulate backend processing
-        setTimeout(() => {
-            // Show success screen
-            step3.classList.remove('active');
-            step4.classList.add('active');
-            
-            // Update the order status in the table
-            const orderRow = document.querySelector(`.confirm-order[data-order="AO-2023-8765"]`).closest('tr');
-            const statusCell = orderRow.querySelector('.order-status');
-            statusCell.textContent = 'Delivered';
-            statusCell.className = 'order-status status-delivered';
-            
-            // Remove the action button
-            const actionCell = orderRow.querySelector('td:last-child');
-            actionCell.innerHTML = '<span class="order-status status-delivered">Completed</span>';
-            
-            // Update the mobile list view
-            const mobileCards = document.querySelectorAll('.order-card');
-            mobileCards[0].querySelector('.order-status-mobile').textContent = 'Delivered';
-            mobileCards[0].querySelector('.order-status-mobile').className = 'order-status-mobile status-delivered';
-            mobileCards[0].querySelector('.order-action').innerHTML = '<span class="order-status-mobile status-delivered">Completed</span>';
-        }, 1500);
+
+        fetch(`${ASO_URL}/orders/confirm/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+                order_number: orderNumber,
+                delivery_notes: deliveryNotes,
+                stars: selectedStars
+            })
+        })
+        .then(res => {
+            if (res.status === 401) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            return res.json();
+        })
+        .then(data => {
+            if (data && data.message) {
+                // Show success screen
+                step3.classList.remove('active');
+                step4.classList.add('active');
+                document.querySelector('#step4 p').textContent = 
+                    `Order ${data.order_number} has been successfully marked as delivered.`;
+
+                // Refresh rider info after completion
+                fetchRiderInfo();
+            } else {
+                alert(data.error || "Failed to mark order as delivered");
+            }
+        })
+        .catch(error => {
+            console.error('Error marking delivery complete:', error);
+            alert("An error occurred while marking delivery complete");
+        })
+        .finally(() => {
+            completeDeliveryBtn.innerHTML = originalText;
+            completeDeliveryBtn.disabled = false;
+        });
     });
-    
+        
     // Close modal when clicking outside
     deliveryModal.addEventListener('click', function(e) {
         if (e.target === deliveryModal) {
@@ -289,6 +432,32 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     hidePreloader()
 });
+
+const stars = document.querySelectorAll('.star');
+
+// Handle click (set permanent selection)
+stars.forEach((star, index) => {
+    star.addEventListener('click', () => {
+        stars.forEach(s => s.classList.remove('active'));
+        for (let i = 0; i <= index; i++) {
+            stars[i].classList.add('active');
+        }
+    });
+
+    // Handle hover (temporary highlight)
+    star.addEventListener('mouseover', () => {
+        stars.forEach(s => s.classList.remove('hover'));
+        for (let i = 0; i <= index; i++) {
+            stars[i].classList.add('hover');
+        }
+    });
+
+    // Remove hover highlight when mouse leaves the container
+    star.addEventListener('mouseout', () => {
+        stars.forEach(s => s.classList.remove('hover'));
+    });
+});
+
 
 // Function to hide preloader
 function hidePreloader() {
