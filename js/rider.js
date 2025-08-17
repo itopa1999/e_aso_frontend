@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </a>
                         <div class="item-details">
                             <a style="text-decoration:none" href="product-info.html?id=${item.product_id}">
-                                <div class="item-name">${item.product}</div>
+                                <div class="item-name">${item.product}</div>img
                             </a>
                             <div class="item-price">${item.price}</div>
                             <div class="item-quantity">Quantity: ${item.quantity}</div>

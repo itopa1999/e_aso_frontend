@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
             cartItem.setAttribute("data-item-id", item.id);
             cartItem.innerHTML = `
                 <a href="product-info.html?id=${item.product_id}">
-                    <div class="cart-item-image" style="background-image: url('${item.product_image || "/img/product_image.jpeg"}');"></div>
+                    <div class="cart-item-image" style="background-image: url('${item.product_image || "img/product_image.jpeg"}');"></div>
                 </a>
                 </div>
                 <div class="cart-item-details">
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
             cartItem.innerHTML = `
             <div class="order-item-info">
                 <a href="product-info.html?id=${item.product_id}">
-                    <div class="order-item-image" style="background-image: url('${item.product_image || "/img/product_image.jpeg"}');"></div>
+                    <div class="order-item-image" style="background-image: url('${item.product_image || "img/product_image.jpeg"}');"></div>
                 </a>
                 <div class="order-item-details">
                     <a href="product-info.html?id=${item.product_id}" style="text-decoration:none">

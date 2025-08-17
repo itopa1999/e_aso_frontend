@@ -56,7 +56,7 @@ function renderList(data) {
                 <i class="fas fa-heart"></i>
             </button>
             <a href="product-info.html?id=${product.id}">
-                <div class="product-image" style="background-image: url('${product.main_image || "/img/product_image.jpeg"}');"></div>
+                <div class="product-image" style="background-image: url('${product.main_image || "img/product_image.jpeg"}');"></div>
             </a>
             <div class="product-details">
                 <a href="product-info.html?id=${product.id}" style="text-decoration:none">

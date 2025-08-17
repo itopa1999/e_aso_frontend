@@ -92,7 +92,7 @@ function renderProductDetails(data) {
     if (data.main_image) {
         mainImage.style.background = `url('${data.main_image}')`;
     } else {
-        mainImage.style.background = `url("/img/product_image.jpeg")`;
+        mainImage.style.background = `url("img/product_image.jpeg")`;
     }
 
     mainImage.style.backgroundSize = 'contain';
@@ -164,7 +164,7 @@ function renderProductDetails(data) {
         productItem.className = 'product-card';
         productItem.innerHTML = `
             <a href="product-info.html?id=${product.id}">
-                <div class="product-card-image" style="background-image: url('${product.main_image || "/img/product_image.jpeg"}');"></div>
+                <div class="product-card-image" style="background-image: url('${product.main_image || "img/product_image.jpeg"}');"></div>
             </a>
             <div class="product-card-details">
                 <a style='text-decoration:none'; href="product-info.html?id=${product.id}">

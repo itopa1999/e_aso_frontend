@@ -70,7 +70,7 @@ function renderOrders(orders) {
             <div class="order-item">
                 <a href="product-info.html?id=${item.product_id}">
                     <div class="order-item-image" 
-                        style="background-image: url('${item.product_image || "/img/product_image.jpeg"}');">
+                        style="background-image: url('${item.product_image || "img/product_image.jpeg"}');">
                     </div>
                 </a>
 

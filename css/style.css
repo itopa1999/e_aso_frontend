@@ -60,7 +60,7 @@ body {
     color: var(--dark-color);
     font-size: 18px;
     text-decoration: none;
-    background-image: url('/img/logo.jpeg'); /* Your image path */
+    background-image: url('img/logo.jpeg'); /* Your image path */
     background-size: cover; /* Make it fill the circle */
     background-position: center; /* Center the image */
 }
