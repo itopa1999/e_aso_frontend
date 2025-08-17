@@ -50,18 +50,23 @@ function getCookie(name) {
 // Handle auth-based content
 function updateDropdown() {
     if (access && email) {
-        // Authenticated view
-        userName.textContent = name.length > 15 ? name.slice(0, 12) + '...' : name || "User";
+        // Use empty string if null/undefined
+        const safeName = name || "";
+
+        userName.textContent = safeName.length > 15 
+            ? safeName.slice(0, 12) + '...' 
+            : safeName || "User";
+
         userEmail.textContent = email;
         
         let riderLink = "";
         if (group === "rider") {
-        riderLink = `
-            <a href="rider-page.html" class="dropdown-item">
-                <i class="fas fa-motorcycle"></i>
-                <span>Go to Rider</span>
-            </a>
-        `;
+            riderLink = `
+                <a href="rider-page.html" class="dropdown-item">
+                    <i class="fas fa-motorcycle"></i>
+                    <span>Go to Rider</span>
+                </a>
+            `;
         }
 
         dropdownItems.innerHTML = `
