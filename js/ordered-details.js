@@ -75,7 +75,7 @@ function renderOrderDetails(order) {
             <div class="order-item">
                 <a href="product-info.html?id=${item.product_id}">
                     <div class="order-item-image" 
-                        style="background-image: url('${item.product_image || "img/product_image.jpeg"}');">
+                        style="background-image: url('${item.product_image || "img/product_image.png"}');">
                     </div>
                 </a>
                 <div class="order-item-details">

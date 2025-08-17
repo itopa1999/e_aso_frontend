@@ -78,7 +78,7 @@ function renderList(data, append = false) {
             </button>
             <a href="product-info.html?id=${product.id}">
                 <div class="product-image" 
-                    style="background-image: url('${product.main_image || "img/product_image.jpeg"}');">
+                    style="background-image: url('${product.main_image || "img/product_image.png"}');">
                 </div>
             </a>
             <div class="product-details">
