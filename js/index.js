@@ -1,23 +1,4 @@
-const urlParams = new URLSearchParams(window.location.search);
 
-function setCookie(name, value, days = 1) {
-    if (!value) return; // skip if missing or null
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // days → ms
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = `${name}=${encodeURIComponent(value)}; ${expires}; path=/; SameSite=Lax`;
-}
-
-// Only proceed if email param exists
-const email1 = urlParams.get("email");
-if (email1) {
-    ["access", "refresh", "email", "name", "group"].forEach(param => {
-        const value = urlParams.get(param);
-        if (value) {
-            setCookie(param, value, 1); // always 1 day expiry
-        }
-    });
-}
 
 
 // =========================
