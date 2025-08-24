@@ -73,7 +73,7 @@ function updateDropdown() {
         let adminLink = "";
         if (groups.includes("admin")) { 
             adminLink = `
-                <a href="/admin/dashboard.html" class="dropdown-item">
+                <a href="./admin/dashboard.html" class="dropdown-item">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Admin Dashboard</span>
                 </a>
