@@ -123,4 +123,4 @@ function formatDateToHuman(dateString) {
     });
 }
 
-ADMIN_URL = "http://127.0.0.1:8000/admins/api/admin"
+ADMIN_URL = "https://luck1999.pythonanywhere.com/admins/api/admin"
