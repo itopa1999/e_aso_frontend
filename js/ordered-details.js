@@ -82,7 +82,7 @@ function renderOrderDetails(order) {
                     <a style="text-decoration:none" href="product-info.html?id=${item.product_id}">
                         <div class="order-item-name">${item.product_name}</div>
                     </a>
-                        <div class="order-item-price">₦${item.price}</div>
+                        <div class="order-item-price">₦${formatNumber(item.price)}</div>
                     <div class="order-item-qty">Quantity: ${item.quantity}</div>
                 </div>
             </div>
@@ -91,10 +91,10 @@ function renderOrderDetails(order) {
 
     // Totals
     document.querySelector('.order-summary').innerHTML = `
-        <div class="summary-row"><div class="summary-label">Subtotal</div><div class="summary-value">₦${order.subtotal}</div></div>
-        <div class="summary-row"><div class="summary-label">Shipping</div><div class="summary-value">₦${order.shipping_fee}</div></div>
-        <div class="summary-row"><div class="summary-label">Discount</div><div class="summary-value" style="color:#28a745;">-₦${order.discount}</div></div>
-        <div class="summary-total"><div>Total</div><div>₦${order.total}</div></div>
+        <div class="summary-row"><div class="summary-label">Subtotal</div><div class="summary-value">₦${formatNumber(order.subtotal)}</div></div>
+        <div class="summary-row"><div class="summary-label">Shipping</div><div class="summary-value">₦${formatNumber(order.shipping_fee)}</div></div>
+        <div class="summary-row"><div class="summary-label">Discount</div><div class="summary-value" style="color:#28a745;">-₦${formatNumber(order.discount)}</div></div>
+        <div class="summary-total"><div>Total</div><div>₦${formatNumber(order.total)}</div></div>
     `;
 
     // Shipping address
@@ -120,7 +120,7 @@ function renderOrderDetails(order) {
         <div class="payment-name">${payment.method}</div>
     `;
 
-    document.getElementById("total-payment").innerText  = `₦${order.total}`;
+    document.getElementById("total-payment").innerText  = `₦${formatNumber(order.total)}`;
 
 
 
@@ -235,8 +235,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
     
     // Contact seller button
+    const productID = "12345"; // Replace dynamically with the product ID
+    const sellerNumber = "2348064160380"; // Seller's WhatsApp number (without "+")
+
+    const modal = document.getElementById('contactModal');
+    const closeModal = document.querySelector('.modal .close');
+    const complaintMessageInput = document.getElementById('complaintMessage');
+    const sendComplaintBtn = document.getElementById('sendComplaint');
+
+    // Open modal when "Contact Seller" is clicked
     document.querySelector('.btn-contact').addEventListener('click', function() {
-        alert('Contacting seller...\nYou would be redirected to a chat with the seller.');
+        modal.style.display = 'block';
+    });
+
+    // Close modal
+    closeModal.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside content
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // Send complaint to WhatsApp
+    sendComplaintBtn.addEventListener('click', function() {
+        const complaint = complaintMessageInput.value.trim();
+        if (!complaint) {
+            alert('Please enter your complaint before sending.');
+            return;
+        }
+
+        const message = `Hello, I have a complaint about Product ID: ${productID}. \n\nDetails:\n${complaint}`;
+        const whatsappURL = `https://wa.me/${sellerNumber}?text=${encodeURIComponent(message)}`;
+
+        // Redirect to WhatsApp
+        window.open(whatsappURL, '_blank');
+
+        // Close modal after sending
+        modal.style.display = 'none';
+        complaintMessageInput.value = '';
+
     });
     
     document.querySelector('.btn-return').addEventListener('click', function () {

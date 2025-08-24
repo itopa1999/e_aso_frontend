@@ -11,7 +11,28 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/ordered-details.css">
     <style>
-        
+        /* Modal styling */
+.modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background: white;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+}
+
+.close {
+  float: right;
+  font-size: 20px;
+  cursor: pointer;
+}
     </style>
 </head>
 <body>
@@ -213,6 +234,15 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div id="contactModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>Contact Seller</h3>
+                <textarea id="complaintMessage" placeholder="Enter your complaint..." rows="4" style="width:100%;"></textarea>
+                <button id="sendComplaint" class="action-btn">Send to WhatsApp</button>
             </div>
         </div>
         

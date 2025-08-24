@@ -30,7 +30,8 @@ const userEmail = document.getElementById('userEmail');
 const access = getCookie('access');
 const email = getCookie('email');
 const name = getCookie("name");
-const group = getCookie("group")?.toLowerCase();
+const groupString = getCookie("group")?.toLowerCase() || "";
+const groups = groupString.split(",").map(g => g.trim());
 
 
 // Helper to read cookies
@@ -60,11 +61,21 @@ function updateDropdown() {
         userEmail.textContent = email;
         
         let riderLink = "";
-        if (group === "rider") {
+        if (groups.includes("rider")) {
             riderLink = `
                 <a href="rider-page.html" class="dropdown-item">
                     <i class="fas fa-motorcycle"></i>
                     <span>Go to Rider</span>
+                </a>
+            `;
+        }
+
+        let adminLink = "";
+        if (groups.includes("admin")) { 
+            adminLink = `
+                <a href="/admin/dashboard.html" class="dropdown-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Admin Dashboard</span>
                 </a>
             `;
         }
@@ -83,6 +94,7 @@ function updateDropdown() {
                 <span>My Wishlist</span>
             </a>
             ${riderLink}
+            ${adminLink}
             <a href="about.html" class="dropdown-item">
                 <i class="fas fa-info-circle"></i>
                 <span>About Us</span>
@@ -140,6 +152,7 @@ document.addEventListener('click', function (e) {
         document.cookie = "refresh=; Max-Age=0; path=/";
         document.cookie = "email=; Max-Age=0; path=/";
         document.cookie = "name=; Max-Age=0; path=/";
+        document.cookie = "group=; Max-Age=0; path=/";
         userDropdown.classList.remove('active');
 
         const currentPage = window.location.pathname;
@@ -273,8 +286,8 @@ document.addEventListener('keydown', (e) => {
 
 });
 
-ADMIN_URL = "https://luck1999.pythonanywhere.com/admins/api/user"
-ASO_URL = "https://luck1999.pythonanywhere.com/aso/api/product"
+ADMIN_URL = "http://127.0.0.1:8000/admins/api/user"
+ASO_URL = "http://127.0.0.1:8000/aso/api/product"
 
 
 function getStarHTML(rating) {

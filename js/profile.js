@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 firstName: data.first_name,
                 lastName: data.last_name,
                 email: data.email,
+                phone: data.phone,
                 totalOrders: data.total_orders || 0
             };
             setUserData();
@@ -56,6 +57,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     function setUserData() {
         document.getElementById('firstName').textContent = userData.firstName;
         document.getElementById('lastName').textContent = userData.lastName;
+        document.getElementById('phoneNumber').textContent = userData.phone;
         document.getElementById('profileUserName').textContent = `${userData.firstName} ${userData.lastName}`;
         document.getElementById('profileUserEmail').textContent = userData.email;
         document.getElementById('total_orders').textContent = userData.totalOrders;
@@ -98,6 +100,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Set current values in form
         document.getElementById('editFirstName').value = userData.firstName;
         document.getElementById('editLastName').value = userData.lastName;
+        document.getElementById('editPhoneNumber').value = userData.phone;
         
         editModal.classList.add('active');
     });
@@ -117,10 +120,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Get form values
         const firstName = document.getElementById('editFirstName').value.trim();
         const lastName = document.getElementById('editLastName').value.trim();
+        const phone = document.getElementById('editPhoneNumber').value.trim();
         
         // Validate inputs
-        if (!firstName || !lastName) {
-            alert('Please fill in both first name and last name');
+        if (!firstName || !lastName || !phone) {
+            alert('Please fill in both first name, last name and phone');
             return;
         }
         
@@ -139,10 +143,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                     "Authorization": `Bearer ${accessToken}`,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ first_name: firstName, last_name: lastName })
+                body: JSON.stringify({ first_name: firstName, last_name: lastName, phone: phone })
             });
 
             const result = await res.json();
+
+            console.log(result)
 
             if (res.ok) {
                 showNotification(
@@ -152,10 +158,25 @@ document.addEventListener('DOMContentLoaded', async function() {
                 );
                 userData.firstName = firstName;
                 userData.lastName = lastName;
+                userData.phone = phone;
                 setUserData();
                 closeEditModal();
             } else {
-                alert("Update failed: " + (result.error || "Unknown error"));
+                let errorMessage = "Update failed: ";
+                if (result.error) {
+                    if (typeof result.error === "string") {
+                        errorMessage += result.error;
+                    } else {
+
+                        errorMessage += Object.values(result.error)
+                            .flat()
+                            .join(", ");
+                    }
+                } else {
+                    errorMessage += "Unknown error";
+                }
+
+                alert(errorMessage)
             }
 
         } catch (err) {

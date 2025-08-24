@@ -5,7 +5,7 @@ if (!accessToken) {
     window.location.href = "404.html";
 }
 
-ASO_URL = "https://luck1999.pythonanywhere.com/aso/api/product"
+ASO_URL = "http://127.0.0.1:8000/aso/api/product"
 
 let nextPageUrl = `${ASO_URL}/rider/`; // First page endpoint
 let isLoading = false;
@@ -77,19 +77,20 @@ function renderProfile(data, append = false) {
         // Desktop table row
         const row = `
             <tr>
-                <td>${delivery.order_number}</td>
+                <td><span style="cursor: pointer; font-weight: bold;" onclick="openDetails('${delivery.order_number}')">${delivery.order_number}</span></td>
                 <td>${delivery.customer_first_name} ${delivery.customer_last_name}</td>
                 <td>${formatDate(delivery.delivery_date)}</td>
                 <td><span class="order-status status-delivered">Delivered</span></td>
             </tr>
         `;
+
         tableBody.insertAdjacentHTML('beforeend', row);
 
         // Mobile card
         const card = `
             <div class="order-card">
                 <div class="order-header">
-                    <div class="order-id">${delivery.order_number}</div>
+                    <div class="order-id" style="cursor: pointer; font-weight: bold;" onclick="openDetails('${delivery.order_number}')">${delivery.order_number}</div>
                     <div class="order-status-mobile status-delivered">Delivered</div>
                 </div>
                 <div class="order-detail">
@@ -103,8 +104,113 @@ function renderProfile(data, append = false) {
             </div>
         `;
         ordersList.insertAdjacentHTML('beforeend', card);
+
+        
     });
 }
+
+function openDetails(orderNumber) {
+    showPreloader("loading rider info");
+    // Insert product number into modal body
+    // document.getElementById("productModalBody").innerText = "Product Number: " + orderNumber;
+    
+    
+
+    fetch(`${ASO_URL}/orders/rider-details/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+            order_number: orderNumber,
+        })
+    })
+    .then(res => {
+        if (res.status === 401) {
+            window.location.href = 'auth.html';
+            return;
+        }
+        return res.json();
+    })
+    .then(data => {
+        if (!data) return; // stop if redirected
+        if (data && data.message) {
+            // Fill order details
+        const details = data.order_details;
+        console.log("Fetched details:", details);
+        document.querySelector('.order-details1').innerHTML = `
+            <div class="detail-row">
+                <span class="detail-label">Order ID:</span>
+                <span class="detail-value">${details.order_id}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Customer:</span>
+                <span class="detail-value">${details.customer}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Delivery Address:</span>
+                <span class="detail-value">${details.delivery_address}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Contact:</span>
+                <span class="detail-value">${details.contact}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Order Date:</span>
+                <span class="detail-value">${details.order_date}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Total Amount:</span>
+                <span class="detail-value">${details.total_amount}</span>
+            </div>
+        `;
+
+        // Fill order items
+        const itemsContainer = document.getElementById('orderItemContainer1');
+        itemsContainer.innerHTML = `<br><br><h3>Order Items</h3>`;
+        details.items.forEach(item => {
+            itemsContainer.innerHTML += `
+                <div class="order-item">
+                    <a href="product-info.html?id=${item.product_id}">
+                        <div class="item-image" 
+                            style="background-image: url('${item.image || "/img/product_image.png"}');">
+                        </div>
+                    </a>
+                    <div class="item-details">
+                        <a style="text-decoration:none" href="product-info.html?id=${item.product_id}">
+                            <div class="item-name">${item.product}</div>img
+                        </a>
+                        <div class="item-price">${item.price}</div>
+                        <div class="item-quantity">Quantity: ${item.quantity}</div>
+                    </div>
+                </div>
+            `;
+        });
+
+        document.getElementById("productModal").classList.add('active');
+
+        
+        } else {
+            alert("unable to retrieve details")
+        }
+    })
+    .catch(error => {
+        console.error("unable to connect ro server")
+    })
+    .finally(() => {
+        hidePreloader();
+    });
+
+}
+
+// Close modal
+document.getElementById("closeProductModal").addEventListener("click", function () {
+    const modal = document.getElementById("productModal");
+    modal.classList.remove("active"); // Hide modal
+    document.querySelector('.order-details').innerHTML = "";
+    document.getElementById('orderItemContainer').innerHTML = "";
+});
 
 
 const searchInput = document.getElementById("orderSearch");
