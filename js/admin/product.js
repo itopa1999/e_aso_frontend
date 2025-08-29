@@ -117,6 +117,7 @@ async function filterProducts() {
     }
 
     try {
+        showPreloader("searching for products")
         const response = await fetch(`${ADMIN_URL}/products/?${params.toString()}`, {
             method: "GET",
             headers: { 
@@ -145,11 +146,14 @@ async function filterProducts() {
         renderProducts(data.results);
     } catch (error) {
         console.error("Error fetching products:", error);
+    } finally{
+        hidePreloader()
     }
 }
 
 
 function renderProducts(products) {
+    
     productsGrid.innerHTML = '';
     
     if (products.length === 0) {
@@ -207,55 +211,57 @@ function renderProducts(products) {
         
         productsGrid.appendChild(productCard);
     });
+
+    
 }
 
 // Show product detail function
 function showProductDetail(product) {
+    showPreloader("Loading product details")
     // Hide products grid and show detail view
     productsGrid.style.display = 'none';
     productDetail.style.display = 'block';
     
-    console.log(product.images)
-    console.log("mainUrl", product.main_image)
+    console.log(product)
     // Update breadcrumb
     breadcrumbProductName.textContent = product.title;
     
     // Update main product image
-const mainImage = document.getElementById('detail-main-image');
+    const mainImage = document.getElementById('detail-main-image');
 
-if (product.main_image && product.main_image.trim() !== '') {
-    mainImage.style.backgroundImage = `url('${product.main_image}')`;
-} else {
-    mainImage.style.backgroundImage = `url("/img/product_image.png")`;
-}
+    if (product.main_image && product.main_image.trim() !== '') {
+        mainImage.style.backgroundImage = `url('${product.main_image}')`;
+    } else {
+        mainImage.style.backgroundImage = `url("/img/product_image.png")`;
+    }
 
-mainImage.style.backgroundSize = 'contain';
-mainImage.style.backgroundPosition = 'center';
-mainImage.style.backgroundRepeat = 'no-repeat';
+    mainImage.style.backgroundSize = 'contain';
+    mainImage.style.backgroundPosition = 'center';
+    mainImage.style.backgroundRepeat = 'no-repeat';
 
-// Update thumbnails
-const thumbnailList = document.getElementById('thumbnail-list');
-thumbnailList.innerHTML = '';
+    // Update thumbnails
+    const thumbnailList = document.getElementById('thumbnail-list');
+    thumbnailList.innerHTML = '';
 
-product.images.forEach((imgObj, index) => {
-    const imageUrl = imgObj.image;  // <-- Access the image URL
+    product.images.forEach((imgObj, index) => {
+        const imageUrl = imgObj.image;  // <-- Access the image URL
 
-    const thumbnail = document.createElement('div');
-    thumbnail.className = 'thumbnail' + (index === 0 ? ' active' : '');
-    thumbnail.innerHTML = `<img src="${imageUrl}" alt="Thumbnail ${index + 1}">`;
+        const thumbnail = document.createElement('div');
+        thumbnail.className = 'thumbnail' + (index === 0 ? ' active' : '');
+        thumbnail.innerHTML = `<img src="${imageUrl}" alt="Thumbnail ${index + 1}">`;
 
-    thumbnail.addEventListener('click', () => {
-        mainImage.style.backgroundImage = `url('${imageUrl}')`;
-        mainImage.style.backgroundSize = 'contain';
-        mainImage.style.backgroundPosition = 'center';
-        mainImage.style.backgroundRepeat = 'no-repeat';
+        thumbnail.addEventListener('click', () => {
+            mainImage.style.backgroundImage = `url('${imageUrl}')`;
+            mainImage.style.backgroundSize = 'contain';
+            mainImage.style.backgroundPosition = 'center';
+            mainImage.style.backgroundRepeat = 'no-repeat';
 
-        document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
-        thumbnail.classList.add('active');
+            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+            thumbnail.classList.add('active');
+        });
+
+        thumbnailList.appendChild(thumbnail);
     });
-
-    thumbnailList.appendChild(thumbnail);
-});
 
     
     // Update product info
@@ -303,13 +309,110 @@ product.images.forEach((imgObj, index) => {
     }
     
     document.getElementById('detail-description').textContent = product.description;
+
+    // Render Options
+    renderOptions('color-options', product.colors, 'color');
+    renderOptions('size-options', product.sizes, 'size');
+    renderOptions('cart-options', product.categories, 'category');
+
+    function renderOptions(containerId, options, type) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+
+        if (!options || options.length === 0) {
+            container.innerHTML = `<p style="color:red;">No ${type}s available.</p>`;
+            return;
+        }
+
+        options.forEach((item, index) => {
+            const option = document.createElement('div');
+            option.className = 'size-option';
+            option.textContent = item.color_name || item.size_label || item.name;
+            option.dataset[type] = item.color_name || item.size_label || item.name;
+            container.appendChild(option);
+
+        });
+
+    }
+
+    const descriptionData = product.details.find(item => item.tab === "description");
+    const detailsData = product.details.filter(item => item.tab === "details");
+    const shippingData = product.details.find(item => item.tab === "shipping");
+
+    // Description
+    if (descriptionData) {
+        document.getElementById("description").innerHTML = `
+            <p class="product-description">${descriptionData.content.replace(/\r\n/g, "<br>")}</p>
+        `;
+    }
+
+    // Details (multiple)
+    const detailsContainer = document.getElementById("details");
+    if (detailsData.length > 0) {
+        detailsContainer.innerHTML = detailsData.map(detail => `
+            <div class="detail-item">
+                <div class="detail-title">${detail.title}</div>
+                <div class="detail-value">${detail.content.replace(/\r\n/g, "<br>")}</div>
+            </div>
+        `).join("");
+    }
+
+    // Shipping
+    if (shippingData) {
+        document.getElementById("shipping").innerHTML = `
+            <div class="detail-item">
+                <div class="detail-title">${shippingData.title}</div>
+                <div class="detail-value">${shippingData.content.replace(/\r\n/g, "<br>")}</div>
+            </div>
+        `;
+    }
+
+    const tbody = document.getElementById("orders-tbody");
+
+    product.related_orders.forEach(order => {
+        const tr = document.createElement("tr");
+
+        const deliveryDate = order.delivery_date ? order.delivery_date : "Not set yet";
+
+        tr.innerHTML = `
+            <td>${order.order_number}</td>
+            <td>${order.customer_first_name} ${order.customer_last_name}</td>
+            <td>${order.amount}</td>
+            <td>${deliveryDate}</td>
+            <td>${order.latest_tracking_status}</td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+
+
     
     // Scroll to top
-    window.scrollTo({top: 0, behavior: 'smooth'});
+    window.scrollTo({top: 40, behavior: 'smooth'});
+
+    hidePreloader()
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     loadCats()
+
+    // Tab functionality
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+            
+            // Remove active class from all tabs and contents
+            tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            // Add active class to current tab and content
+            this.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
 
     // Back to products function
     backToProducts.addEventListener('click', function() {
