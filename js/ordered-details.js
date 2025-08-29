@@ -28,6 +28,7 @@ async function fetchOrderDetails() {
 
         const data = await response.json();
         renderOrderDetails(data);
+        console.log(data)
     } catch (error) {
         alert("Failed to load order: " + error.message);
     }
@@ -71,6 +72,14 @@ function renderOrderDetails(order) {
     const itemsContainer = document.querySelector('.order-items');
     itemsContainer.innerHTML = "";
     order.items.forEach(item => {
+    const descText = item.desc 
+            ? `<div class="desc-container">
+                    <span><strong>Desc:</strong> Color: ${item.desc.color || 'N/A'}, Size: ${item.desc.size || 'N/A'}</span>
+            </div>`
+            : `<div class="desc-container">
+                    <span><strong>Desc:</strong> Color: N/A, Size: N/A</span>
+            </div>`;
+
         itemsContainer.innerHTML += `
             <div class="order-item">
                 <a href="product-info.html?id=${item.product_id}">
@@ -78,10 +87,12 @@ function renderOrderDetails(order) {
                         style="background-image: url('${item.product_image || "img/product_image.png"}');">
                     </div>
                 </a>
+                
                 <div class="order-item-details">
                     <a style="text-decoration:none" href="product-info.html?id=${item.product_id}">
                         <div class="order-item-name">${item.product_name}</div>
                     </a>
+                    ${descText ? `<div class="cart-item-desc">${descText}</div>` : ""}
                         <div class="order-item-price">₦${formatNumber(item.price)}</div>
                     <div class="order-item-qty">Quantity: ${item.quantity}</div>
                 </div>
@@ -113,6 +124,16 @@ function renderOrderDetails(order) {
             <i class="fas fa-phone"></i> Alt: ${addr.alt_phone}
         </div>
     `;
+
+    const otherInfo = order.other_info;
+
+    const otherInfoDiv = document.querySelector('.other-info');
+
+    if (otherInfo && otherInfo.trim() !== "") {
+        otherInfoDiv.innerHTML = otherInfo.replace(/\n/g, "<br>");
+    } else {
+        otherInfoDiv.innerHTML = "<em>This is not set yet.</em>";
+    }
 
     // Payment info
     const payment = order.payment_detail;

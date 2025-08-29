@@ -123,4 +123,23 @@ function formatDateToHuman(dateString) {
     });
 }
 
+function getStarHTML(rating) {
+    const fullStars = parseInt(rating);  // Convert 4.0 => 4
+    let starHTML = "";
+
+    for (let i = 0; i < fullStars; i++) {
+        starHTML += `<i class="fas fa-star"></i>`;
+    }
+
+    const remaining = 5 - fullStars;
+    for (let i = 0; i < remaining; i++) {
+        starHTML += `<i class="far fa-star"></i>`;
+    }
+
+    return starHTML;
+}
+
+
+
 ADMIN_URL = "http://127.0.0.1:8000/admins/api/admin"
+ASO_URL = "http://127.0.0.1:8000/aso/api/product"

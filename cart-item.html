@@ -132,24 +132,24 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label class="form-label">First Name</label>
-                                    <input type="text" class="form-control" placeholder="John">
+                                    <input type="text" id="firstName" class="form-control" placeholder="John">
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" placeholder="Doe">
+                                    <input type="text" id="lastName" class="form-control" placeholder="Doe">
                                 </div>
                             </div>
                             
                             <div class="form-group">
                                 <label class="form-label">Address</label>
-                                <input type="text" class="form-control" placeholder="123 Main Street">
+                                <input type="text" id="address" class="form-control" placeholder="123 Main Street">
                             </div>
                             
                             <div class="form-row">
                                 <div class="form-group">
                                     <label class="form-label">City</label>
-                                    <input type="text" class="form-control" placeholder="Lagos">
+                                    <input type="text" id="city" class="form-control" placeholder="Lagos">
                                 </div>
                                 
                                 <div class="form-group">
@@ -165,13 +165,17 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label class="form-label">Phone Number</label>
-                                    <input type="tel" class="form-control" placeholder="+234 812 345 6789">
+                                    <input type="tel" id="phone" class="form-control" placeholder="+234 812 345 6789">
                                 </div>
 
                                 <div class="form-group">
                                     <label class="form-label">Alt Phone Number</label>
-                                    <input type="tel" class="form-control" placeholder="+234 812 345 6789">
+                                    <input type="tel" id="altPhone" class="form-control" placeholder="+234 812 345 6789">
                                 </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Other Info</label>
+                                <textarea id="otherInfo" rows="6" class="form-control" placeholder="Optional detailed information..........."></textarea>
                             </div>
                         </div>
                     </div>
@@ -218,6 +222,30 @@
             </div>
         </div>
     </div>
+
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Edit Description</h3>
+
+            <label>Color:
+                <select id="editColor" class="styled-select">
+                    
+                </select>
+            </label>
+
+            <label>Size:
+                <select id="editSize" class="styled-select">
+                   
+                </select>
+            </label>
+
+            <div class="modal-actions">
+                <button id="saveEdit">Save</button>
+                <button id="closeModal">Cancel</button>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Bottom Navbar -->
     <nav class="bottom-navbar">

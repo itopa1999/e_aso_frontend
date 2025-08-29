@@ -73,12 +73,116 @@
                 </div>
             </div>
 
-            <div class="related-products">
-                <h2 class="section-title">Related Products</h2>
-                <div class="products-grid">
-                    
+                        <!-- Filters Section -->
+            <div class="filter-container">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label class="filter-label">Category</label>
+                        <select class="filter-select" id="category-filter">
+                            
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Price Range</label>
+                        <select class="filter-select" id="price-filter">
+                            <option value="">Price Range: All</option>
+                            <option value="under_50000">Under ₦50,000</option>
+                            <option value="50000_100000">₦50,000 - ₦100,000</option>
+                            <option value="100000_200000">₦100,000 - ₦200,000</option>
+                            <option value="over_200000">Over ₦200,000</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label class="filter-label">Star Rating</label>
+                        <select class="filter-select" id="rating-filter">
+                            <option value="">Any Rating</option>
+                            <option value="5">5 Stars</option>
+                            <option value="4">4 Stars</option>
+                            <option value="3">3 Stars</option>
+                            <option value="2">2 Stars</option>
+                            <option value="1">1 Star</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Badge</label>
+                        <select class="filter-select" id="badge-filter">
+                            <option value="">Any Badge</option>
+                            <option value="New">New</option>
+                            <option value="Best Seller">Best Seller</option>
+                            <option value="Limited">Limited</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label class="filter-label">Featured</label>
+                        <select class="filter-select" id="featured-filter">
+                            <option value="">Sort by: Featured</option>
+                            <option value="price_low_high">Price: Low to High</option>
+                            <option value="price_high_low">Price: High to Low</option>
+                            <option value="rating_high_low">Highest Rated</option>
+                            <option value="newest">Newest Arrivals</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button class="filter-btn btn-reset" id="reset-filters">Reset Filters</button>
+                    <button class="filter-btn btn-apply" id="apply-filters">Apply Filters</button>
                 </div>
             </div>
+
+            <!-- Products Grid -->
+            <div class="products-grid" id="products-grid">
+                <!-- Products will be loaded here -->
+            </div>
+
+            <div class="product-detail" id="product-detail">
+                <div class="breadcrumb">
+                    <a href="javascript:void(0)" id="back-to-products">
+                        <i class="fas fa-arrow-left"></i> Back to Products
+                    </a>
+                    <span id="breadcrumb-product-name"></span>
+                </div>
+                <div class="detail-content">
+                    <div class="detail-images">
+                        <div class="main-image" id="detail-main-image">
+                            
+                        </div>
+                        <div class="thumbnail-list" id="thumbnail-list">
+                            <!-- Thumbnails will be added here -->
+                        </div>
+                    </div>
+                    <div class="detail-info">
+                        <h2 id="detail-title"></h2>
+                        <div class="detail-id" id="detail-id"></div>
+                        <div class="detail-price">
+                            <span class="current-price" id="detail-current-price"></span>
+                            <span class="original-price" id="detail-original-price"></span>
+                            <span class="discount" id="detail-discount"></span>
+                        </div>
+                        <div class="detail-meta">
+                            <div class="meta-item">
+                                <span class="rating-stars" id="detail-rating-stars"></span>
+                                <span id="detail-rating-value"></span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-comment"></i>
+                                <span id="detail-reviews"></span> reviews
+                            </div>
+                            <div class="product-badge" id="detail-badge"></div>
+                        </div>
+                        <div class="detail-description" id="detail-description"></div>
+                        <div class="detail-actions">
+                            <button class="action-btn btn-edit">Edit Product</button>
+                            <button class="action-btn btn-delete">Delete Product</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
 
 
         </div>

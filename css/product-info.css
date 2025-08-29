@@ -51,7 +51,7 @@
     border-radius: 10px;
     overflow: hidden;
     cursor: pointer;
-    background: var(--secondary-color);
+    background: white;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;

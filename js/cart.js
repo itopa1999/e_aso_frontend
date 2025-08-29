@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
             renderCartItems(data);
             updateSummary(data);
             renderSummary(data)
+            
         } catch (error) {
             alert("Failed to load cart items.");
         } finally {
@@ -33,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderCartItems(data) {
+        console.log(data)
         cartContainer.innerHTML = "";
         if (!data.items || data.items.length === 0) {
             cartContainer.innerHTML = `
@@ -47,7 +49,22 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             return;
         }
+        
         data.items.forEach(item => {
+        const descText = item.desc 
+            ? `<div class="desc-container">
+                <span><strong>Desc:</strong> Color: ${item.desc.color || 'N/A'}, Size: ${item.desc.size || 'N/A'}</span>
+                <button class="edit-desc-btn" data-item-id="${item.id}" style="background:none;border:none;cursor:pointer;">
+                    <i class="fas fa-edit" style="color:#007bff;margin-left:8px;"></i>
+                </button>
+            </div>`
+            : `<div class="desc-container">
+                    <span><strong>Desc:</strong> Color: N/A, Size: N/A</span>
+                    <button class="edit-desc-btn" data-item-id="${item.id}" style="background:none;border:none;cursor:pointer;">
+                    <i class="fas fa-edit" style="color:#007bff;margin-left:8px;"></i>
+                </button>
+            </div>`;
+
             const cartItem = document.createElement('div');
             cartItem.className = "cart-item";
             cartItem.setAttribute("data-item-id", item.id);
@@ -60,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <a href="product-info.html?id=${item.product_id}" style="text-decoration:none">
                         <div class="cart-item-title">${item.product_title}</div>
                     </a>
+                    ${descText ? `<div class="cart-item-desc">${descText}</div>` : ""}
                     <div class="cart-item-price">₦${parseFloat(item.product_price).toLocaleString()}</div>
                     <div class="cart-item-actions">
                         <div class="quantity-selector">
@@ -75,8 +93,106 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             cartContainer.appendChild(cartItem);
         });
+        document.querySelectorAll('.edit-desc-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                editingItemId = e.target.closest('button').dataset.itemId;
+
+                const itemData = data.items.find(item => item.id == editingItemId);
+                if (itemData) {
+                    // Dynamically update modal title
+                    document.querySelector('#editModal .modal-content h3').innerText =
+                        `Edit Description for ${itemData.product_title}`;
+
+                    // Get dropdown elements
+                    const colorSelect = document.getElementById('editColor');
+                    const sizeSelect = document.getElementById('editSize');
+
+                    // Clear old options
+                    colorSelect.innerHTML = '';
+                    sizeSelect.innerHTML = '';
+
+                    // Populate colors
+                    if (itemData.product_colors && itemData.product_colors.length > 0) {
+                        itemData.product_colors.forEach(color => {
+                            const option = document.createElement('option');
+                            option.value = color.name;
+                            option.textContent = color.name;
+                            if (itemData.desc && itemData.desc.color === color.name) {
+                                option.selected = true; // default selected color
+                            }
+                            colorSelect.appendChild(option);
+                        });
+                    } else {
+                        const option = document.createElement('option');
+                        option.value = '';
+                        option.textContent = 'No colors available';
+                        colorSelect.appendChild(option);
+                    }
+
+                    // Populate sizes
+                    if (itemData.product_sizes && itemData.product_sizes.length > 0) {
+                        itemData.product_sizes.forEach(size => {
+                            const option = document.createElement('option');
+                            option.value = size;
+                            option.textContent = size;
+                            if (itemData.desc && itemData.desc.size === size) {
+                                option.selected = true; // default selected size
+                            }
+                            sizeSelect.appendChild(option);
+                        });
+                    } else {
+                        const option = document.createElement('option');
+                        option.value = '';
+                        option.textContent = 'No sizes available';
+                        sizeSelect.appendChild(option);
+                    }
+                }
+
+                // Show modal
+                document.getElementById('editModal').classList.remove('hidden');
+            });
+        });
+
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('editModal').classList.add('hidden');
+        });
+
         attachCartListeners();
     }
+
+    document.getElementById('saveEdit').addEventListener('click', function () {
+        const color = document.getElementById('editColor').value;
+        const size = document.getElementById('editSize').value;
+
+        const descData = {
+            item_id: editingItemId,
+            desc: { 
+                color: color, 
+                size: size 
+            }
+        };
+
+        showPreloader("Updating description");
+        fetch(`${ASO_URL}/cart/update-desc/`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${accessToken}`
+                
+            },
+            body: JSON.stringify(descData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            fetchCartItems();
+            document.getElementById('editModal').classList.add('hidden');
+        })
+        .catch(error => console.error('Error:', error))
+        .finally(() => {
+            hidePreloader();
+        });;
+    });
+
 
     // Event listeners for quantity & remove
     function attachCartListeners() {
@@ -270,13 +386,14 @@ document.addEventListener('DOMContentLoaded', function() {
 document.querySelector('.place-order-btn').addEventListener('click', async function (e) {
     e.preventDefault();
 
-    const firstName = document.querySelector('input[placeholder="John"]').value.trim();
-    const lastName = document.querySelector('input[placeholder="Doe"]').value.trim();
-    const address = document.querySelector('input[placeholder="123 Main Street"]').value.trim();
-    const city = document.querySelector('input[placeholder="Lagos"]').value.trim();
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const address = document.getElementById('address').value.trim();
+    const city = document.getElementById('city').value.trim();
     const state = document.getElementById('stateSelect').value.trim();
-    const phone = document.querySelector('input[placeholder="+234 812 345 6789"]').value.trim();
-    const altPhone = document.querySelectorAll('input[placeholder="+234 812 345 6789"]')[1].value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const altPhone = document.getElementById('altPhone').value.trim();
+    const otherInfo = document.getElementById('otherInfo').value.trim();
 
     const total = parseFloat(document.querySelector('.summary-total').textContent.replace(/[^\d.]/g, ''));
 
@@ -301,7 +418,8 @@ document.querySelector('.place-order-btn').addEventListener('click', async funct
             state: state,
             phone: phone,
             alt_phone: altPhone,
-            total: total
+            total: total,
+            otherInfo: otherInfo
         }
     };
 
