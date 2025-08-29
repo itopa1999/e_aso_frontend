@@ -186,8 +186,9 @@
 
 .product-image {
     height: 200px;
-    background-size: cover;
+    background-size: contain;
     background-position: center;
+    background-repeat: no-repeat;
 }
 
 .product-details {

@@ -603,3 +603,9 @@
     }
 }
 
+.cart-item-desc {
+    font-size: 0.9rem;
+    color: #555;
+    margin: 5px 0;
+    font-style: italic;
+}

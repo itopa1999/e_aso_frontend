@@ -644,14 +644,3 @@ body {
     background: rgba(40, 167, 69, 0.1);
     color: var(--success-color);
 }
-
-.error .modal-icon {
-    background: rgba(229, 57, 53, 0.1);
-    color: var(--error-color);
-}
-
-#modalTitle {
-    font-size: 28px;
-    color: var(--dark-color);
-    margin-bottom: 15px;
-}

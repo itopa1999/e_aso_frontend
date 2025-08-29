@@ -138,7 +138,6 @@ function openDetails(orderNumber) {
         if (data && data.message) {
             // Fill order details
         const details = data.order_details;
-        console.log("Fetched details:", details);
         document.querySelector('.order-details1').innerHTML = `
             <div class="detail-row">
                 <span class="detail-label">Order ID:</span>
@@ -166,10 +165,32 @@ function openDetails(orderNumber) {
             </div>
         `;
 
+
+        const otherInfoContainer = document.getElementById('other_info1');
+        const otherInfo = details.other_info;
+
+        // Set the heading first
+        otherInfoContainer.innerHTML = `<br><br><h3>Other Info</h3>`;
+
+        // Append the content or fallback message
+        const content = otherInfo && otherInfo.trim() !== ""
+            ? otherInfo.replace(/\n/g, "<br>")
+            : "<em>This is not set yet.</em>";
+
+        otherInfoContainer.innerHTML += content;
+
         // Fill order items
         const itemsContainer = document.getElementById('orderItemContainer1');
         itemsContainer.innerHTML = `<br><br><h3>Order Items</h3>`;
         details.items.forEach(item => {
+            const descText = item.desc 
+            ? `<div class="desc-container">
+                    <span><strong>Desc:</strong> Color: ${item.desc.color || 'N/A'}, Size: ${item.desc.size || 'N/A'}</span>
+            </div>`
+            : `<div class="desc-container">
+                    <span><strong>Desc:</strong> Color: N/A, Size: N/A</span>
+            </div>`;
+
             itemsContainer.innerHTML += `
                 <div class="order-item">
                     <a href="product-info.html?id=${item.product_id}">
@@ -179,8 +200,9 @@ function openDetails(orderNumber) {
                     </a>
                     <div class="item-details">
                         <a style="text-decoration:none" href="product-info.html?id=${item.product_id}">
-                            <div class="item-name">${item.product}</div>img
+                            <div class="item-name">${item.product}</div>
                         </a>
+                        ${descText ? `<div class="cart-item-desc">${descText}</div>` : ""}
                         <div class="item-price">${item.price}</div>
                         <div class="item-quantity">Quantity: ${item.quantity}</div>
                     </div>
@@ -394,7 +416,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (!data) return; // stop if redirected
             if (data && data.message) {
-                console.log(data)
                 otpError.style.display = 'none';
                 step2.classList.remove('active');
                 step3.classList.add('active');
@@ -428,10 +449,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
 
+            
+
             // Fill order items
             const itemsContainer = document.getElementById('orderItemContainer');
             itemsContainer.innerHTML = `<br><br><h3>Order Items</h3>`;
             details.items.forEach(item => {
+            const descText = item.desc 
+                ? `<div class="desc-container">
+                        <span><strong>Desc:</strong> Color: ${item.desc.color || 'N/A'}, Size: ${item.desc.size || 'N/A'}</span>
+                </div>`
+                : `<div class="desc-container">
+                        <span><strong>Desc:</strong> Color: N/A, Size: N/A</span>
+                </div>`;
                 itemsContainer.innerHTML += `
                     <div class="order-item">
                         <a href="product-info.html?id=${item.product_id}">
@@ -441,8 +471,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         </a>
                         <div class="item-details">
                             <a style="text-decoration:none" href="product-info.html?id=${item.product_id}">
-                                <div class="item-name">${item.product}</div>img
+                                <div class="item-name">${item.product}</div>
                             </a>
+                            ${descText ? `<div class="cart-item-desc">${descText}</div>` : ""}
                             <div class="item-price">${item.price}</div>
                             <div class="item-quantity">Quantity: ${item.quantity}</div>
                         </div>
@@ -450,6 +481,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
             });
             document.querySelector('#step3').appendChild(itemsContainer);
+
+            const otherInfoContainer = document.getElementById('other_info');
+            const otherInfo = details.other_info;
+
+            // Set the heading first
+            otherInfoContainer.innerHTML = `<br><br><h3>Other Info</h3>`;
+
+            // Append the content or fallback message
+            const content = otherInfo && otherInfo.trim() !== ""
+                ? otherInfo.replace(/\n/g, "<br>")
+                : "<em>This is not set yet.</em>";
+
+            otherInfoContainer.innerHTML += content;
 
             
             } else {

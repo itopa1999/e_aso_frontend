@@ -29,62 +29,85 @@ async function fetchProductDetails() {
 
 
 function renderProductDetails(data) {
-    console.log(data)
+    console.log(data);
+
+    // Basic Product Info
     document.querySelector('.product-badge').textContent = data.badge;
     document.querySelector('.product-title').textContent = data.title;
     document.querySelector('.product-description-short').textContent = data.description;
-    document.querySelector('.rating-count').textContent = '('+formatReviews(data.reviews_count)+' reviews) | ' + data.product_number;
-    document.querySelector('.current-price').textContent = 
+    document.querySelector('.rating-count').textContent = `(${formatReviews(data.reviews_count)} reviews) | ${data.product_number}`;
+    document.querySelector('.current-price').textContent =
         '₦' + parseFloat(data.current_price).toLocaleString();
 
+    // Price and Discount
     if (data.discount_percent && parseFloat(data.discount_percent) > 0) {
-        document.querySelector('.original-price').textContent = 
+        document.querySelector('.original-price').textContent =
             '₦' + parseFloat(data.original_price).toLocaleString();
-        document.querySelector('.discount').textContent = 
-            '- ' + data.discount_percent + '%';
+        document.querySelector('.discount').textContent =
+            `- ${data.discount_percent}%`;
 
         document.querySelector('.original-price').style.display = 'inline';
         document.querySelector('.discount').style.display = 'inline';
     } else {
         document.querySelector('.original-price').style.display = 'none';
         document.querySelector('.discount').style.display = 'none';
-    }    document.querySelector('.stars').innerHTML = getStarHTML(data.rating);
-    
+    }
+
+    // Star Ratings
+    document.querySelector('.stars').innerHTML = getStarHTML(data.rating);
+
+    // Wishlist state
     setWishlistState(data.watchlisted);
-    
-    const colorOptionsContainer = document.querySelector('.color-options');
-    colorOptionsContainer.innerHTML = '';
 
-    data.colors.forEach((color, index) => {
-        const colorOption = document.createElement('div');
-        colorOption.className = `color-option color-${index + 1}`;
-        colorOption.style.backgroundColor = color.color_name;
-        colorOption.dataset.color = color.color_name;
-        colorOptionsContainer.appendChild(colorOption);
+    // Render Options
+    renderOptions('color-options', data.colors, 'color');
+    renderOptions('size-options', data.sizes, 'size');
+    renderOptions('cart-options', data.category, 'category');
+
+    /**
+     * Utility function to render option buttons (color, size, etc.)
+     */
+    function renderOptions(containerId, options, type) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+
+        if (!options || options.length === 0) {
+            container.innerHTML = `<p style="color:red;">No ${type}s available.</p>`;
+            return;
+        }
+
+        options.forEach((item, index) => {
+            const option = document.createElement('div');
+            option.className = 'size-option';
+            option.textContent = item.color_name || item.size_label || item.name;
+            option.dataset[type] = item.color_name || item.size_label || item.name;
+            container.appendChild(option);
+
+            // Select first by default
+            if (index === 0) option.classList.add('active');
+        });
+
+        // Attach click events for selection
+        handleSelection(container);
+    }
+
+    /**
+     * Handle active selection toggle for options
+     */
+    function handleSelection(container) {
+    container.querySelectorAll('.size-option').forEach(option => {
+        option.addEventListener('click', () => {
+            // If the clicked item is already active, remove the class
+            if (option.classList.contains('active')) {
+                option.classList.remove('active');
+            } else {
+                // Otherwise, remove active from others and add to the clicked one
+                container.querySelectorAll('.size-option').forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+            }
+        });
     });
-
-    const sizeOptionsContainer = document.getElementById('size-options');
-    sizeOptionsContainer.innerHTML = '';
-    
-    data.sizes.forEach((size, index) => {
-        const sizeOption = document.createElement('div');
-        sizeOption.className = 'size-option';
-        sizeOption.textContent = size.size_label;
-        sizeOption.dataset.size = size.size_label;
-        sizeOptionsContainer.appendChild(sizeOption);
-    });
-
-    const CatContainer = document.getElementById('cart-options');
-    CatContainer.innerHTML = '';
-    
-    data.category.forEach((cart, index) => {
-        const cartOption = document.createElement('div');
-        cartOption.className = 'size-option';
-        cartOption.textContent = cart.name;
-        cartOption.dataset.size = cart.name;
-        CatContainer.appendChild(cartOption);
-    });
-
+}
             
 
     const mainImage = document.getElementById('mainImage');
@@ -106,8 +129,9 @@ function renderProductDetails(data) {
         const thumbnail = document.createElement('div');
         thumbnail.className = 'thumbnail';
         thumbnail.style.backgroundImage = `url('${image.image}')`;
-        thumbnail.style.backgroundSize = 'cover';
+        thumbnail.style.backgroundSize = 'contain';
         thumbnail.style.backgroundPosition = 'center';
+        thumbnail.style.backgroundRepeat = 'no-repeat';
         
         if (index === 0) {
             thumbnail.classList.add('active');
@@ -164,7 +188,7 @@ function renderProductDetails(data) {
         productItem.className = 'product-card';
         productItem.innerHTML = `
             <a href="product-info.html?id=${product.id}">
-                <div class="product-card-image" style="background-image: url('${product.main_image || "img/product_image.png"}');"></div>
+                <div class="product-card-image" style="background-image: url('${product.product_image || "img/product_image.png"}');"></div>
             </a>
             <div class="product-card-details">
                 <a style='text-decoration:none'; href="product-info.html?id=${product.id}">
@@ -184,11 +208,26 @@ function attachCartEvents(id) {
     const cartBadge = document.getElementById("cart-count");
     const addToCartBtn = document.querySelector('.btn-add-cart');
     const qtyInput = document.querySelector('.qty-input');
+    const colorOptionsContainer = document.getElementById('color-options');
+    const sizeOptionsContainer = document.getElementById('size-options');
+
+
     addToCartBtn.addEventListener('click', async function() {
         if (!accessToken) {
             window.location.href = "auth.html";
             return;
         }
+
+        // Get selected color and size
+        const selectedColor = colorOptionsContainer.querySelector('.size-option.active')?.dataset.color;
+        const selectedSize = sizeOptionsContainer.querySelector('.size-option.active')?.dataset.size;
+
+        const selectedAttributes = {
+            color: selectedColor || null,
+            size: selectedSize || null
+        };
+            
+
         try {
             showPreloader("Adding items to cart...");
 
@@ -197,7 +236,8 @@ function attachCartEvents(id) {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
                     "Content-Type": "application/json"
-                }
+                },
+                body: JSON.stringify({ desc: selectedAttributes })
             });
 
             if (res.status === 401) {

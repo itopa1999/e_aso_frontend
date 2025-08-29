@@ -89,7 +89,12 @@ function renderList(data, append = false) {
                     <h3 class="product-title">${product.title}</h3>
                 </a>
                 <p class="product-features">${product.short_description}</p>
-                <div class="rating">${starsHTML}<span>(${reviewFormatted})</span></div>
+               <div class="rating">
+                    ${starsHTML}
+                    <span>
+                        (<i class="fa fa-eye"></i> ${reviewFormatted})
+                    </span>
+                </div>
                 <div class="price">
                     <span class="current-price">₦${formatNumber(product.current_price)}</span>
                     ${product.discount_percent && parseFloat(product.discount_percent) > 0 
@@ -123,7 +128,7 @@ function renderCatButtons(data) {
     });
     container.appendChild(allBtn);
 
-    data.results.forEach(cat => {
+    data.forEach(cat => {
         const button = document.createElement('button');
         button.className = 'filter-btn';
         button.textContent = cat.name;
