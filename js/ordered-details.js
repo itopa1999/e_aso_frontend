@@ -9,6 +9,7 @@ const orderId = getQueryParam('id');
 if (!orderId) {
     window.location.href = "404.html";
 }
+
 async function fetchOrderDetails() {
     try {
         const response = await fetch(`${ASO_URL}/order-details/${orderId}/`, {
@@ -28,7 +29,6 @@ async function fetchOrderDetails() {
 
         const data = await response.json();
         renderOrderDetails(data);
-        console.log(data)
     } catch (error) {
         alert("Failed to load order: " + error.message);
     }
@@ -38,7 +38,9 @@ async function fetchOrderDetails() {
 }
 
 function renderOrderDetails(order) {
-    document.querySelector('.order-id').textContent = order.order_number;
+    main_product_number = document.querySelector('.order-id').textContent = order.order_number;
+    main_product_number = order.order_number;
+
 
     const statusText = document.querySelector('.status-title');
     const statusSubtitle = document.querySelector('.status-subtitle');
@@ -254,60 +256,82 @@ document.addEventListener('DOMContentLoaded', function() {
             }
     });
 
-    
     // Contact seller button
-    const productID = "12345"; // Replace dynamically with the product ID
-    const sellerNumber = "2348064160380"; // Seller's WhatsApp number (without "+")
+    const productID = orderId;
+    const sellerNumber = "2348064160380";
 
-    const modal = document.getElementById('contactModal');
-    const closeModal = document.querySelector('.modal .close');
+    // Contact Seller Modal
+    const contactModal = document.getElementById('contactModal');
+    const contactClose = contactModal.querySelector('.close');
     const complaintMessageInput = document.getElementById('complaintMessage');
     const sendComplaintBtn = document.getElementById('sendComplaint');
 
-    // Open modal when "Contact Seller" is clicked
-    document.querySelector('.btn-contact').addEventListener('click', function() {
-        modal.style.display = 'block';
+    document.querySelector('.btn-contact').addEventListener('click', () => {
+        contactModal.style.display = 'block';
     });
 
-    // Close modal
-    closeModal.addEventListener('click', function() {
-        modal.style.display = 'none';
-    });
+    contactClose.addEventListener('click', () => contactModal.style.display = 'none');
 
-    // Close modal when clicking outside content
-    window.addEventListener('click', function(event) {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
+    window.addEventListener('click', (event) => {
+        if (event.target === contactModal) contactModal.style.display = 'none';
     });
 
     // Send complaint to WhatsApp
-    sendComplaintBtn.addEventListener('click', function() {
+    sendComplaintBtn.addEventListener('click', () => {
+        showPreloader("Loading......");
         const complaint = complaintMessageInput.value.trim();
-        if (!complaint) {
-            alert('Please enter your complaint before sending.');
-            return;
-        }
+        if (!complaint) return alert('Please enter your complaint before sending.');
 
-        const message = `Hello, I have a complaint about Product ID: ${productID}. \n\nDetails:\n${complaint}`;
+        const message = `Hello, I have a complaint about Product ID: #${productID}.\n\nDetails:\n${complaint}`;
         const whatsappURL = `https://wa.me/${sellerNumber}?text=${encodeURIComponent(message)}`;
-
-        // Redirect to WhatsApp
         window.open(whatsappURL, '_blank');
 
-        // Close modal after sending
-        modal.style.display = 'none';
+        contactModal.style.display = 'none';
         complaintMessageInput.value = '';
 
+        hidePreloader()
     });
-    
-    document.querySelector('.btn-return').addEventListener('click', function () {
+
+
+    // Return Modal
+    const returnModal = document.getElementById('returnModal');
+    const returnClose = returnModal.querySelector('.close');
+
+    document.querySelector('.btn-return').addEventListener('click', () => {
         const currentStatus = document.querySelector('.status-title').textContent.trim().toLowerCase();
-        
         if (currentStatus === 'delivered') {
-            alert('Return request initiated\nYou will receive instructions for returning items.');
+            returnModal.style.display = 'flex';
         } else {
             alert('Return is only available after delivery.');
         }
+    });
+
+    returnClose.addEventListener('click', () => returnModal.style.display = 'none');
+
+    window.addEventListener('click', (event) => {
+        if (event.target === returnModal) returnModal.style.display = 'none';
+    });
+
+
+    // Submit return request
+    document.getElementById('submitReturn').addEventListener('click', function () {
+        showPreloader("Loading......");
+        const checkedOptions = Array.from(document.querySelectorAll('input[name="returnReason"]:checked'))
+            .map(cb => cb.value);
+        const message = document.getElementById('returnMessage').value.trim();
+
+        if (!checkedOptions.length) {
+            alert('Please select at least one reason.');
+            return;
+        }
+
+        // Example: simulate sending request
+        alert(`Return request submitted.\nReasons: ${checkedOptions.join(', ')}\nMessage: ${message}\nWe will reach out to you shortly.`);
+        
+        // Close modal after submission
+        document.getElementById('returnModal').style.display = 'none';
+
+
+        hidePreloader()
     });
 });
