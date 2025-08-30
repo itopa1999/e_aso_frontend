@@ -13,6 +13,7 @@ let nextPageUrl = null;
 
 
 async function loadLists() {
+    showPreloader("Loading search products");
     try {
         const res = await fetch(`${ASO_URL}/?${buildQueryParams()}`, {
             method: "GET",

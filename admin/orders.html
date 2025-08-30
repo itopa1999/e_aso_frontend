@@ -147,7 +147,7 @@
                     
                     <div class="detail-section">
                         <h3>Order Summary</h3>
-                        <table class="totals-table">
+                        <table class="totals-table order-table">
                             <tr>
                                 <td>Subtotal:</td>
                                 <td id="detail-subtotal"></td>
@@ -172,6 +172,26 @@
                         <div class="timeline" id="order-timeline">
                             <!-- Timeline items will be populated here -->
                         </div>
+                        <button id="move-forward-btn" class="theme-button mt-3">
+                           Move Forward <i class="fa fa-arrow-right"></i> 
+                        </button>
+                    </div>
+
+                    <!-- Modal -->
+                    <div id="moveModal" class="modal hidden">
+                        <div class="modal-content">
+                            <h3>Move Order Forward</h3>
+                            <p id="move-message"></p>
+                            <textarea id="move-comment" required rows="4" class="theme-textarea form-control" placeholder="Enter your comment or message here..."></textarea>
+                            <div class="modal-actions">
+                                <button id="confirm-move" class="theme-button">
+                                    <i class="fa fa-check"></i> Confirm
+                                </button>
+                                <button id="close-modal" class="theme-button cancel-btn">
+                                    <i class="fa fa-times"></i> Cancel
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Shipping Info -->
@@ -179,19 +199,58 @@
                         <h3>Shipping Info</h3>
                         <table class="totals-table">
                             <tr>
-                                <td>Subtotal:</td>
-                                <td id="detail-subotal"></td>
+                                <td>First Name:</td>
+                                <td id="shipping-first-name"></td>
                             </tr>
                             <tr>
-                                <td>Shipping:</td>
-                                <td id="detail-shiping"></td>
+                                <td>Last Name:</td>
+                                <td id="shipping-last-name"></td>
                             </tr>
                             <tr>
-                                <td>Discount:</td>
-                                <td id="detail-discunt"></td>
+                                <td>Address:</td>
+                                <td id="shipping-address"></td>
                             </tr>
-                 
+                            <tr>
+                                <td>Apartment:</td>
+                                <td id="shipping-apartment"></td>
+                            </tr>
+                            <tr>
+                                <td>City:</td>
+                                <td id="shipping-city"></td>
+                            </tr>
+                            <tr>
+                                <td>State:</td>
+                                <td id="shipping-state"></td>
+                            </tr>
+                            <tr>
+                                <td>Phone:</td>
+                                <td id="shipping-phone"></td>
+                            </tr>
+                            <tr>
+                                <td>Alt Phone:</td>
+                                <td id="shipping-alt-phone"></td>
+                            </tr>
                         </table>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="detail-section">
+                        <h3>Payment Info</h3>
+                        <div id="payment-detail" class="payment-box">
+
+                        </div>
+                    </div>
+
+                    <!-- Feedback Section -->
+                    <div class="detail-section">
+                        <h3>Customer Feedback</h3>
+                        <div id="feedback-box" class="feedback-box"></div>
+                    </div>
+
+                    <!-- Return Section -->
+                    <div class="detail-section">
+                        <h3>Customer Return</h3>
+                        <div id="returnProductContainer"></div>
                     </div>
 
 
