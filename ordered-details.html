@@ -11,28 +11,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/ordered-details.css">
     <style>
-        /* Modal styling */
-.modal {
-  position: fixed;
-  z-index: 1000;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.5);
-}
 
-.modal-content {
-  background: white;
-  margin: 10% auto;
-  padding: 20px;
-  border-radius: 10px;
-  width: 400px;
-}
-
-.close {
-  float: right;
-  font-size: 20px;
-  cursor: pointer;
-}
     </style>
 </head>
 <body>
@@ -81,7 +60,7 @@
         </a>
         <div>
             <h2 class="order-details-title">Order Details</h2>
-            <div class="order-id">Null</div>
+            <div class="order-id"></div>
         </div>
     </div>
 
@@ -250,9 +229,62 @@
         <div id="contactModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <h3>Contact Seller</h3>
-                <textarea id="complaintMessage" placeholder="Enter your complaint..." rows="4" style="width:100%;"></textarea>
-                <button id="sendComplaint" class="action-btn">Send to WhatsApp</button>
+                <div class="modal-header">
+                    <h3>Contact Seller</h3>
+                </div>
+                <div class="modal-body">
+                    <textarea id="complaintMessage" class="form-control" placeholder="Enter your message..." rows="4"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button id="sendComplaint" class="btn-whatsapp">
+                        <i class="fab fa-whatsapp"></i> Send via WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="returnModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div class="modal-header">
+                    <h3>Request Product Return</h3>
+                </div>
+                <div class="modal-body">
+                    <p style="color: var(--dark-color); font-weight: 500; margin-bottom: 15px;">
+                        You can return the product(s) within <strong>1 day after delivery</strong>.
+                        Please return the items in the same condition as they were delivered. Let us know the issue below.
+                    </p>
+
+                    <div class="return-options">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" name="returnReason" value="Damaged">
+                            <span class="checkmark"></span>
+                            Damaged product
+                        </label>
+                        <label class="custom-checkbox">
+                            <input type="checkbox" name="returnReason" value="Wrong Item">
+                            <span class="checkmark"></span>
+                            Wrong item delivered
+                        </label>
+                        <label class="custom-checkbox">
+                            <input type="checkbox" name="returnReason" value="Not satisfied">
+                            <span class="checkmark"></span> 
+                            Not satisfied with the product
+                        </label>
+                        <label class="custom-checkbox">
+                            <input type="checkbox" name="returnReason" value="Other">
+                            <span class="checkmark"></span>
+                            Other
+                        </label>
+                    </div>
+
+                    <textarea id="returnMessage" class="form-control" placeholder="Explain your issue..." rows="4"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button id="submitReturn" class="btn-primary">
+                        <i class="fas fa-paper-plane"></i> Submit Return Request
+                    </button>
+                </div>
             </div>
         </div>
         
@@ -281,7 +313,7 @@
             <i class="fas fa-search nav-icon"></i>
             <span>Search</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="watchlist.html" class="nav-item">
             <i class="fas fa-heart nav-icon"></i>
             <span>Watchlist</span>
             <span class="nav-badge" id="watchlist-count">0</span>
