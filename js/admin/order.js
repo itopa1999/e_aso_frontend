@@ -150,6 +150,16 @@ function showOrderDetail(order) {
     document.getElementById('detail-total').textContent = `₦${parseFloat(order.total).toLocaleString()}`;
     
     // Update timeline
+    const moveButton = document.getElementById('move-forward-btn');
+    const modal = document.getElementById('moveModal');
+    const moveMessage = document.getElementById('move-message');
+    const moveComment = document.getElementById('move-comment');
+    const confirmMove = document.getElementById('confirm-move');
+    const closeModal = document.getElementById('close-modal');
+
+    let currentStatus = order.latest_tracking_status; // assume `order` is the current order object
+    let nextStatus = null;
+
     document.getElementById("timeline-title").innerHTML = `Order Timeline: ID ${order.tracking_number} || Carrier: ${order.carrier}`
     const orderTimeline = document.getElementById('order-timeline');
     orderTimeline.innerHTML = '';
@@ -176,7 +186,163 @@ function showOrderDetail(order) {
         
         orderTimeline.appendChild(timelineItem);
     });
+
+    // Handle move forward button
+
+    const statusFlow = ['placed', 'processing', 'shipped', 'in_transit', 'delivered'];
+    moveButton.addEventListener('click', () => {
+        if (['in_transit', 'delivered', 'cancelled'].includes(currentStatus)) {
+            alert("This order cannot be moved forward from its current status.");
+            return;
+        }
+
+        const currentIndex = statusFlow.indexOf(currentStatus);
+        if (currentIndex === -1 || currentIndex === statusFlow.length - 1) {
+            alert("This order cannot be moved forward.");
+            return;
+        }
+
+        nextStatus = statusFlow[currentIndex + 1];
+        moveMessage.textContent = `This order will be moved forward to: "${nextStatus.replace('_', ' ')}".`;
+        modal.classList.remove('hidden');
+    });
+
+    // Confirm moving forward
+    confirmMove.addEventListener('click', async () => {
+        modal.classList.add('hidden');
+        if (!moveComment.value.trim()) {
+            alert('Please enter a comment before moving forward.');
+            return;
+        }
+
+        try {
+            showPreloader("updating order")
+            const response = await fetch(`${ADMIN_URL}/update-order/`, {
+                method: "POST",
+                headers: { 
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({
+                    order_number: order.order_number,
+                    new_status: nextStatus,
+                    comment: moveComment.value.trim()
+                })
+            });
+
+            if (response.status === 401) {
+                window.location.href = "/auth.html";
+                return;
+            }
+
+            if (response.status === 404) {
+                window.location.href = "/auth.html";
+                return;
+            }
+
+            if (response.ok) {
+                alert('Order status updated successfully!');
+                location.reload();
+            } else {
+                const data = await response.json();
+                alert(`Failed to update status: ${data.message || 'Unknown error'}`);
+            }
+        } catch (error) {
+            alert('Error connecting to the server.');
+            console.error(error);
+        } finally {
+            hidePreloader()
+        }
+    });
+
+    // Close modal
+    closeModal.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.classList.add('hidden');
+        }
+    });
+
+    // Shipping Info
+    function setText(id, value) {
+        document.getElementById(id).innerText = value && value.trim() !== "" ? value : "N/A";
+    }
+
+    // Populate shipping info
+    setText("shipping-first-name", order.shipping_address.first_name);
+    setText("shipping-last-name", order.shipping_address.last_name);
+    setText("shipping-address", order.shipping_address.address);
+    setText("shipping-apartment", order.shipping_address.apartment);
+    setText("shipping-city", order.shipping_address.city);
+    setText("shipping-state", order.shipping_address.state);
+    setText("shipping-phone", order.shipping_address.phone);
+    setText("shipping-alt-phone", order.shipping_address.alt_phone);
     
+
+    const paymentContainer = document.getElementById("payment-detail");
+
+    if (paymentContainer) {
+        paymentContainer.innerHTML = `
+            <p><span>Payment Method:</span> ${order.payment_detail.method}</p>
+        `;
+    }
+
+    const feedbackData = order.feedback
+
+    console.log(order.feedback)
+    const feedbackContainer = document.getElementById("feedback-box");
+    feedbackContainer.innerHTML = ""; // Clear previous feedback
+
+    if (feedbackData.length === 0) {
+    feedbackContainer.innerHTML = `<p>No feedback available.</p>`;
+    } else {
+    feedbackData.forEach(feedback => {
+        // Safely handle values, use fallback for missing fields
+        const stars = feedback.stars ?? "Not Set";
+        const comment = feedback.comment ?? "No comment provided";
+        const date = feedback.created_at ? new Date(feedback.created_at).toLocaleDateString() : "Not Set";
+
+        const feedbackHTML = `
+            <p><strong>Comment:</strong> ${comment}</p>
+            <p><strong>Stars:</strong> ⭐ ${stars}</p>
+            <p><small><strong>Posted on:</strong> ${date}</small></p>
+        `;
+        feedbackContainer.innerHTML += feedbackHTML;
+    });
+
+    // Return logic
+    const returnContainer = document.getElementById('returnProductContainer');
+    returnContainer.innerHTML = order.return_product.length
+        ? order.return_product.map(item => `
+            <div style="
+                background-color: var(--light-color);
+                border: 1px solid var(--accent-color);
+                border-radius: 10px;
+                padding: 12px;
+                margin-bottom: 12px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            ">
+                <div style="font-size: 1rem; font-weight: bold; color: var(--primary-color);">
+                    Reason: ${item.reason || 'N/A'}
+                </div>
+                <div style="font-size: 0.9rem; color: var(--dark-color); margin: 6px 0;">
+                    Message: ${item.message || 'N/A'}
+                </div>
+                <div style="font-size: 0.8rem; color: var(--accent-color);">
+                    Returned on: ${new Date(item.created_at).toLocaleString() || 'N/A'}
+                </div>
+            </div>
+        `).join('')
+        : `<div style="color: var(--dark-color); font-size: 0.9rem;">No returns found.</div>`;
+
+
+}
+
+
     // Scroll to top
     window.scrollTo({top: 40, behavior: 'smooth'});
 

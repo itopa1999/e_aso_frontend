@@ -201,11 +201,11 @@ async function reorderItems(btn) {
 // ================== FILTER ==================
 function setupFilterButtons() {
     const filterBtns = document.querySelectorAll('.filter-btn');
-    const noOrdersMsg = document.getElementById('noOrdersMessage'); // Create this in HTML
-
+    const noOrdersMsg = document.getElementById('noOrdersMessage');
+    showPreloader("Loading your ordered items");
     filterBtns.forEach(btn => {
         btn.addEventListener('click', function () {
-            showPreloader("Loading your ordered items");
+            
 
             filterBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
