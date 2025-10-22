@@ -6,7 +6,7 @@ showPreloader("Loading your profile");
 
 document.addEventListener('DOMContentLoaded', async function() {
     try {
-        const response = await fetch(`${ADMIN_URL}/profile/`, {
+        const response = await fetch(`${AUTH_URL}/profile/`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${accessToken}`,
@@ -25,15 +25,16 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         const data = await response.json();
+        console.log(data)
 
         if (response.ok) {
-            renderRecentOrders(data.recent_orders)
+            renderRecentOrders(data.data.recent_orders)
             userData = {
-                firstName: data.first_name,
-                lastName: data.last_name,
-                email: data.email,
-                phone: data.phone,
-                totalOrders: data.total_orders || 0
+                firstName: data.data.first_name,
+                lastName: data.data.last_name,
+                email: data.data.email,
+                phone: data.data.phone,
+                totalOrders: data.data.total_orders || 0
             };
             setUserData();
         } else {
@@ -87,7 +88,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             </div>
             <div class="order-right">
                 <div class="order-status status-delivered">${order.latest_tracking_status}</div>
-                <div class="order-price">₦${parseFloat(order.total).toLocaleString()}</div>
+                <div class="order-price">₦${formatNumber(order.total)}</div>
             </div>
         `;
 
@@ -124,7 +125,27 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         // Validate inputs
         if (!firstName || !lastName || !phone) {
-            alert('Please fill in both first name, last name and phone');
+            const overlay = document.createElement("div");
+            overlay.className = "dialog-overlay";
+            overlay.innerHTML = `
+                <div class="dialog-box">
+                    <p>Please fill in both first name, last name and phone</p>
+                    <div class="dialog-actions">
+                        <button class="cancel-btn">Cancel</button>
+                        <button class="confirm-btn1">Okay</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            // Handle actions
+            overlay.querySelector(".cancel-btn").addEventListener("click", () => {
+                overlay.remove();
+            });
+
+            overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+                overlay.remove();
+            });
             return;
         }
         
@@ -137,7 +158,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         profileForm.appendChild(loadingIndicator);
 
         try {
-            const res = await fetch(`${ADMIN_URL}/update/profile/`, {
+            const res = await fetch(`${AUTH_URL}/update/profile/`, {
                 method: "PUT",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,

@@ -5,13 +5,13 @@ if (!accessToken) {
     window.location.href = "404.html";
 }
 
-ASO_URL = "http://127.0.0.1:8000/aso/api/product"
+RIDER_URL = "http://127.0.0.1:8000/rider/api"
 
-let nextPageUrl = `${ASO_URL}/rider/`; // First page endpoint
+let nextPageUrl = `${RIDER_URL}/rider/`; // First page endpoint
 let isLoading = false;
 
 // Fetch rider info (supports pagination)
-async function fetchRiderInfo(url = `${ASO_URL}/rider/`, append = false, searchTerm = "") {
+async function fetchRiderInfo(url = `${RIDER_URL}/rider/`, append = false, searchTerm = "") {
     if (isLoading || !url) return; // Prevent duplicate loads
     isLoading = true;
     showPreloader("loading rider info");
@@ -116,7 +116,7 @@ function openDetails(orderNumber) {
     
     
 
-    fetch(`${ASO_URL}/orders/rider-details/`, {
+    fetch(`${RIDER_URL}/orders/rider-details/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -135,9 +135,9 @@ function openDetails(orderNumber) {
     })
     .then(data => {
         if (!data) return; // stop if redirected
-        if (data && data.message) {
+        if (data.is_success) {
             // Fill order details
-        const details = data.order_details;
+        const details = data.data;
         document.querySelector('.order-details1').innerHTML = `
             <div class="detail-row">
                 <span class="detail-label">Order ID:</span>
@@ -238,15 +238,15 @@ document.getElementById("closeProductModal").addEventListener("click", function 
 const searchInput = document.getElementById("orderSearch");
 const searchBtn = document.getElementById("searchBtn");
 
-// searchBtn.addEventListener("click", () => {
-//     const term = searchInput.value.trim();
-//     fetchRiderInfo(`${ASO_URL}/rider/`, false, term);
-// });
+searchInput.addEventListener("input", () => {
+    const term = searchInput.value.trim();
+    fetchRiderInfo(`${RIDER_URL}/rider/`, false, term);
+});
 
 searchInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
         const term = searchInput.value.trim();
-        fetchRiderInfo(`${ASO_URL}/rider/`, false, term);
+        fetchRiderInfo(`${RIDER_URL}/rider/`, false, term);
     }
 });
 
@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Hit backend to send OTP
-        fetch(`${ASO_URL}/orders/send-otp/`, {
+        fetch(`${RIDER_URL}/orders/send-otp/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -363,14 +363,15 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             if (!data) return; // stop if redirected
-            if (data.message) {
+            console.log(data)
+            if (data.is_success) {
                 // OTP sent successfully
                 orderError.style.display = 'none';
                 step1.classList.remove('active');
                 step2.classList.add('active');
                 otpSuccess.style.display = 'block';
             } else {
-                orderError.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.error || "Order not found. Please check the order number and try again."}`;
+                orderError.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.message || "Order not found. Please check the order number and try again."}`;
                 orderError.style.display = 'block';
             }
         })
@@ -390,12 +391,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const otpCode = otpCodeInput.value.trim();
         const orderNumber = orderNumberInput.value.trim();
 
+
         // Show loading state
         const originalText = submitOtpBtn.innerHTML;
         submitOtpBtn.innerHTML = '<div class="loading"></div> Verifying...';
         submitOtpBtn.disabled = true;
 
-        fetch(`${ASO_URL}/orders/verify-otp/`, {
+        fetch(`${RIDER_URL}/orders/verify-otp/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -415,13 +417,13 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             if (!data) return; // stop if redirected
-            if (data && data.message) {
+            if (data.is_success) {
                 otpError.style.display = 'none';
                 step2.classList.remove('active');
                 step3.classList.add('active');
 
                 // Fill order details
-            const details = data.order_details;
+            const details = data.data.order_details;
             document.querySelector('#step3 .order-details').innerHTML = `
                 <div class="detail-row">
                     <span class="detail-label">Order ID:</span>
@@ -518,7 +520,28 @@ document.addEventListener('DOMContentLoaded', function() {
         const orderNumber = orderNumberInput.value.trim();
 
         if (selectedStars === null) {
-            alert("Please select a rating before submitting!");
+            const overlay = document.createElement("div");
+            overlay.className = "dialog-overlay";
+            overlay.innerHTML = `
+                <div class="dialog-box">
+                    <p>Please select a rating before submitting!</p>
+                    <div class="dialog-actions">
+                        <button class="cancel-btn">Cancel</button>
+                        <button class="confirm-btn1">Okay</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            // Handle actions
+            overlay.querySelector(".cancel-btn").addEventListener("click", () => {
+                overlay.remove();
+            });
+
+            overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+                overlay.remove();
+            });
+            return;
         }
 
         // Show loading state
@@ -526,7 +549,7 @@ document.addEventListener('DOMContentLoaded', function() {
         completeDeliveryBtn.innerHTML = '<div class="loading"></div> Processing...';
         completeDeliveryBtn.disabled = true;
 
-        fetch(`${ASO_URL}/orders/confirm/`, {
+        fetch(`${RIDER_URL}/orders/confirm/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -546,7 +569,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return res.json();
         })
         .then(data => {
-            if (data && data.message) {
+            if (data.is_success) {
                 // Show success screen
                 step3.classList.remove('active');
                 step4.classList.add('active');
@@ -569,12 +592,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
         
-    // Close modal when clicking outside
-    deliveryModal.addEventListener('click', function(e) {
-        if (e.target === deliveryModal) {
-            closeDeliveryModal();
-        }
-    });
     hidePreloader()
 });
 

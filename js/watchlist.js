@@ -22,7 +22,7 @@ async function loadLists() {
         }
 
         const data = await res.json();
-        renderList(data);
+        renderList(data.data);
     } catch (error) {
         console.error("Error loading watchlists:", error);
     } finally {
@@ -33,7 +33,8 @@ async function loadLists() {
 loadLists()
     
 function renderList(data) {
-    const products = data.results;
+    console.log(data)
+    const products = data;
     const productsGrid = document.querySelector(".products-grid");
     
 
@@ -85,6 +86,19 @@ function renderList(data) {
         `;
 
         productsGrid.appendChild(card);
+
+        const btn = card.querySelector(".add-to-cart");
+        if (product.cart_added) {
+            btn.textContent = "Added!";
+            btn.style.backgroundColor = "#28a745";
+            btn.disabled = true;
+            btn.style.cursor = "not-allowed";
+        } else {
+            btn.textContent = "Add to Cart";
+            btn.disabled = false;
+            btn.style.cursor = "pointer";
+        }
+
     });
 
     attachWatchlistEvents();
@@ -107,23 +121,21 @@ function renderList(data) {
                 if (!res.ok) throw new Error("Failed to move items to cart");
 
                 const data = await res.json();
-                const itemsMoved = data.items_added;
+                const itemsMoved = data.data.items_added;
                 let currentCount = parseInt(cartBadge.textContent) || 0;
                 cartBadge.textContent = currentCount + itemsMoved;
 
                 // Animation
                 btn.textContent = '✓ Added!';
                 btn.style.backgroundColor = '#28a745';
+                btn.disabled = true;
+                btn.style.cursor = "not-allowed";
 
             } catch (error) {
                 console.error(error);
                 alert("Error moving items to cart.");
             } finally {
                 hidePreloader();
-                setTimeout(() => {
-                    btn.textContent = 'Add to Cart';
-                    btn.style.backgroundColor = '';
-                }, 2000);
             }
         });
     });
@@ -166,11 +178,38 @@ function attachWatchlistEvents() {
         });
     });
 }
-    
+
+
+const cartBadge = document.getElementById("cart-count");
 
 // Clear all button
 const clearAllBtn = document.querySelector('.btn-clear-all');
 clearAllBtn.addEventListener('click', async function () {
+    if ((parseInt(wishlistCountElement.textContent) || 0) === 0) {
+        const overlay = document.createElement("div");
+        overlay.className = "dialog-overlay";
+        overlay.innerHTML = `
+            <div class="dialog-box">
+                <p>WishList is empty</p>
+                <div class="dialog-actions">
+                    <button class="cancel-btn">Cancel</button>
+                    <button class="confirm-btn1">Okay</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        // Handle actions
+        overlay.querySelector(".cancel-btn").addEventListener("click", () => {
+            overlay.remove();
+        });
+
+        overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+            overlay.remove();
+        });
+        return;
+    }
+    
     showPreloader("Removing all watchlist items");
 
     try {
@@ -207,11 +246,35 @@ clearAllBtn.addEventListener('click', async function () {
 
 
 // Add to cart functionality
-const cartBadge = document.getElementById("cart-count");
+
 
 // Move all to cart button
 const moveAllBtn = document.querySelector('.btn-move-all');
 moveAllBtn.addEventListener('click', async function () {
+    if ((parseInt(wishlistCountElement.textContent) || 0) === 0) {
+        const overlay = document.createElement("div");
+        overlay.className = "dialog-overlay";
+        overlay.innerHTML = `
+            <div class="dialog-box">
+                <p>WishList is empty</p>
+                <div class="dialog-actions">
+                    <button class="cancel-btn">Cancel</button>
+                    <button class="confirm-btn1">Okay</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        // Handle actions
+        overlay.querySelector(".cancel-btn").addEventListener("click", () => {
+            overlay.remove();
+        });
+
+        overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+            overlay.remove();
+        });
+        return;
+    }
     showPreloader("Moving items to cart...");
     
     try {
@@ -226,7 +289,7 @@ moveAllBtn.addEventListener('click', async function () {
         if (!res.ok) throw new Error("Failed to move items to cart");
 
         const data = await res.json();
-        const itemsMoved = data.items_added;
+        const itemsMoved = data.data.items_added;
 
         let currentCount = parseInt(cartBadge.textContent) || 0;
         cartBadge.textContent = currentCount + itemsMoved;

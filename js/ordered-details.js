@@ -28,7 +28,7 @@ async function fetchOrderDetails() {
         if (!response.ok) throw new Error("Failed to fetch order");
 
         const data = await response.json();
-        renderOrderDetails(data);
+        renderOrderDetails(data.data);
     } catch (error) {
         alert("Failed to load order: " + error.message);
     }
@@ -278,10 +278,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Send complaint to WhatsApp
     sendComplaintBtn.addEventListener('click', () => {
-        showPreloader("Loading......");
         const complaint = complaintMessageInput.value.trim();
-        if (!complaint) return alert('Please enter your complaint before sending.');
+        
+        if (!complaint){
+            const overlay = document.createElement("div");
+            overlay.className = "dialog-overlay";
+            overlay.innerHTML = `
+                <div class="dialog-box">
+                    <p>Please enter your complaint before sending.</p>
+                    <div class="dialog-actions">
+                        <button class="cancel-btn">Cancel</button>
+                        <button class="confirm-btn1">Okay</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
 
+            // Handle actions
+            overlay.querySelector(".cancel-btn").addEventListener("click", () => {
+                overlay.remove();
+            });
+
+            overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+                overlay.remove();
+            });
+
+            return;
+        }
+        showPreloader("Loading......");
         const message = `Hello, I have a complaint about Product ID: #${productID}.\n\nDetails:\n${complaint}`;
         const whatsappURL = `https://wa.me/${sellerNumber}?text=${encodeURIComponent(message)}`;
         window.open(whatsappURL, '_blank');
@@ -302,7 +326,28 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentStatus === 'delivered') {
             returnModal.style.display = 'flex';
         } else {
-            alert('Return is only available after delivery.');
+            const overlay = document.createElement("div");
+            overlay.className = "dialog-overlay";
+            overlay.innerHTML = `
+                <div class="dialog-box">
+                    <p>Return is only available after delivery.</p>
+                    <div class="dialog-actions">
+                        <button class="cancel-btn">Cancel</button>
+                        <button class="confirm-btn1">Okay</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            // Handle actions
+            overlay.querySelector(".cancel-btn").addEventListener("click", () => {
+                overlay.remove();
+            });
+
+            overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+                overlay.remove();
+            });
+
         }
     });
 
@@ -321,7 +366,27 @@ document.addEventListener('DOMContentLoaded', function() {
         const message = document.getElementById('returnMessage').value.trim();
 
         if (!checkedOptions.length) {
-            alert('Please select at least one reason.');
+            const overlay = document.createElement("div");
+            overlay.className = "dialog-overlay";
+            overlay.innerHTML = `
+                <div class="dialog-box">
+                    <p>Please select at least one reason.</p>
+                    <div class="dialog-actions">
+                        <button class="cancel-btn">Cancel</button>
+                        <button class="confirm-btn1">Okay</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            // Handle actions
+            overlay.querySelector(".cancel-btn").addEventListener("click", () => {
+                overlay.remove();
+            });
+
+            overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+                overlay.remove();
+            });
             return;
         }
 

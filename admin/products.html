@@ -228,12 +228,78 @@
                         </div>
                         <br>
                         <div class="detail-actions">
-                            <button class="action-btn btn-edit"><i class="fa fa-edit"></i> Edit Product</button>
+                            <button class="action-btn btn-edit" id="editButton"><i class="fa fa-edit"></i> Edit Product</button>
                         </div>
+
+                        <!-- Edit Product Modal -->
+                        <div id="editProductModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close-btn" id="closeModal">&times;</span>
+                                <h2>Edit Product</h2>
+                                <form id="editProductForm">
+                                    <div class="form-group">
+                                        <label for="title">Product Title</label>
+                                        <input type="text" id="edit-title" name="title" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="description">Description</label>
+                                        <textarea id="edit-description" name="description"></textarea>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="original_price">Original Price</label>
+                                        <input type="number" id="edit-original_price" name="original_price" step="0.01" readonly>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="current_price">Current Price</label>
+                                        <input type="number" id="edit-current_price" name="current_price" step="0.01" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="discount_percent">Discount % off</label>
+                                        <input type="number" id="edit-discount_percent" name="discount_percent" step="0.01" >
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="badge">Badge</label>
+                                        <select id="edit-badge" name="badge" required>
+                                            <option value="New">New</option>
+                                            <option value="Best Seller">Best Seller</option>
+                                            <option value="Limited">Limited</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                    <label for="edit-category">Category</label>
+                                    <select id="edit-category" name="category" multiple required>
+                                        <!-- Options will be filled by JS -->
+                                    </select>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="main_image">Main Image</label>
+                                        <input type="file" id="edit-main_image" name="main_image" accept="image/*">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="token">Auth Token</label>
+                                        <input type="text" id="token" name="token" required>
+                                        <a href="#" id="resetTokenLink">Resend</a>
+                                    </div>
+
+                                    <button type="submit" class="btn-submit">Save Changes</button>
+                                </form>
+                            </div>
+                        </div>
+
 
                         <br><br>
                         <div class="orders-table-container">
                             <table class="orders-table">
+                                <header class="m-3" style="font-size: 30px; font-weight:600; color:rgb(66, 65, 63)">Related Orders</header>
                                 <thead>
                                     <tr>
                                         <th>Order Number</th>

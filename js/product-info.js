@@ -21,7 +21,7 @@ async function fetchProductDetails() {
         const data = await response.json();
         renderProductDetails(data);
     } catch (error) {
-        alert("Failed to load product details items.");
+        console.log("Failed to load product details items.", error);
     } finally {
         hidePreloader();
     }
@@ -37,12 +37,12 @@ function renderProductDetails(data) {
     document.querySelector('.product-description-short').textContent = data.description;
     document.querySelector('.rating-count').textContent = `(${formatReviews(data.reviews_count)} reviews) | ${data.product_number}`;
     document.querySelector('.current-price').textContent =
-        '₦' + parseFloat(data.current_price).toLocaleString();
+        '₦' + formatNumber(data.current_price);
 
     // Price and Discount
     if (data.discount_percent && parseFloat(data.discount_percent) > 0) {
         document.querySelector('.original-price').textContent =
-            '₦' + parseFloat(data.original_price).toLocaleString();
+            '₦' + formatNumber(data.original_price);
         document.querySelector('.discount').textContent =
             `- ${data.discount_percent}%`;
 
@@ -58,6 +58,14 @@ function renderProductDetails(data) {
 
     // Wishlist state
     setWishlistState(data.watchlisted);
+
+    const AddToCartbtn2 = document.querySelector(".btn-add-cart");
+    if (data.cart_added) {
+        AddToCartbtn2.textContent = "✓ Added!";
+        AddToCartbtn2.style.background  = "#28a745";
+        AddToCartbtn2.disabled = true;
+        AddToCartbtn2.style.cursor = "not-allowed";
+    }
 
     // Render Options
     renderOptions('color-options', data.colors, 'color');
@@ -194,7 +202,7 @@ function renderProductDetails(data) {
                 <a style='text-decoration:none'; href="product-info.html?id=${product.id}">
                     <h3 class="product-card-title">${product.title}</h3>
                 </a>
-                <div class="product-card-price">₦${parseFloat(product.current_price).toLocaleString()}</div>
+                <div class="product-card-price">₦${formatNumber(product.current_price)}</div>
             </div>
          `;
         ProductRelatedContainer.appendChild(productItem);
@@ -248,23 +256,21 @@ function attachCartEvents(id) {
             if (!res.ok) throw new Error("Failed to move items to cart");
 
             const data = await res.json();
-            const itemsMoved = data.items_added;
+            const itemsMoved = data.data.items_added;
             let currentCount = parseInt(cartBadge.textContent) || 0;
             cartBadge.textContent = currentCount + itemsMoved;
 
             // Animation
             addToCartBtn.innerHTML = '✓ Added!';
             addToCartBtn.style.background = '#28a745';
+            addToCartBtn.disabled = true;
+            addToCartBtn.style.cursor = "not-allowed";
         
         } catch (error) {
             console.error(error);
             alert("Error moving items to cart.");
         } finally {
             hidePreloader();
-            setTimeout(() => {
-                addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
-                addToCartBtn.style.background = 'linear-gradient(to right, var(--primary-color), var(--dark-color))';
-            }, 2000);
         }
     });
 }
@@ -297,9 +303,10 @@ function attachWatchlistEvents(id) {
                 throw new Error("Failed to toggle watchlist");
             }
             const data = await response.json();
+            console.log(data)
             let count = parseInt(wishlistCountElement.textContent);
-            if (data.watchlisted) {
-                setWishlistState(data.watchlisted);
+            if (data.data.watchlisted) {
+                setWishlistState(data.data.watchlisted);
                 count += 1;
             } else {
                 setWishlistState(data.watchlisted)

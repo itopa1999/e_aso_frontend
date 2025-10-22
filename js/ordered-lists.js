@@ -34,7 +34,8 @@ async function loadOrders() {
         }
 
         const data = await res.json();
-        allOrders = data.results || [];
+        allOrders = data.data || [];
+        console.log(allOrders)
         renderOrders(allOrders);
 
     } catch (error) {
@@ -78,7 +79,7 @@ function renderOrders(orders) {
                     <a href="product-info.html?id=${item.product_id}" style="text-decoration:none">
                         <div class="order-item-name">${item.product_name}</div>
                     </a>
-                    <div class="order-item-price">₦${parseFloat(item.price).toLocaleString()}</div>
+                    <div class="order-item-price">₦${formatNumber(item.price)}</div>
                     <div class="order-item-qty">Quantity: ${item.quantity}</div>
                 </div>
             </div>
@@ -121,19 +122,19 @@ function renderSummary(order) {
     return `
         <div class="summary-row">
             <div class="summary-label">Subtotal</div>
-            <div class="summary-value">₦${parseFloat(order.subtotal).toLocaleString()}</div>
+            <div class="summary-value">₦${formatNumber(order.subtotal)}</div>
         </div>
         <div class="summary-row">
             <div class="summary-label">Shipping</div>
-            <div class="summary-value">₦${parseFloat(order.shipping).toLocaleString()}</div>
+            <div class="summary-value">₦${formatNumber(order.shipping)}</div>
         </div>
         <div class="summary-row">
             <div class="summary-label">Discount</div>
-            <div class="summary-value" style="color:#28a745;">-₦${parseFloat(order.discount).toLocaleString()}</div>
+            <div class="summary-value" style="color:#28a745;">-₦${formatNumber(order.discount)}</div>
         </div>
         <div class="summary-total">
             <div>Total</div>
-            <div>₦${parseFloat(order.total).toLocaleString()}</div>
+            <div>₦${formatNumber(order.total)}</div>
         </div>
     `;
 }
@@ -175,7 +176,7 @@ async function reorderItems(btn) {
         if (!res.ok) throw new Error("Failed to reorder items");
 
         const data = await res.json();
-        const itemsAdded = data.items_added || 0;
+        const itemsAdded = data.data.items_added || 0;
 
         let currentCount = parseInt(cartBadge.textContent) || 0;
         cartBadge.textContent = currentCount + itemsAdded;

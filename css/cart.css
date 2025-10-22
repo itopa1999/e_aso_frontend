@@ -693,3 +693,38 @@ select{
   outline: none;
   box-shadow: 0 0 5px rgba(212, 163, 115, 0.5);
 }
+
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1.2rem;
+    padding: 0.5rem 0;
+    border-bottom: 2px solid #eee;
+
+}
+
+.cart-header h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.delete-all-btn {
+    background: none;
+    border: none;
+    color: #e63946;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.2s ease;
+}
+
+.delete-all-btn:hover {
+    color: #c82333;
+}
+
+

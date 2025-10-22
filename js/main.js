@@ -287,6 +287,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 ADMIN_URL = "http://127.0.0.1:8000/admins/api/user"
+AUTH_URL = "http://127.0.0.1:8000/auth/api/user" 
 ASO_URL = "http://127.0.0.1:8000/aso/api/product"
 
 
@@ -314,7 +315,10 @@ function formatReviews(count) {
 }
 
 function formatNumber(num) {
-    return parseFloat(num).toLocaleString();
+    return parseFloat(num).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
 }
 
 
