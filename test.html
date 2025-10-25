@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Aso Oke Marketplace</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/img/logo.jpeg">
+    <title>Special Offers - Royal Aso Oke & Aso Ofi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #8a4b38;
@@ -15,6 +12,8 @@
             --accent-color: #d4a373;
             --dark-color: #4a2c2a;
             --light-color: #f9f5f0;
+            --error-color: #e74c3c;
+            --success-color: #28a745;
         }
 
         * {
@@ -25,1196 +24,573 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f5f2ed;
+            background-color: #faf8f5;
             color: #333;
+            padding-top: 70px;
+            padding-bottom: 70px;
             overflow-x: hidden;
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f9f5f0"/><path d="M20,20 L80,80 M80,20 L20,80" stroke="%23e8d0b3" stroke-width="0.5" opacity="0.3"/></svg>');
             background-size: 300px;
         }
 
-        /* Header Styles */
-        .header {
-            background: linear-gradient(to right, var(--primary-color), var(--dark-color));
-            height: 70px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1001;
-        }
-
-        .header-container {
-            max-width: 1400px;
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
-            height: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
-        .logo {
-            height: 40px;
-            width: 40px;
-            background-color: var(--secondary-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: var(--dark-color);
-            font-size: 18px;
-            text-decoration: none;
-        }
-
-        .admin-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            color: white;
-        }
-
-        .admin-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 250px;
-            background: white;
-            height: calc(100vh - 70px);
-            position: fixed;
-            top: 70px;
-            left: 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
-            padding: 20px 0;
-            overflow-y: auto;
-            z-index: 1000;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-        }
-
-        .menu-item {
-            padding: 15px 25px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            color: #555;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-        }
-
-        .menu-item:hover, .menu-item.active {
-            background: var(--light-color);
-            color: var(--primary-color);
-            border-left-color: var(--primary-color);
-        }
-
-        .menu-item i {
-            width: 20px;
+        /* Header Styles */
+        .page-header {
             text-align: center;
+            margin-bottom: 40px;
+            position: relative;
         }
 
-        /* Main Content */
-        .main-content {
-            margin-top: 70px;
-            padding: 20px;
-            margin-left: 250px;
-        }
-
-        .main-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .main-title {
-            color: var(--dark-color);
-            font-weight: 600;
-        }
-
-        /* Search */
-        .search-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .search-input {
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            width: 300px;
-        }
-
-        .search-btn {
-            padding: 10px 15px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        /* Orders Table */
-        .orders-table-container {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        .orders-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .orders-table th {
-            background: var(--light-color);
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            color: var(--dark-color);
-            border-bottom: 1px solid #eee;
-        }
-
-        .orders-table td {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .orders-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .orders-table tr:hover {
-            background: #f9f9f9;
-            cursor: pointer;
-        }
-
-        .order-id {
+        .page-title {
+            font-size: 3rem;
             color: var(--primary-color);
-            font-weight: 500;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .customer-name {
-            font-weight: 500;
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            max-width: 600px;
+            margin: 0 auto 30px;
         }
 
-        .order-date {
-            color: #777;
+        /* Celebration Banner */
+        .celebration-banner {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(138, 75, 56, 0.3);
+            animation: pulse 2s infinite;
         }
 
-        .order-status {
-            padding: 5px 10px;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Special Offer Grid */
+        .offers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .offer-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .offer-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .offer-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--error-color);
+            color: white;
+            padding: 5px 15px;
             border-radius: 20px;
             font-size: 0.8rem;
-            font-weight: 500;
-            display: inline-block;
+            font-weight: bold;
+            z-index: 2;
         }
 
-        .status-placed {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .status-delivered {
-            background: #e8f5e9;
-            color: #388e3c;
-        }
-
-        .status-cancelled {
-            background: #ffebee;
-            color: #d32f2f;
-        }
-
-        .order-total {
-            font-weight: 600;
-            color: var(--dark-color);
-        }
-
-        /* Order Detail View */
-        .order-detail {
-            display: none;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
-
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .breadcrumb a {
-            color: var(--primary-color);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .breadcrumb a:hover {
-            text-decoration: underline;
-        }
-
-        .breadcrumb span {
-            color: #777;
-        }
-
-        .detail-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .order-info {
-            flex: 1;
-        }
-
-        .order-info h2 {
-            color: var(--dark-color);
-            margin-bottom: 5px;
-        }
-
-        .order-meta {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #777;
-        }
-
-        .customer-info {
-            background: var(--light-color);
-            padding: 15px;
-            border-radius: 8px;
-            flex: 1;
-            max-width: 300px;
-        }
-
-        .customer-info h3 {
-            margin-bottom: 10px;
-            color: var(--dark-color);
-        }
-
-        .customer-info p {
-            margin-bottom: 5px;
-        }
-
-        .detail-content {
-            margin-top: 20px;
-        }
-
-        .detail-section {
-            margin-bottom: 30px;
-        }
-
-        .detail-section h3 {
-            color: var(--dark-color);
-            margin-bottom: 15px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .items-table {
+        .offer-image {
+            height: 200px;
             width: 100%;
-            border-collapse: collapse;
-        }
-
-        .items-table th {
-            background: var(--light-color);
-            padding: 12px 15px;
-            text-align: left;
-            font-weight: 600;
-            color: var(--dark-color);
-            border-bottom: 1px solid #eee;
-        }
-
-        .items-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .item-image {
-            width: 60px;
-            height: 60px;
-            border-radius: 4px;
+            background-color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
             overflow: hidden;
         }
 
-        .item-image img {
+        .offer-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.5s;
         }
 
-        .item-name {
-            font-weight: 500;
+        .offer-card:hover .offer-image img {
+            transform: scale(1.1);
         }
 
-        .item-price {
+        .offer-content {
+            padding: 20px;
+        }
+
+        .offer-title {
+            font-size: 1.3rem;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .offer-description {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .price-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .current-price {
+            font-size: 1.5rem;
+            font-weight: bold;
             color: var(--primary-color);
         }
 
-        .item-quantity {
+        .original-price {
+            font-size: 1rem;
+            color: #999;
+            text-decoration: line-through;
+            margin-left: 10px;
+        }
+
+        .discount {
+            background: var(--success-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        /* Countdown Timer */
+        .countdown {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            background: var(--light-color);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .countdown-item {
             text-align: center;
+            flex: 1;
         }
 
-        .item-total {
-            font-weight: 600;
+        .countdown-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
         }
 
-        .totals-table {
-            width: 100%;
-            max-width: 400px;
-            margin-left: auto;
-            border-collapse: collapse;
-        }
-
-        .totals-table td {
-            padding: 8px 15px;
-        }
-
-        .totals-table tr:last-child {
-            border-top: 1px solid #eee;
-            font-weight: 600;
+        .countdown-label {
+            font-size: 0.7rem;
             color: var(--dark-color);
+            text-transform: uppercase;
         }
 
-        .timeline {
-            position: relative;
-            padding-left: 30px;
-            margin-top: 20px;
-        }
-
-        .timeline:before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: #ddd;
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .timeline-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: -34px;
-            top: 0;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
+        /* Action Button */
+        .action-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
             background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
         }
 
-        .timeline-date {
-            font-size: 0.9rem;
-            color: #777;
-            margin-bottom: 5px;
+        .action-button:hover {
+            background: var(--dark-color);
         }
 
-        .timeline-content {
-            font-size: 0.95rem;
+        /* Bubble Animation */
+        .bubbles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
         }
 
-        /* Preloader Styles */
-        .preloader {
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(212, 163, 115, 0.2);
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.5;
+            }
+        }
+
+        /* Congratulatory Splash */
+        .splash {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(138, 75, 56, 0.9);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-
-        .preloader.hidden {
+            z-index: 1000;
+            color: white;
+            text-align: center;
+            padding: 20px;
             opacity: 0;
             visibility: hidden;
+            transition: opacity 0.5s, visibility 0.5s;
         }
 
-        .preloader-spinner {
-            width: 80px;
-            height: 80px;
-            position: relative;
+        .splash.active {
+            opacity: 1;
+            visibility: visible;
         }
 
-        .preloader-spinner:before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 5px solid transparent;
-            border-top-color: var(--primary-color);
-            border-bottom-color: var(--primary-color);
-            animation: spin 1.5s linear infinite;
+        .splash h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .preloader-spinner:after {
-            content: "";
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: 5px solid transparent;
-            border-left-color: var(--accent-color);
-            border-right-color: var(--accent-color);
-            animation: spinReverse 1s linear infinite;
+        .splash p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 500px;
         }
 
-        .preloader-text {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: 500;
-            color: var(--dark-color);
+        .close-splash {
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .close-splash:hover {
+            transform: scale(1.05);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin: 40px 0;
             text-align: center;
         }
 
-        .preloader-dots {
-            display: flex;
-            margin-top: 10px;
+        .progress-title {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            margin-bottom: 10px;
         }
 
-        .preloader-dot {
-            width: 12px;
-            height: 12px;
-            background: var(--primary-color);
-            border-radius: 50%;
-            margin: 0 5px;
-            animation: bounce 1.4s infinite ease-in-out both;
+        .progress-bar {
+            height: 10px;
+            background: var(--light-color);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
         }
 
-        .preloader-dot:nth-child(1) {
-            animation-delay: -0.32s;
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            width: 60%;
+            border-radius: 5px;
         }
 
-        .preloader-dot:nth-child(2) {
-            animation-delay: -0.16s;
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--dark-color);
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes spinReverse {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(-360deg); }
-        }
-
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1.0); }
-        }
-
-        #goToTopBtn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 99;
-            font-size: 18px;
-            background-color: var(--primary-color);
-            color: var(--light-color);
-            border: none;
-            outline: none;
-            cursor: pointer;
-            padding: 15px 20px;
-            border-radius: 50%;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            transition: background-color 0.3s ease;
-            display: none;
-        }
-
-        #goToTopBtn:hover {
-            background-color: var(--accent-color);
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 200px;
-            }
-            
-            .main-content {
-                margin-left: 200px;
-            }
-        }
-
-        @media (max-width: 900px) {
-            .search-input {
-                width: 200px;
-            }
-            
-            .detail-header {
-                flex-direction: column;
-            }
-            
-            .customer-info {
-                max-width: 100%;
-            }
-        }
-
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease-in-out;
+            .page-title {
+                font-size: 2.2rem;
             }
             
-            .sidebar.active {
-                transform: translateX(0);
+            .offers-grid {
+                grid-template-columns: 1fr;
             }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .menu-toggle {
-                display: block;
-                font-size: 22px;
-                color: white;
-                cursor: pointer;
-            }
-            
-            .main-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .search-input {
-                width: 100%;
-            }
-            
-            .orders-table {
-                display: block;
-                overflow-x: auto;
-            }
-            
-            .items-table {
-                display: block;
-                overflow-x: auto;
-            }
-        }
-
-        /* Overlay for mobile when sidebar is active */
-        .sidebar-overlay {
-            position: fixed;
-            top: 70px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            display: none;
-        }
-
-        .sidebar-overlay.active {
-            display: block;
         }
     </style>
 </head>
 <body>
-    <div class="preloader" id="preloader">
-        <div class="preloader-spinner"></div>
-        <div class="preloader-text">Loading.....</div>
-        <div class="preloader-dots">
-            <div class="preloader-dot"></div>
-            <div class="preloader-dot"></div>
-            <div class="preloader-dot"></div>
-        </div>
-    </div>
-    
-    <!-- Overlay for mobile sidebar -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    
-    <!-- Header -->
-    <header class="header">
-        <div class="header-container">
-            <a href="/index.html" class="logo">AO</a>
-            
-            <div class="admin-info">
-                <div class="menu-toggle" id="menuToggle">
-                    <i class="fas fa-bars"></i>
-                </div>
-                <div class="admin-avatar">
-                    <i class="fas fa-user-cog"></i>
-                </div>
-                <div>
-                    <div>Admin User</div>
-                    <div style="font-size: 0.8rem; opacity: 0.8;">Administrator</div>
-                </div>
-            </div>
-        </div>
-    </header>
+    <!-- Bubble Background -->
+    <div class="bubbles" id="bubbles"></div>
 
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <ul class="sidebar-menu">
-            <li><a href="/admin/dashboard.html" class="menu-item"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-            <li><a href="/admin/products.html" class="menu-item"><i class="fas fa-box"></i> <span>Products</span></a></li>
-            <li><a href="/admin/orders.html" class="menu-item active"><i class="fas fa-shopping-cart"></i> <span>Orders</span></a></li>
-            <li><a href="/admin/customers.html" class="menu-item"><i class="fas fa-users"></i> <span>Customers</span></a></li>
-            <li><a href="/admin/analytics.html" class="menu-item"><i class="fas fa-chart-bar"></i> <span>Analytics</span></a></li>
-            <li><a href="#" id="logoutUser" class="menu-item"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
-        </ul>
+    <!-- Congratulatory Splash -->
+    <div class="splash" id="splash">
+        <h2>Congratulations!</h2>
+        <p>You've discovered our exclusive special offers! Limited time only - don't miss out on these amazing deals.</p>
+        <button class="close-splash" id="closeSplash">Start Shopping</button>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content" id="mainContent">
-        <div id="main-content-header">
-            <div class="main-header">
-                <h1 class="main-title">Admin Order Page</h1>
-                <div class="search-container">
-                    <input type="text" class="search-input" placeholder="Enter Order ID/Customer Name...." id="order-search">
-                    <button class="search-btn" id="search-button">
-                        <i class="fas fa-search"></i> Search
-                    </button>
-                </div>
+    <div class="container">
+        <!-- Page Header -->
+        <header class="page-header">
+            <h1 class="page-title">Special Offers</h1>
+            <p class="page-subtitle">Discover our limited-time exclusive deals on premium Aso Oke and Aso Ofi fabrics. These offers won't last long!</p>
+            <div class="celebration-banner">
+                <i class="fas fa-gift"></i> LIMITED TIME OFFERS - UP TO 40% OFF <i class="fas fa-gift"></i>
             </div>
+        </header>
 
-            <!-- Orders Table -->
-            <div class="orders-table-container">
-                <table class="orders-table" id="orders-table">
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Customer</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="orders-table-body">
-                        <!-- Orders will be populated here -->
-                    </tbody>
-                </table>
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-title">Hurry! Offers are selling fast</div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
             </div>
+            <div class="progress-text">60% of offers already claimed</div>
+        </div>
 
-            <!-- Order Detail View -->
-            <div class="order-detail" id="order-detail">
-                <div class="breadcrumb">
-                    <a href="javascript:void(0)" id="back-to-orders">
-                        <i class="fas fa-arrow-left"></i> Back to Orders
-                    </a>
-                    <span id="breadcrumb-order-id"></span>
+        <!-- Special Offers Grid -->
+        <div class="offers-grid">
+            <!-- Offer 1 -->
+            <div class="offer-card">
+                <div class="offer-badge">HOT DEAL</div>
+                <div class="offer-image">
+                    <img src="https://via.placeholder.com/300x200/8a4b38/ffffff?text=Premium+Aso+Oke" alt="Premium Aso Oke">
                 </div>
-                
-                <div class="detail-header">
-                    <div class="order-info">
-                        <h2 id="detail-order-id"></h2>
-                        <div class="order-meta">
-                            <div class="meta-item">
-                                <i class="fas fa-calendar"></i>
-                                <span id="detail-order-date"></span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="fas fa-truck"></i>
-                                <span id="detail-order-status"></span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="fas fa-box"></i>
-                                <span id="detail-items-count"></span> items
-                            </div>
+                <div class="offer-content">
+                    <h3 class="offer-title">Royal Aso Oke Complete Set</h3>
+                    <p class="offer-description">Traditional handwoven fabric with intricate patterns. Perfect for special occasions.</p>
+                    
+                    <div class="price-container">
+                        <div class="current-price">₦28,500</div>
+                        <div class="original-price">₦35,000</div>
+                        <div class="discount">19% OFF</div>
+                    </div>
+                    
+                    <div class="countdown" id="countdown1">
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="days1">02</div>
+                            <div class="countdown-label">Days</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="hours1">12</div>
+                            <div class="countdown-label">Hours</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="minutes1">45</div>
+                            <div class="countdown-label">Minutes</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="seconds1">30</div>
+                            <div class="countdown-label">Seconds</div>
                         </div>
                     </div>
                     
-                    <div class="customer-info">
-                        <h3>Customer Information</h3>
-                        <p id="detail-customer-name"></p>
-                        <p id="detail-customer-email"></p>
-                        <p id="detail-customer-phone"></p>
-                    </div>
+                    <button class="action-button">Get This Offer</button>
                 </div>
-                
-                <div class="detail-content">
-                    <div class="detail-section">
-                        <h3>Order Items</h3>
-                        <table class="items-table">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="order-items-body">
-                                <!-- Order items will be populated here -->
-                            </tbody>
-                        </table>
+            </div>
+
+            <!-- Offer 2 -->
+            <div class="offer-card">
+                <div class="offer-badge">POPULAR</div>
+                <div class="offer-image">
+                    <img src="https://via.placeholder.com/300x200/d4a373/ffffff?text=Luxury+Aso+Ofi" alt="Luxury Aso Ofi">
+                </div>
+                <div class="offer-content">
+                    <h3 class="offer-title">Luxury Aso Ofi Collection</h3>
+                    <p class="offer-description">Premium quality Aso Ofi with contemporary designs. Comfort meets elegance.</p>
+                    
+                    <div class="price-container">
+                        <div class="current-price">₦15,900</div>
+                        <div class="original-price">₦22,000</div>
+                        <div class="discount">28% OFF</div>
                     </div>
                     
-                    <div class="detail-section">
-                        <h3>Order Summary</h3>
-                        <table class="totals-table">
-                            <tr>
-                                <td>Subtotal:</td>
-                                <td id="detail-subtotal"></td>
-                            </tr>
-                            <tr>
-                                <td>Shipping:</td>
-                                <td id="detail-shipping"></td>
-                            </tr>
-                            <tr>
-                                <td>Discount:</td>
-                                <td id="detail-discount"></td>
-                            </tr>
-                            <tr>
-                                <td>Total:</td>
-                                <td id="detail-total"></td>
-                            </tr>
-                        </table>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <h3>Order Timeline</h3>
-                        <div class="timeline" id="order-timeline">
-                            <!-- Timeline items will be populated here -->
+                    <div class="countdown" id="countdown2">
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="days2">01</div>
+                            <div class="countdown-label">Days</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="hours2">08</div>
+                            <div class="countdown-label">Hours</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="minutes2">22</div>
+                            <div class="countdown-label">Minutes</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="seconds2">15</div>
+                            <div class="countdown-label">Seconds</div>
                         </div>
                     </div>
+                    
+                    <button class="action-button">Get This Offer</button>
+                </div>
+            </div>
+
+            <!-- Offer 3 -->
+            <div class="offer-card">
+                <div class="offer-badge">EXCLUSIVE</div>
+                <div class="offer-image">
+                    <img src="https://via.placeholder.com/300x200/e8d0b3/333333?text=Traditional+Set" alt="Traditional Set">
+                </div>
+                <div class="offer-content">
+                    <h3 class="offer-title">Traditional Complete Outfit</h3>
+                    <p class="offer-description">Complete traditional outfit with matching accessories. Make a statement at any event.</p>
+                    
+                    <div class="price-container">
+                        <div class="current-price">₦42,000</div>
+                        <div class="original-price">₦60,000</div>
+                        <div class="discount">30% OFF</div>
+                    </div>
+                    
+                    <div class="countdown" id="countdown3">
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="days3">03</div>
+                            <div class="countdown-label">Days</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="hours3">05</div>
+                            <div class="countdown-label">Hours</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="minutes3">18</div>
+                            <div class="countdown-label">Minutes</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="seconds3">45</div>
+                            <div class="countdown-label">Seconds</div>
+                        </div>
+                    </div>
+                    
+                    <button class="action-button">Get This Offer</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <button id="goToTopBtn" title="Go to top">&#8679;</button>
-    
     <script>
+        // Create bubbles
+        function createBubbles() {
+            const bubblesContainer = document.getElementById('bubbles');
+            const bubbleCount = 15;
+            
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // Random size between 20px and 80px
+                const size = Math.random() * 60 + 20;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                // Random position
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation delay
+                bubble.style.animationDelay = `${Math.random() * 15}s`;
+                
+                bubblesContainer.appendChild(bubble);
+            }
+        }
+
+        // Show congratulatory splash on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Preloader
-            const preloader = document.getElementById('preloader');
+            createBubbles();
+            
+            // Show splash after a short delay
             setTimeout(() => {
-                preloader.classList.add('hidden');
-            }, 1500);
-
-            // Sidebar toggle for mobile
-            const menuToggle = document.getElementById('menuToggle');
-            const sidebar = document.getElementById('sidebar');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-            menuToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('active');
-                sidebarOverlay.classList.toggle('active');
-            });
-
-            sidebarOverlay.addEventListener('click', function() {
-                sidebar.classList.remove('active');
-                sidebarOverlay.classList.remove('active');
-            });
-
-            // Go to top button
-            const goToTopBtn = document.getElementById('goToTopBtn');
+                document.getElementById('splash').classList.add('active');
+            }, 1000);
             
-            window.onscroll = function() {
-                if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-                    goToTopBtn.style.display = "block";
-                } else {
-                    goToTopBtn.style.display = "none";
-                }
-            };
-
-            goToTopBtn.addEventListener('click', function() {
-                window.scrollTo({top: 0, behavior: 'smooth'});
+            // Close splash when button is clicked
+            document.getElementById('closeSplash').addEventListener('click', function() {
+                document.getElementById('splash').classList.remove('active');
             });
-
-            // DOM elements
-            const ordersTableBody = document.getElementById('orders-table-body');
-            const orderDetail = document.getElementById('order-detail');
-            const backToOrders = document.getElementById('back-to-orders');
-            const breadcrumbOrderId = document.getElementById('breadcrumb-order-id');
-            const searchInput = document.getElementById('order-search');
-            const searchButton = document.getElementById('search-button');
-
-            // Sample order data (in a real app, this would come from the backend)
-            const sampleOrders = [
-                {
-                    id: 16,
-                    order_number: "#AO-OD-0016",
-                    customer_first_name: "String",
-                    customer_last_name: "Love999r",
-                    customer_email: "stringlove999r@example.com",
-                    customer_phone: "+1234567890",
-                    subtotal: "268999.93",
-                    shipping_fee: "1500.00",
-                    discount: "0.00",
-                    total: "270499.93",
-                    tracking_number: "#AO-OT-0016",
-                    carrier: "Aso Oke Express",
-                    delivery_date: "2025-08-29",
-                    estimated_delivery_date: "2025-09-05",
-                    created_at: "2025-08-29T14:31:27.911453Z",
-                    latest_tracking_status: "delivered",
-                    items: [
-                        {
-                            id: 53,
-                            product: {
-                                id: 60,
-                                product_number: "#AO-P-0060",
-                                title: "Classic White T-Shirt",
-                                description: "A stylish and comfortable white t-shirt.",
-                                current_price: "26999.99",
-                                original_price: "29999.99",
-                                discount_percent: 10,
-                                rating: 4,
-                                reviews_count: 8,
-                                badge: "New",
-                                main_image: "https://placehold.co/100x100/8a4b38/white?text=T-Shirt"
-                            },
-                            quantity: 3,
-                            price: "26999.99",
-                            total_price: 80999.97,
-                            desc: {
-                                color: "Red",
-                                size: "7"
-                            }
-                        },
-                        {
-                            id: 54,
-                            product: {
-                                id: 68,
-                                product_number: "#AO-P-0068",
-                                title: "Premium Aso Oke Fabric",
-                                description: "High-quality Aso Oke fabric for traditional outfits.",
-                                current_price: "29999.99",
-                                original_price: "29999.99",
-                                discount_percent: 0,
-                                rating: 4,
-                                reviews_count: 292,
-                                badge: "New",
-                                main_image: "https://placehold.co/100x100/8a4b38/white?text=Fabric"
-                            },
-                            quantity: 2,
-                            price: "29999.99",
-                            total_price: 59999.98,
-                            desc: {
-                                color: "Red",
-                                size: "7"
-                            }
-                        }
-                    ],
-                    timeline: [
-                        {
-                            date: "2025-08-29T14:31:27.911453Z",
-                            status: "Order Placed",
-                            description: "Order was successfully placed"
-                        },
-                        {
-                            date: "2025-08-29T16:45:12.311235Z",
-                            status: "Processing",
-                            description: "Order is being processed"
-                        },
-                        {
-                            date: "2025-08-30T09:15:44.987123Z",
-                            status: "Shipped",
-                            description: "Order has been shipped with tracking #AO-OT-0016"
-                        },
-                        {
-                            date: "2025-09-02T14:20:33.654321Z",
-                            status: "Out for Delivery",
-                            description: "Order is out for delivery"
-                        },
-                        {
-                            date: "2025-09-02T16:45:19.123456Z",
-                            status: "Delivered",
-                            description: "Order was successfully delivered"
-                        }
-                    ]
-                },
-                {
-                    id: 15,
-                    order_number: "#AO-OD-0015",
-                    customer_first_name: "John",
-                    customer_last_name: "Doe",
-                    customer_email: "johndoe@example.com",
-                    customer_phone: "+0987654321",
-                    subtotal: "150000.00",
-                    shipping_fee: "2000.00",
-                    discount: "5000.00",
-                    total: "147000.00",
-                    tracking_number: "#AO-OT-0015",
-                    carrier: "Aso Oke Express",
-                    delivery_date: null,
-                    estimated_delivery_date: "2025-09-10",
-                    created_at: "2025-08-28T10:15:33.222333Z",
-                    latest_tracking_status: "processing",
-                    items: [
-                        {
-                            id: 55,
-                            product: {
-                                id: 72,
-                                product_number: "#AO-P-0072",
-                                title: "Traditional Aso Oke Cap",
-                                description: "Handcrafted traditional cap made from Aso Oke fabric.",
-                                current_price: "25000.00",
-                                original_price: "25000.00",
-                                discount_percent: 0,
-                                rating: 4.5,
-                                reviews_count: 42,
-                                badge: "Best Seller",
-                                main_image: "https://placehold.co/100x100/8a4b38/white?text=Cap"
-                            },
-                            quantity: 2,
-                            price: "25000.00",
-                            total_price: 50000.00,
-                            desc: {
-                                color: "Blue",
-                                size: "M"
-                            }
-                        },
-                        {
-                            id: 56,
-                            product: {
-                                id: 75,
-                                product_number: "#AO-P-0075",
-                                title: "Aso Oke Handbag",
-                                description: "Elegant handbag made from authentic Aso Oke fabric.",
-                                current_price: "50000.00",
-                                original_price: "50000.00",
-                                discount_percent: 0,
-                                rating: 4.8,
-                                reviews_count: 18,
-                                badge: "New",
-                                main_image: "https://placehold.co/100x100/8a4b38/white?text=Handbag"
-                            },
-                            quantity: 2,
-                            price: "50000.00",
-                            total_price: 100000.00,
-                            desc: {
-                                color: "Gold",
-                                size: "One Size"
-                            }
-                        }
-                    ],
-                    timeline: [
-                        {
-                            date: "2025-08-28T10:15:33.222333Z",
-                            status: "Order Placed",
-                            description: "Order was successfully placed"
-                        },
-                        {
-                            date: "2025-08-28T14:22:11.555444Z",
-                            status: "Processing",
-                            description: "Order is being processed"
-                        }
-                    ]
-                }
-            ];
-
-            // Render orders function
-            function renderOrders(orders) {
-                ordersTableBody.innerHTML = '';
-                
-                if (orders.length === 0) {
-                    ordersTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No orders found matching your criteria.</td></tr>';
-                    return;
-                }
-                
-                orders.forEach(order => {
-                    const orderDate = new Date(order.created_at).toLocaleDateString();
-                    const statusClass = `status-${order.latest_tracking_status}`;
-                    
-                    const row = document.createElement('tr');
-                    row.addEventListener('click', () => showOrderDetail(order));
-                    
-                    row.innerHTML = `
-                        <td class="order-id">${order.order_number}</td>
-                        <td class="customer-name">${order.customer_first_name} ${order.customer_last_name}</td>
-                        <td class="order-date">${orderDate}</td>
-                        <td><span class="order-status ${statusClass}">${order.latest_tracking_status}</span></td>
-                        <td class="order-total">₦${parseFloat(order.total).toLocaleString()}</td>
-                    `;
-                    
-                    ordersTableBody.appendChild(row);
-                });
-            }
-
-            // Show order detail function
-            function showOrderDetail(order) {
-                // Hide orders table and show detail view
-                document.querySelector('.orders-table-container').style.display = 'none';
-                orderDetail.style.display = 'block';
-                
-                // Update breadcrumb
-                breadcrumbOrderId.textContent = order.order_number;
-                
-                // Update order info
-                document.getElementById('detail-order-id').textContent = order.order_number;
-                
-                const orderDate = new Date(order.created_at).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                document.getElementById('detail-order-date').textContent = orderDate;
-                
-                const statusClass = `status-${order.latest_tracking_status}`;
-                document.getElementById('detail-order-status').innerHTML = `<span class="order-status ${statusClass}">${order.latest_tracking_status}</span>`;
-                
-                document.getElementById('detail-items-count').textContent = order.items.length;
-                
-                // Update customer info
-                document.getElementById('detail-customer-name').textContent = `${order.customer_first_name} ${order.customer_last_name}`;
-                document.getElementById('detail-customer-email').textContent = order.customer_email;
-                document.getElementById('detail-customer-phone').textContent = order.customer_phone;
-                
-                // Update order items
-                const orderItemsBody = document.getElementById('order-items-body');
-                orderItemsBody.innerHTML = '';
-                
-                order.items.forEach(item => {
-                    const row = document.createElement('tr');
-                    
-                    row.innerHTML = `
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <div class="item-image">
-                                    <img src="${item.product.main_image}" alt="${item.product.title}">
-                                </div>
-                                <div>
-                                    <div class="item-name">${item.product.title}</div>
-                                    <div style="font-size: 0.8rem; color: #777;">
-                                        ${item.desc.color}, ${item.desc.size}
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="item-price">₦${parseFloat(item.price).toLocaleString()}</td>
-                        <td class="item-quantity">${item.quantity}</td>
-                        <td class="item-total">₦${parseFloat(item.total_price).toLocaleString()}</td>
-                    `;
-                    
-                    orderItemsBody.appendChild(row);
-                });
-                
-                // Update order totals
-                document.getElementById('detail-subtotal').textContent = `₦${parseFloat(order.subtotal).toLocaleString()}`;
-                document.getElementById('detail-shipping').textContent = `₦${parseFloat(order.shipping_fee).toLocaleString()}`;
-                document.getElementById('detail-discount').textContent = `-₦${parseFloat(order.discount).toLocaleString()}`;
-                document.getElementById('detail-total').textContent = `₦${parseFloat(order.total).toLocaleString()}`;
-                
-                // Update timeline
-                const orderTimeline = document.getElementById('order-timeline');
-                orderTimeline.innerHTML = '';
-                
-                order.timeline.forEach(event => {
-                    const eventDate = new Date(event.date).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
-                    
-                    const timelineItem = document.createElement('div');
-                    timelineItem.className = 'timeline-item';
-                    
-                    timelineItem.innerHTML = `
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-date">${eventDate}</div>
-                        <div class="timeline-content">
-                            <strong>${event.status}</strong>: ${event.description}
-                        </div>
-                    `;
-                    
-                    orderTimeline.appendChild(timelineItem);
-                });
-                
-                // Scroll to top
-                window.scrollTo({top: 0, behavior: 'smooth'});
-            }
-
-            // Back to orders function
-            backToOrders.addEventListener('click', function() {
-                orderDetail.style.display = 'none';
-                document.querySelector('.orders-table-container').style.display = 'block';
-            });
-
-            // Search orders function
-            function searchOrders() {
-                const searchTerm = searchInput.value.toLowerCase().trim();
-                
-                if (!searchTerm) {
-                    renderOrders(sampleOrders);
-                    return;
-                }
-                
-                const filteredOrders = sampleOrders.filter(order => {
-                    return (
-                        order.order_number.toLowerCase().includes(searchTerm) ||
-                        order.customer_first_name.toLowerCase().includes(searchTerm) ||
-                        order.customer_last_name.toLowerCase().includes(searchTerm) ||
-                        order.customer_email.toLowerCase().includes(searchTerm) ||
-                        order.tracking_number.toLowerCase().includes(searchTerm)
-                    );
-                });
-                
-                renderOrders(filteredOrders);
-            }
-
-            // Event listeners for search
-            searchButton.addEventListener('click', searchOrders);
             
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    searchOrders();
-                }
-            });
-
-            // Initial render
-            renderOrders(sampleOrders);
+            // Initialize countdown timers
+            initializeCountdowns();
         });
+
+        // Countdown timer functionality
+        function initializeCountdowns() {
+            // Set end times for each countdown (2 days from now, 1 day from now, 3 days from now)
+            const endTimes = [
+                new Date().getTime() + (2 * 24 * 60 * 60 * 1000), // 2 days
+                new Date().getTime() + (1 * 24 * 60 * 60 * 1000), // 1 day
+                new Date().getTime() + (3 * 24 * 60 * 60 * 1000)  // 3 days
+            ];
+            
+            // Update countdowns every second
+            setInterval(function() {
+                for (let i = 0; i < endTimes.length; i++) {
+                    updateCountdown(i+1, endTimes[i]);
+                }
+            }, 1000);
+        }
+
+        function updateCountdown(countdownId, endTime) {
+            const now = new Date().getTime();
+            const distance = endTime - now;
+            
+            if (distance < 0) {
+                // Countdown finished
+                document.getElementById(`days${countdownId}`).textContent = '00';
+                document.getElementById(`hours${countdownId}`).textContent = '00';
+                document.getElementById(`minutes${countdownId}`).textContent = '00';
+                document.getElementById(`seconds${countdownId}`).textContent = '00';
+                return;
+            }
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById(`days${countdownId}`).textContent = days.toString().padStart(2, '0');
+            document.getElementById(`hours${countdownId}`).textContent = hours.toString().padStart(2, '0');
+            document.getElementById(`minutes${countdownId}`).textContent = minutes.toString().padStart(2, '0');
+            document.getElementById(`seconds${countdownId}`).textContent = seconds.toString().padStart(2, '0');
+        }
     </script>
 </body>
 </html>

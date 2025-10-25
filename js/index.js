@@ -282,7 +282,26 @@ function attachWatchlistEvents() {
 // =========================
 // PAGE INIT
 // =========================
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
+    const heroImage = document.getElementById("hero-image");
+    const heroLink = document.getElementById("hero-link");
+
+    try {
+        const res = await fetch(`${ADMIN_URL}/banners/hero/`);
+        const json = await res.json();
+        if (json.is_success && json.data && json.data.length > 0) {
+        const banner = json.data[0]; // use the first hero banner
+        heroImage.src = banner.image;
+        heroLink.href = banner.link || "#";
+        } else {
+        console.warn("No hero banner found");
+        }
+    } catch (err) {
+        console.error("Error loading hero banner:", err);
+    }
+    
+
+    
     loadLists();
     loadCats();
 
