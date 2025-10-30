@@ -5,7 +5,7 @@ if (!accessToken) {
     window.location.href = "404.html";
 }
 
-RIDER_URL = "http://127.0.0.1:8000/rider/api"
+RIDER_URL = "https://luck1999.pythonanywhere.com/rider/api"
 
 let nextPageUrl = `${RIDER_URL}/rider/`; // First page endpoint
 let isLoading = false;

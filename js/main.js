@@ -287,9 +287,9 @@ document.addEventListener('keydown', (e) => {
 });
 
 
-ADMIN_URL = "http://127.0.0.1:8000/admins/api/admin"
-AUTH_URL = "http://127.0.0.1:8000/auth/api/user" 
-ASO_URL = "http://127.0.0.1:8000/aso/api/product"
+ADMIN_URL = "https://luck1999.pythonanywhere.com/admins/api/admin"
+AUTH_URL = "https://luck1999.pythonanywhere.com/auth/api/user" 
+ASO_URL = "https://luck1999.pythonanywhere.com/aso/api/product"
 
 
 function getStarHTML(rating) {

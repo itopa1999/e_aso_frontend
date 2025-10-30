@@ -1,4 +1,4 @@
-AUTH_URL = "http://127.0.0.1:8000/auth/api/user"
+AUTH_URL = "https://luck1999.pythonanywhere.com/auth/api/user"
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('login-form');
     const submitBtn = document.getElementById('submit-btn');
