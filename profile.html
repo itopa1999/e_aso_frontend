@@ -75,6 +75,37 @@
                         <div class="stat-label">Total Orders</div>
                     </div>
                 </div>
+
+                <div class="referral-section">
+                    <h4 class="referral-title">Referral Progress</h4>
+                    <div class="referral-code-box">
+                        <span>Your Code:</span>
+                        <div id="referralCode" class="referral-code"></div>
+                        <button id="copyReferralCode" class="copy-btn">Copy</button>
+                    </div>
+                    <div class="referral-progress-container">
+                        <div class="referral-circle">
+                            <svg viewBox="0 0 36 36" class="circular-chart">
+                                <path class="circle-bg"
+                                    d="M18 2.0845
+                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                        a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <path class="circle"
+                                    stroke-dasharray="0, 100"
+                                    d="M18 2.0845
+                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                        a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <text x="18" y="20.35" class="percentage-text" id="referralPercent">0%</text>
+                            </svg>
+                        </div>
+                        <div class="referral-info">
+                            <div class="referral-count">
+                                <span id="referralCount">0</span>/5 Referrals
+                            </div>
+                            <div class="referral-status" id="referralStatus">Not Qualified</div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="profile-actions">
                     <button class="profile-btn btn-edit" id="editProfileBtn">

@@ -140,6 +140,6 @@ function getStarHTML(rating) {
 }
 
 
-
+ANALYTICS_URL = "http://127.0.0.1:8000/admins/api/analytics"
 ADMIN_URL = "http://127.0.0.1:8000/admins/api/admin"
 ASO_URL = "http://127.0.0.1:8000/aso/api/product"

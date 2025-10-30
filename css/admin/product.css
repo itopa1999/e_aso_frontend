@@ -1,48 +1,76 @@
+/* Customer Page Specific Styles */
+.main-content {
+    padding: 20px;
+    min-height: calc(100vh - 70px);
+    transition: all 0.3s ease;
+}
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(138, 75, 56, 0.1);
+}
+
+.main-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin: 0;
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 .search-container {
     display: flex;
-    align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .search-input {
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    min-width: 200px;
+    padding: 12px 20px;
+    border: 2px solid var(--secondary-color);
+    border-radius: 25px;
+    font-size: 0.9rem;
+    min-width: 250px;
+    transition: all 0.3s ease;
+    background: white;
+    font-family: 'Poppins', sans-serif;
 }
 
-.search-input:focus{
-    border: 1px solid var(--primary-color);
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(138, 75, 56, 0.1);
+    transform: translateY(-2px);
 }
 
 .search-btn {
-    background: var(--primary-color);
+    padding: 12px 25px;
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    border-radius: 25px;
     cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
 }
 
 .search-btn:hover {
-    background: var(--dark-color);
-}
-
-
-@media (max-width: 768px) {
-
-    
-    .search-container {
-        width: 100%;
-    }
-    
-    .search-input {
-        flex-grow: 1;
-    }
-
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(138, 75, 56, 0.2);
 }
 
 .filter-container {

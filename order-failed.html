@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Failed - ASO Marketplace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/logo.jpeg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary-color: #8a4b38;
+            --secondary-color: #e8d0b3;
+            --accent-color: #d9534f; /* red for fail */
+            --dark-color: #4a2c2a;
+            --light-color: #f9f5f0;
+            --error-color: #d9534f;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf8f5;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f9f5f0"/><path d="M20,20 L80,80 M80,20 L20,80" stroke="%23e8d0b3" stroke-width="0.5" opacity="0.3"/></svg>');
+            background-size: 300px;
+            padding: 20px;
+        }
+        .confetti {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden;
+        }
+        .confetti-piece {
+            position: absolute; width: 10px; height: 30px; background: var(--accent-color); top: 0; opacity: 0; animation: confetti-drop 4s ease-in-out infinite;
+        }
+        /* Add variety to confetti pieces */
+        .confetti-piece:nth-child(1) { left: 10%; transform: rotate(-40deg); animation-delay: 0s; background-color: var(--error-color); }
+        .confetti-piece:nth-child(2) { left: 20%; transform: rotate(15deg); animation-delay: 0.5s; background-color: var(--accent-color); height: 25px; }
+        .confetti-piece:nth-child(3) { left: 30%; transform: rotate(-60deg); animation-delay: 1s; }
+        .confetti-piece:nth-child(4) { left: 40%; transform: rotate(40deg); animation-delay: 1.5s; background-color: var(--dark-color); }
+        .confetti-piece:nth-child(5) { left: 50%; transform: rotate(-30deg); animation-delay: 0.3s; }
+        .confetti-piece:nth-child(6) { left: 60%; transform: rotate(50deg); animation-delay: 2s; background-color: var(--error-color); height: 20px; }
+        .confetti-piece:nth-child(7) { left: 70%; transform: rotate(10deg); animation-delay: 1.7s; }
+        .confetti-piece:nth-child(8) { left: 80%; transform: rotate(-20deg); animation-delay: 2.5s; background-color: var(--dark-color); height: 30px; }
+        .confetti-piece:nth-child(9) { left: 90%; transform: rotate(35deg); animation-delay: 1s; }
+        .order-container {
+            width: 100%; max-width: 520px; padding: 50px; background: white; border-radius: 20px; box-shadow: 0 15px 50px rgba(74, 44, 42, 0.1); position: relative; overflow: hidden; z-index: 2; text-align: center; animation: fadeInUp 0.8s ease-out;
+        }
+        .order-container::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 8px; background: linear-gradient(to right, var(--primary-color), var(--dark-color)); z-index: 2;
+        }
+        .fail-icon {
+            width: 120px; height: 120px; background: rgba(217, 83, 79, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; position: relative; animation: pulse 2s infinite;
+        }
+        .fail-icon i { font-size: 60px; color: var(--error-color); }
+        .order-header { margin-bottom: 20px; }
+        .order-header h1 { font-size: 32px; color: var(--error-color); font-weight: 700; margin-bottom: 15px; }
+        .order-header p { color: #555; font-size: 18px; line-height: 1.6; max-width: 400px; margin: 0 auto; }
+        .action-buttons { margin-top: 30px; display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; }
+        .btn { padding: 16px 40px; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.3s ease; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 12px; text-decoration: none; }
+        .btn-primary { background: var(--error-color); color: white; box-shadow: 0 5px 15px rgba(217, 83, 79, 0.3); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(217, 83, 79, 0.4); }
+        .btn-outline { background: transparent; color: var(--error-color); border: 2px solid var(--error-color); margin-left: 15px; }
+        .btn-outline:hover { background: rgba(217, 83, 79, 0.05); }
+        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(217, 83, 79, 0.4); } 70% { transform: scale(1.01); box-shadow: 0 0 0 20px rgba(217, 83, 79, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(217, 83, 79, 0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes confetti-drop { 0% { opacity: 1; top: -100px; } 100% { opacity: 0; top: 100%; } }
+    </style>
+</head>
+<body>
+    <div class="confetti">
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+    </div>
+    
+    <div class="order-container">
+        <div class="fail-icon">
+            <i class="fas fa-times"></i>
+        </div>
+        <div class="order-header">
+            <h1>Payment Failed</h1>
+            <p>Unfortunately, your transaction could not be completed. Please try again or check if order has been created</p>
+        </div>
+        <div class="action-buttons">
+            <a href="index.html">
+                <button class="btn btn-primary"><i class="fas fa-arrow-left"></i> Return to Shop</button>
+            </a>
+            <a href="checkout.html">
+                <button class="btn btn-outline"><i class="fas fa-redo"></i> Retry Payment</button>
+            </a>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const reference = params.get('reference');
+
+        if (reference === null) {
+            window.location.href = '404.html';
+                  
+        }
+
+        // Get retry button
+        const retryBtn = document.querySelector('.btn-outline');
+
+        retryBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            
+            try {
+                retryBtn.disabled = true;
+                retryBtn.textContent = "Processing...";
+
+                alert(reference)
+
+                // Call your backend endpoint
+                const response = await fetch(`http://127.0.0.1:8000/aso/api/product/paystack-confirm-subscription/${reference}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server responded with ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.ok) {
+                    // Redirect to success page
+                    window.location.href = data.redirect_url || '/order-success.html';
+                } else {
+                    alert(data.message || "Payment retry failed. Please try again.");
+                    retryBtn.disabled = false;
+                    retryBtn.textContent = "Retry Payment";
+                }
+
+            } catch (err) {
+                console.error(err);
+                alert("An error occurred while retrying the payment.");
+                retryBtn.disabled = false;
+                retryBtn.textContent = "Retry Payment";
+            }
+        });
+    });
+    </script>
+
+</body>
+</html>

@@ -35,7 +35,6 @@ async function loadOrders() {
 
         const data = await res.json();
         allOrders = data.data || [];
-        console.log(allOrders)
         renderOrders(allOrders);
 
     } catch (error) {
@@ -152,10 +151,101 @@ function attachActionHandlers() {
     });
 
     document.querySelectorAll('.btn-track').forEach(btn => {
-        btn.addEventListener('click', () => {
-            window.location.href = `ordered-details.html?id=${btn.dataset.id}`;
+        btn.addEventListener('click', async () => {
+            const modal = document.getElementById('trackingModal');
+            modal.style.display = 'flex';
+
+            const steps = document.querySelectorAll('.timeline-step');
+            const headerTitle = document.getElementById('header-title');
+            const progressBar = document.querySelector('.timeline-progress-bar');
+
+            // Example: you can fetch tracking details dynamically
+            const orderId = btn.dataset.id;
+            try {
+                showPreloader("Loading tracking details");
+                const response = await fetch(`${ASO_URL}/track-order/${orderId}/`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`, // optional if auth required
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch tracking info: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                headerTitle.textContent = `Tracking Information for Order ${data.order_number}`;
+
+                const trackingList = data.tracking || [];
+                if (trackingList.length === 0) {
+                    console.warn("No tracking info available for order:", orderId);
+                    return;
+                }
+
+                const statusOrder = ['placed', 'processing', 'shipped', 'in_transit', 'delivered'];
+            const latest = trackingList[0]; // most recent status
+            const orderStatus = latest.status;
+            const currentStepIndex = statusOrder.indexOf(orderStatus.toLowerCase());
+
+            // Update timeline steps
+            steps.forEach((step, index) => {
+                const matchingTrack = trackingList.find(t => statusOrder[index] === t.status.toLowerCase());
+                const stepTitle = step.querySelector('.step-title');
+                const stepDate = step.querySelector('.step-date');
+                const stepDesc = step.querySelector('.step-description');
+
+                step.classList.remove('step-completed', 'step-active');
+
+                if (index < currentStepIndex) {
+                    step.classList.add('step-completed');
+                } else if (index === currentStepIndex) {
+                    step.classList.add('step-active');
+                }
+
+                if (matchingTrack) {
+                    const date = new Date(matchingTrack.date).toLocaleString();
+                    stepTitle.textContent = capitalizeWords(matchingTrack.status.replace(/_/g, " "));
+                    stepDate.textContent = date;
+                    stepDesc.textContent = matchingTrack.description || "Updated";
+                } else {
+                    stepTitle.textContent = capitalizeWords(statusOrder[index].replace(/_/g, " "));
+                    stepDate.textContent = "";
+                    stepDesc.textContent = "";
+                }
+            });
+
+            // progress bar height
+            const percent = (currentStepIndex / (statusOrder.length - 1)) * 100;
+            progressBar.style.height = `${percent}%`;
+
+        } catch (error) {
+            console.error(error);
+        } finally {
+            hidePreloader();
+        }
+            
         });
     });
+
+    function capitalizeWords(str) {
+        return str.replace(/\b\w/g, char => char.toUpperCase());
+    }
+
+    // Close modal when clicking close button
+    document.querySelector('.modal-close').addEventListener('click', () => {
+        document.getElementById('trackingModal').style.display = 'none';
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', e => {
+        const modal = document.getElementById('trackingModal');
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
 }
 
 async function reorderItems(btn) {

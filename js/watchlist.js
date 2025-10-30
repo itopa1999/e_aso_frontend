@@ -33,7 +33,6 @@ async function loadLists() {
 loadLists()
     
 function renderList(data) {
-    console.log(data)
     const products = data;
     const productsGrid = document.querySelector(".products-grid");
     

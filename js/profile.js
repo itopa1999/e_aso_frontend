@@ -4,7 +4,29 @@ if (!accessToken) {
 }
 showPreloader("Loading your profile");
 
+async function checkReferralFeature() {
+    try {
+        const res = await fetch(`${ASO_URL}/feature-flag/Referral%20System/`, {
+            method: "GET",
+            headers: { "Accept": "application/json" }
+        });
+        const result = await res.json();
+
+        const referralSection = document.querySelector(".referral-section");
+
+        if (result?.data === true) {
+            referralSection.style.display = "block";
+        } else {
+            referralSection.style.display = "none";
+        }
+    } catch (err) {
+        console.error("Feature flag check failed:", err);
+        document.querySelector(".referral-section").style.display = "none";
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async function() {
+    await checkReferralFeature();
     try {
         const response = await fetch(`${AUTH_URL}/profile/`, {
             method: "GET",
@@ -25,7 +47,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         const data = await response.json();
-        console.log(data)
 
         if (response.ok) {
             renderRecentOrders(data.data.recent_orders)
@@ -34,8 +55,13 @@ document.addEventListener('DOMContentLoaded', async function() {
                 lastName: data.data.last_name,
                 email: data.data.email,
                 phone: data.data.phone,
-                totalOrders: data.data.total_orders || 0
+                totalOrders: data.data.total_orders || 0,
+                referralsSuccessful: data.data.total_successful_referrals || 0,
+                isQualified: data.data.is_referral_qualified || false,
+                referrerCode: data.data.referral_code || ''
             };
+
+            console.log("User Data:", userData);
             setUserData();
         } else {
             alert("Unable to fetch profile: " + (data.error || "Unknown error"));
@@ -66,6 +92,33 @@ document.addEventListener('DOMContentLoaded', async function() {
         const firstInitial = userData.firstName?.charAt(0).toUpperCase() || '';
         const lastInitial = userData.lastName?.charAt(0).toUpperCase() || '';
         document.getElementById('profile-pic').textContent = `${firstInitial}${lastInitial}`;
+
+        const totalNeeded = 5;
+        const current = Math.min(userData.referralsSuccessful, totalNeeded);
+        const percent = Math.round((current / totalNeeded) * 100);
+
+        const circle = document.querySelector('.circle');
+        const text = document.getElementById('referralPercent');
+        const count = document.getElementById('referralCount');
+        const status = document.getElementById('referralStatus');
+
+        circle.setAttribute('stroke-dasharray', `${percent}, 100`);
+        text.textContent = `${percent}%`;
+        count.textContent = current;
+        status.textContent = userData.isQualified ? "✅ Qualified" : "🚀 Keep Referring";
+        status.style.color = userData.isQualified ? "green" : "orange";
+
+        const referralCodeElem = document.getElementById("referralCode");
+        const copyBtn = document.getElementById("copyReferralCode");
+
+        const referralCode = userData.referrerCode || "N/A";
+        referralCodeElem.textContent = referralCode;
+
+        copyBtn.addEventListener("click", () => {
+            navigator.clipboard.writeText(referralCode);
+            copyBtn.textContent = "Copied!";
+            setTimeout(() => (copyBtn.textContent = "Copy"), 2000);
+        });
     }
 
     setUserData();
@@ -169,9 +222,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             const result = await res.json();
 
-            console.log(result)
 
-            if (res.ok) {
+            if (result.is_success) {
                 showNotification(
                     'success',
                     'Profile Update',
@@ -184,7 +236,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 closeEditModal();
             } else {
                 let errorMessage = "Update failed: ";
-                if (result.error) {
+                if (result.message) {
                     if (typeof result.error === "string") {
                         errorMessage += result.error;
                     } else {

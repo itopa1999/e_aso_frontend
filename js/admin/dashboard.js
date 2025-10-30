@@ -31,7 +31,7 @@ async function fetchDashboardInfo() {
         const data = await response.json();
 
         if (response.ok) {
-            renderData(data);
+            renderData(data.data);
         } else {
             alert("Unable to fetch data: " + (data.error || "Unknown error"));
         }
@@ -77,7 +77,7 @@ function renderData(data) {
         </div>
         <div class="stat-card">
             <div class="stat-header">
-                <div class="stat-title">Total Customers</div>
+                <div class="stat-title">Total Customers Purchased Products</div>
                 <div class="stat-icon icon-customers" style="background-color: #17a2b8;">
                     <i class="fas fa-users"></i>
                 </div>
@@ -86,6 +86,32 @@ function renderData(data) {
             <div class="stat-change ${data.order_status.total_customers.direction === 'up' ? 'change-up' : 'change-down'}">
                 <i class="fas fa-arrow-${data.order_status.total_customers.direction === 'up' ? 'up' : 'down'}"></i>
                 ${data.order_status.total_customers.change} from last month
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-title">Total Users Registered</div>
+                <div class="stat-icon icon-customers" style="background-color: #17a2b8;">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+            <div class="stat-value">${data.order_status.total_users.value}</div>
+            <div class="stat-change ${data.order_status.total_users.direction === 'up' ? 'change-up' : 'change-down'}">
+                <i class="fas fa-arrow-${data.order_status.total_users.direction === 'up' ? 'up' : 'down'}"></i>
+                ${data.order_status.total_users.change} from last month
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-title">Total Riders Registered</div>
+                <div class="stat-icon icon-customers" style="background-color: #17a2b8;">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+            <div class="stat-value">${data.order_status.total_riders.value}</div>
+            <div class="stat-change ${data.order_status.total_riders.direction === 'up' ? 'change-up' : 'change-down'}">
+                <i class="fas fa-arrow-${data.order_status.total_riders.direction === 'up' ? 'up' : 'down'}"></i>
+                ${data.order_status.total_riders.change} from last month
             </div>
         </div>
         `

@@ -94,8 +94,83 @@
     </nav>
 
     <div id="noOrdersMessage" style="display:none; text-align:center; padding:10px; color:gray;">
-    No orders found for this filter.
-</div>
+        No orders found for this filter.
+    </div>
+
+    <!-- Tracking Modal -->
+    <div id="trackingModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+
+            <!-- Tracking Container -->
+            <div class="tracking-container fade-in">
+                <h3 class="tracking-title"><i class="fas fa-map-marker-alt"></i> <span id="header-title">Tracking Information</span> </h3>
+
+                <div class="tracking-timeline">
+                    <div class="timeline-progress">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+
+                    <div class="timeline-steps">
+                        <div class="timeline-step step-completed">
+                            <div class="step-icon"><i class="fas fa-shopping-cart"></i></div>
+                            <div class="step-content">
+                                <div class="step-title">Null</div>
+                                <div class="step-date">Null</div>
+                                <div class="step-description">Null</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-step step-completed">
+                            <div class="step-icon">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <div class="step-content">
+                                <div class="step-title">Null</div>
+                                <div class="step-date">Null</div>
+                                <div class="step-description">Null</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-step step-active">
+                            <div class="step-icon">
+                                <i class="fas fa-shipping-fast"></i>
+                            </div>
+                            <div class="step-content">
+                                <div class="step-title">Null</div>
+                                <div class="step-date">Null</div>
+                                <div class="step-description">Null</div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step">
+                            <div class="step-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <div class="step-content">
+                                <div class="step-title">Null</div>
+                                <div class="step-date">Null</div>
+                                <div class="step-description">Null</div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step">
+                            <div class="step-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="step-content">
+                                <div class="step-title">Delivered</div>
+                                <div class="step-date">Null</div>
+                                <div class="step-description">Null</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <button id="goToTopBtn" title="Go to top">&#8679;</button>
 

@@ -207,7 +207,6 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 if (data.is_success)
                     badge.textContent = 0;
                     renderCartItems({ items: [] });
@@ -393,6 +392,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     fetchCartItems()
 
+    async function checkReferralFeature() {
+        try {
+            const res = await fetch(`${ASO_URL}/feature-flag/Referral%20System/`, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+            const result = await res.json();
+
+            const referralSection = document.querySelector(".referral-code-section");
+
+            if (result?.data === true) {
+                referralSection.style.display = "block";
+            } else {
+                referralSection.style.display = "none";
+            }
+        } catch (err) {
+            console.error("Feature flag check failed:", err);
+            document.querySelector(".referral-code-section").style.display = "none";
+        }
+    }
+    checkReferralFeature();
+
     
     const checkoutBtn = document.getElementById('checkout-btn');
     const checkoutSection = document.getElementById('checkout-section');
@@ -459,6 +480,48 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
 });
+
+const applyReferralBtn = document.getElementById("applyReferralBtn");
+const referralInput = document.getElementById("referralInput");
+const referralFeedback = document.getElementById("referralFeedback");
+
+applyReferralBtn.addEventListener("click", async () => {
+    const code = referralInput.value.trim();
+    if (!code) {
+        referralFeedback.textContent = "Please enter a referral code.";
+        referralFeedback.style.color = "orange";
+        return;
+    }
+
+    referralFeedback.textContent = "Checking code...";
+    referralFeedback.style.color = "#555";
+
+    try {
+        const res = await fetch(`${AUTH_URL}/referral/validate/${code}/`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${accessToken}`,
+                "Accept": "application/json"
+            }
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data?.is_success) {
+            referralFeedback.textContent = "✅ Referral code applied successfully!";
+            referralFeedback.style.color = "green";
+
+        } else {
+            referralFeedback.textContent = `❌ ${data.message}.`;
+            referralFeedback.style.color = "red";
+        }
+    } catch (err) {
+        console.error("Referral validation failed:", err);
+        referralFeedback.textContent = "⚠️ Could not verify code. Try again.";
+        referralFeedback.style.color = "red";
+    }
+});
+
 
 
 
@@ -543,8 +606,6 @@ document.querySelector('.place-order-btn').addEventListener('click', async funct
             otherInfo: otherInfo
         }
     };
-
-    console.log(orderData)
 
     showPreloader("placing your order");
 

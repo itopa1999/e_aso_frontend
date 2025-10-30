@@ -24,8 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const data = await response.json();
-            console.log(data.message)
-
+            console.log(data);
             if (response.ok) {
                 showNotification(
                     'success',
@@ -37,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 showNotification(
                     'error',
                     'Account Sign-In Error',
-                    `${data.error}`
+                    `${data.message}`
                 );
             }
         } catch (error) {

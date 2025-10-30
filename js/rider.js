@@ -363,7 +363,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             if (!data) return; // stop if redirected
-            console.log(data)
             if (data.is_success) {
                 // OTP sent successfully
                 orderError.style.display = 'none';
@@ -574,7 +573,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 step3.classList.remove('active');
                 step4.classList.add('active');
                 document.querySelector('#step4 p').textContent = 
-                    `Order ${data.order_number} has been successfully marked as delivered.`;
+                    `Order ${data.data.order_number} has been successfully marked as delivered.`;
 
                 // Refresh rider info after completion
                 fetchRiderInfo();

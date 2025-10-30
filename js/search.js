@@ -104,7 +104,6 @@ function renderList(data, append = false) {
         const starsHTML = getStarHTML(product.rating);
         const isActive = product.watchlisted ? "active" : "";
 
-        console.log(product.main_image)
 
         const card = document.createElement("div");
         card.className = "product-card fade-in";
@@ -314,7 +313,6 @@ document.getElementById('search-input').addEventListener('keydown', function (e)
 
 document.getElementById("sort-by-select").addEventListener("change", function () {
     const sortValue = this.value;
-    console.log("Sort by:", sortValue);
 
     currentFilters.sort_by = sortValue;
     currentFilters.page = 1;
@@ -324,7 +322,6 @@ document.getElementById("sort-by-select").addEventListener("change", function ()
 // Price range dropdown
 document.getElementById("price-range-select").addEventListener("change", function () {
     const priceRange = this.value;
-    console.log("Price range selected:", priceRange);
 
     currentFilters.price_range = priceRange;
     currentFilters.page = 1;

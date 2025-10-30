@@ -29,7 +29,6 @@ async function fetchProductDetails() {
 
 
 function renderProductDetails(data) {
-    console.log(data);
 
     // Basic Product Info
     document.querySelector('.product-badge').textContent = data.badge;
@@ -303,7 +302,6 @@ function attachWatchlistEvents(id) {
                 throw new Error("Failed to toggle watchlist");
             }
             const data = await response.json();
-            console.log(data)
             let count = parseInt(wishlistCountElement.textContent);
             if (data.data.watchlisted) {
                 setWishlistState(data.data.watchlisted);
