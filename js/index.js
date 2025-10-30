@@ -107,6 +107,18 @@ function renderList(data, append = false) {
         `;
 
         productsGrid.appendChild(card);
+
+        const btn = card.querySelector(".add-to-cart");
+        if (product.cart_added) {
+            btn.textContent = "Added!";
+            btn.style.backgroundColor = "#28a745";
+            btn.disabled = true;
+            btn.style.cursor = "not-allowed";
+        } else {
+            btn.textContent = "Add to Cart";
+            btn.disabled = false;
+            btn.style.cursor = "pointer";
+        }
     });
 
     nextPageUrl = data.next;
@@ -128,7 +140,9 @@ function renderCatButtons(data) {
     });
     container.appendChild(allBtn);
 
-    data.forEach(cat => {
+    const productCategories = data.filter(cat => cat.category === 'product_cat');
+
+    productCategories.forEach(cat => {
         const button = document.createElement('button');
         button.className = 'filter-btn';
         button.textContent = cat.name;
@@ -140,6 +154,23 @@ function renderCatButtons(data) {
         container.appendChild(button);
     });
 }
+
+function renderBadgeButtons(data) {
+    const badgeSelect = document.getElementById('badge-filter');
+    badgeSelect.innerHTML = '<option value="">All</option>';
+
+    const badges = data.filter(item => item.category === 'badge_cat');
+
+    badges.forEach(badge => {
+        const option = document.createElement('option');
+        option.value = badge.name;
+        option.textContent = badge.name;
+        badgeSelect.appendChild(option);
+    });
+}
+
+
+
 
 // =========================
 // API CALLS
@@ -165,9 +196,10 @@ async function loadLists() {
 
 async function loadCats() {
     try {
-        const res = await fetch(`${ASO_URL}/categories/`, { method: "GET", headers: { "Accept": "application/json" } });
+        const res = await fetch(`${ASO_URL}/lookups/`, { method: "GET", headers: { "Accept": "application/json" } });
         const data = await res.json();
         renderCatButtons(data);
+        renderBadgeButtons(data)
     } catch (error) {
         console.error("Error loading categories:", error);
     }
@@ -194,16 +226,17 @@ function attachCartEvents() {
                 if (!res.ok) throw new Error("Failed to move items to cart");
 
                 const data = await res.json();
-                cartBadge.textContent = (parseInt(cartBadge.textContent) || 0) + data.items_added;
+                cartBadge.textContent = (parseInt(cartBadge.textContent) || 0) + data.data.items_added;
 
                 btn.textContent = '✓ Added!';
                 btn.style.backgroundColor = '#28a745';
+                btn.disabled = true;
+                btn.style.cursor = "not-allowed";
             } catch (error) {
                 console.error(error);
                 alert("Error moving items to cart.");
             } finally {
                 hidePreloader();
-                setTimeout(() => { btn.textContent = 'Add to Cart'; btn.style.backgroundColor = ''; }, 2000);
             }
         });
     });
@@ -228,7 +261,7 @@ function attachWatchlistEvents() {
 
                 const data = await res.json();
                 let count = parseInt(wishlistCountElement.textContent) || 0;
-                if (data.watchlisted) {
+                if (data.data.watchlisted) {
                     this.classList.add("active");
                     count++;
                 } else {
@@ -249,7 +282,26 @@ function attachWatchlistEvents() {
 // =========================
 // PAGE INIT
 // =========================
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
+    const heroImage = document.getElementById("hero-image");
+    const heroLink = document.getElementById("hero-link");
+
+    try {
+        const res = await fetch(`${ADMIN_URL}/banners/hero/`);
+        const json = await res.json();
+        if (json.is_success && json.data && json.data.length > 0) {
+        const banner = json.data[0]; // use the first hero banner
+        heroImage.src = banner.image;
+        heroLink.href = banner.link || "#";
+        } else {
+        console.warn("No hero banner found");
+        }
+    } catch (err) {
+        console.error("Error loading hero banner:", err);
+    }
+    
+
+    
     loadLists();
     loadCats();
 
@@ -258,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const priceValue = document.querySelector('.price-values span:nth-child(2)');
     if (priceRange) {
         priceRange.addEventListener('input', function () {
-            priceValue.textContent = '₦' + parseInt(this.value).toLocaleString();
+            priceValue.textContent = '₦' + formatNumber(this.value);
         });
     }
 

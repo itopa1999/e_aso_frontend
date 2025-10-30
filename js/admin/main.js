@@ -140,6 +140,6 @@ function getStarHTML(rating) {
 }
 
 
-
-ADMIN_URL = "https://luck1999.pythonanywhere.com/admins/api/admin"
-ASO_URL = "https://luck1999.pythonanywhere.com/aso/api/product"
+ANALYTICS_URL = "http://127.0.0.1:8000/admins/api/analytics"
+ADMIN_URL = "http://127.0.0.1:8000/admins/api/admin"
+ASO_URL = "http://127.0.0.1:8000/aso/api/product"

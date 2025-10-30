@@ -18,12 +18,15 @@ const badgeFilter = document.getElementById('badge-filter');
 const featureFilter = document.getElementById('featured-filter');
 const applyFiltersBtn = document.getElementById('apply-filters');
 const resetFiltersBtn = document.getElementById('reset-filters');
+let currentProduct = null;
+let currentCategories = null;
+
 
 productsGrid.innerHTML = '<div class="no-products">Empty Filter</div>';
 
 async function loadCats() {
     try {
-        const res = await fetch(`${ASO_URL}/categories/`, {
+        const res = await fetch(`${ASO_URL}/lookups/`, {
             method: "GET",
             headers: { "Accept": "application/json" }
         });
@@ -31,13 +34,17 @@ async function loadCats() {
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
 
         const data = await res.json();
-        populateCategoryFilter(data);
+        const filteredCategories = data.filter(item => item.category === "product_cat");
+        const filteredBadges = data.filter(item => item.category === "badge_cat");
+        populateCategoryFilter(filteredCategories);
+        populateBadgeFilter(filteredBadges);
     } catch (error) {
         console.error("Error loading categories:", error);
     }
 }
 
 function populateCategoryFilter(categories) {
+    currentCategories = categories
     const categorySelect = document.getElementById("category-filter");
 
     // Clear existing options
@@ -46,9 +53,26 @@ function populateCategoryFilter(categories) {
     // Populate dynamically
     categories.forEach(cat => {
         const option = document.createElement("option");
-        option.value = cat.slug || cat.id || cat.name; // Use slug or id for backend filtering
-        option.textContent = cat.name;
+        option.value = cat.slug || cat.id || cat.name;
+        option.textContent = '📦 ' + cat.name;
         categorySelect.appendChild(option);
+    });
+}
+
+
+function populateBadgeFilter(badges) {
+    currentBadges = badges
+    const badgeSelect = document.getElementById("badge-filter");
+
+    // Clear existing options
+    badgeSelect.innerHTML = '<option value="">All Badges</option>';
+
+    // Populate dynamically
+    badges.forEach(badge => {
+        const option = document.createElement("option");
+        option.value = badge.slug || badge.id || badge.name;
+        option.textContent = '📛 ' + badge.name;
+        badgeSelect.appendChild(option);
     });
 }
 
@@ -217,6 +241,7 @@ function renderProducts(products) {
 
 // Show product detail function
 function showProductDetail(product) {
+     currentProduct = product;
     showPreloader("Loading product details")
     // Hide products grid and show detail view
     productsGrid.style.display = 'none';
@@ -441,6 +466,154 @@ document.addEventListener('DOMContentLoaded', function() {
             filterProducts();
         }
     });
+
+    const editButton = document.getElementById("editButton");
+    const modal = document.getElementById("editProductModal");
+    const closeModal = document.getElementById("closeModal");
+    const editForm = document.getElementById("editProductForm");
+
+    // Open modal
+    // editButton.addEventListener("click", () => {
+    //     if (!currentProduct) {
+    //         alert("No product selected!");
+    //         return;
+    //     }
+    //     // Prepopulate fields
+    //     document.getElementById("edit-title").value = currentProduct.title || "";
+    //     document.getElementById("edit-description").value = currentProduct.description || "";
+    //     document.getElementById("edit-current_price").value = currentProduct.current_price || "";
+    //     document.getElementById("edit-original_price").value = currentProduct.original_price || "";
+    //     document.getElementById("edit-discount_percent").value = currentProduct.discount_percent || "";
+
+    //     // Badge dropdown
+    //     const badgeSelect = document.getElementById("edit-badge");
+    //     if (currentProduct.badge) {
+    //         badgeSelect.value = currentProduct.badge; // sets the dropdown to match
+    //     } else {
+    //         badgeSelect.value = ""; // fallback
+    //     }
+
+    //     // Main image preview setup
+    //     let mainImageInput = document.getElementById("edit-main_image");
+    //     let preview = document.createElement("img");
+    //     preview.style.width = "120px";
+    //     preview.style.marginTop = "10px";
+    //     mainImageInput.insertAdjacentElement("afterend", preview);
+
+    //     // Show existing image if available
+    //     if (currentProduct.main_image) {
+    //         preview.src = currentProduct.main_image;
+    //     }
+
+    //     // Change preview when a new image is selected
+    //     mainImageInput.addEventListener("change", function () {
+    //         const file = this.files[0];
+    //         if (file) {
+    //             const reader = new FileReader();
+    //             reader.onload = function (e) {
+    //                 preview.src = e.target.result; // Show selected image
+    //             };
+    //             reader.readAsDataURL(file);
+    //         } else {
+    //             // If no file selected, fallback to original product image
+    //             preview.src = currentProduct.main_image || "";
+    //         }
+    //     });
+
+    //     let categorySelect = document.getElementById("edit-category");
+    //     categorySelect.innerHTML = ""; // clear existing options
+
+    //     currentCategories.forEach(cat => {
+    //         let option = document.createElement("option");
+    //         option.value = cat.name;
+    //         option.textContent = cat.name;
+
+    //         // Pre-select categories that belong to this product
+    //         if (currentProduct.categories.some(c => c.name === cat.name)) {
+    //             option.selected = true;
+    //         }
+    //         categorySelect.appendChild(option);
+    //     });
+
+
+    //     modal.style.display = "flex";
+    // });
+
+    // Close modal
+    // closeModal.addEventListener("click", () => {
+    //     modal.style.display = "none";
+    // });
+    // window.addEventListener("click", (e) => {
+    //     if (e.target === modal) modal.style.display = "none";
+    // });
+
+    // Handle form submission
+    // editForm.addEventListener("submit", async (e) => {
+    //     e.preventDefault();
+
+    //     const formData = new FormData(editForm);
+
+    //     // Log all fields
+    //     for (let [key, value] of formData.entries()) {
+    //         console.log(key, value);
+    //     }
+
+    //     // Log categories separately
+    //     let selectedCategories = Array.from(
+    //         document.getElementById("edit-category").selectedOptions
+    //     ).map(option => option.value);
+
+    //     console.log("Selected Categories:", selectedCategories);
+
+        // try {
+        //     const res = await fetch(`${ADMIN_URL}/products/update/`, {
+        //         method: "POST",
+        //         headers: { 
+        //             "Authorization": `Bearer ${accessToken}`,
+        //         },
+        //         body: formData,
+        //     });
+
+        //     if (!res.ok) throw new Error(`Error: ${res.status}`);
+
+        //     alert("✅ Product updated successfully!");
+        //     modal.style.display = "none";
+        //     filterProducts(); // Refresh product list
+        // } catch (err) {
+        //     console.error(err);
+        //     alert("❌ Failed to update product.");
+        // }
+    // });
+
+    // document.getElementById("resetTokenLink").addEventListener("click", async function (e) {
+    //     e.preventDefault();
+
+    //     showPreloader("Requesting for new Token");
+    //     try {
+    //     const response = await fetch(`${ADMIN_URL}/send-token/`, {
+    //         method: "POST",
+    //         headers: {
+    //         "Content-Type": "application/json",
+    //         "Authorization": `Bearer ${accessToken}`
+    //         },
+    //         body: JSON.stringify({ email: email }),
+    //     });
+
+    //     if (response.ok) {
+    //         const data = await response.json();
+    //         showAlert("✅ Token sent successfully: " + (data.message || ""));
+    //     } else {
+    //         const errorData = await response.json();
+    //         alert("❌ Failed: " + (errorData.error || "Something went wrong"));
+    //     }
+    //     } catch (error) {
+    //     console.error("Error:", error);
+    //     alert("❌ Network error, please try again.");
+    //     } finally{
+    //         hidePreloader()
+    //     }
+    // });
+
 
 
     hidePreloader();

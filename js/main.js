@@ -286,8 +286,10 @@ document.addEventListener('keydown', (e) => {
 
 });
 
-ADMIN_URL = "https://luck1999.pythonanywhere.com/admins/api/user"
-ASO_URL = "https://luck1999.pythonanywhere.com/aso/api/product"
+
+ADMIN_URL = "http://127.0.0.1:8000/admins/api/admin"
+AUTH_URL = "http://127.0.0.1:8000/auth/api/user" 
+ASO_URL = "http://127.0.0.1:8000/aso/api/product"
 
 
 function getStarHTML(rating) {
@@ -314,7 +316,10 @@ function formatReviews(count) {
 }
 
 function formatNumber(num) {
-    return parseFloat(num).toLocaleString();
+    return parseFloat(num).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
 }
 
 
@@ -360,3 +365,15 @@ btn.onclick = function () {
 
 // Call it after DOM loads
 document.addEventListener("DOMContentLoaded", updateCartAndWatchlistCounts);
+
+
+
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/6502cdf70f2b18434fd87797/1ha9f95o4';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();

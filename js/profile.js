@@ -4,9 +4,31 @@ if (!accessToken) {
 }
 showPreloader("Loading your profile");
 
-document.addEventListener('DOMContentLoaded', async function() {
+async function checkReferralFeature() {
     try {
-        const response = await fetch(`${ADMIN_URL}/profile/`, {
+        const res = await fetch(`${ASO_URL}/feature-flag/Referral%20System/`, {
+            method: "GET",
+            headers: { "Accept": "application/json" }
+        });
+        const result = await res.json();
+
+        const referralSection = document.querySelector(".referral-section");
+
+        if (result?.data === true) {
+            referralSection.style.display = "block";
+        } else {
+            referralSection.style.display = "none";
+        }
+    } catch (err) {
+        console.error("Feature flag check failed:", err);
+        document.querySelector(".referral-section").style.display = "none";
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
+    await checkReferralFeature();
+    try {
+        const response = await fetch(`${AUTH_URL}/profile/`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${accessToken}`,
@@ -27,14 +49,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         const data = await response.json();
 
         if (response.ok) {
-            renderRecentOrders(data.recent_orders)
+            renderRecentOrders(data.data.recent_orders)
             userData = {
-                firstName: data.first_name,
-                lastName: data.last_name,
-                email: data.email,
-                phone: data.phone,
-                totalOrders: data.total_orders || 0
+                firstName: data.data.first_name,
+                lastName: data.data.last_name,
+                email: data.data.email,
+                phone: data.data.phone,
+                totalOrders: data.data.total_orders || 0,
+                referralsSuccessful: data.data.total_successful_referrals || 0,
+                isQualified: data.data.is_referral_qualified || false,
+                referrerCode: data.data.referral_code || ''
             };
+
+            console.log("User Data:", userData);
             setUserData();
         } else {
             alert("Unable to fetch profile: " + (data.error || "Unknown error"));
@@ -65,6 +92,33 @@ document.addEventListener('DOMContentLoaded', async function() {
         const firstInitial = userData.firstName?.charAt(0).toUpperCase() || '';
         const lastInitial = userData.lastName?.charAt(0).toUpperCase() || '';
         document.getElementById('profile-pic').textContent = `${firstInitial}${lastInitial}`;
+
+        const totalNeeded = 5;
+        const current = Math.min(userData.referralsSuccessful, totalNeeded);
+        const percent = Math.round((current / totalNeeded) * 100);
+
+        const circle = document.querySelector('.circle');
+        const text = document.getElementById('referralPercent');
+        const count = document.getElementById('referralCount');
+        const status = document.getElementById('referralStatus');
+
+        circle.setAttribute('stroke-dasharray', `${percent}, 100`);
+        text.textContent = `${percent}%`;
+        count.textContent = current;
+        status.textContent = userData.isQualified ? "✅ Qualified" : "🚀 Keep Referring";
+        status.style.color = userData.isQualified ? "green" : "orange";
+
+        const referralCodeElem = document.getElementById("referralCode");
+        const copyBtn = document.getElementById("copyReferralCode");
+
+        const referralCode = userData.referrerCode || "N/A";
+        referralCodeElem.textContent = referralCode;
+
+        copyBtn.addEventListener("click", () => {
+            navigator.clipboard.writeText(referralCode);
+            copyBtn.textContent = "Copied!";
+            setTimeout(() => (copyBtn.textContent = "Copy"), 2000);
+        });
     }
 
     setUserData();
@@ -87,7 +141,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             </div>
             <div class="order-right">
                 <div class="order-status status-delivered">${order.latest_tracking_status}</div>
-                <div class="order-price">₦${parseFloat(order.total).toLocaleString()}</div>
+                <div class="order-price">₦${formatNumber(order.total)}</div>
             </div>
         `;
 
@@ -124,7 +178,27 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         // Validate inputs
         if (!firstName || !lastName || !phone) {
-            alert('Please fill in both first name, last name and phone');
+            const overlay = document.createElement("div");
+            overlay.className = "dialog-overlay";
+            overlay.innerHTML = `
+                <div class="dialog-box">
+                    <p>Please fill in both first name, last name and phone</p>
+                    <div class="dialog-actions">
+                        <button class="cancel-btn">Cancel</button>
+                        <button class="confirm-btn1">Okay</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            // Handle actions
+            overlay.querySelector(".cancel-btn").addEventListener("click", () => {
+                overlay.remove();
+            });
+
+            overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+                overlay.remove();
+            });
             return;
         }
         
@@ -137,7 +211,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         profileForm.appendChild(loadingIndicator);
 
         try {
-            const res = await fetch(`${ADMIN_URL}/update/profile/`, {
+            const res = await fetch(`${AUTH_URL}/update/profile/`, {
                 method: "PUT",
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -148,9 +222,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             const result = await res.json();
 
-            console.log(result)
 
-            if (res.ok) {
+            if (result.is_success) {
                 showNotification(
                     'success',
                     'Profile Update',
@@ -163,7 +236,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 closeEditModal();
             } else {
                 let errorMessage = "Update failed: ";
-                if (result.error) {
+                if (result.message) {
                     if (typeof result.error === "string") {
                         errorMessage += result.error;
                     } else {

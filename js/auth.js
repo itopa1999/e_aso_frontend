@@ -1,4 +1,4 @@
-ADMIN_URL = "https://luck1999.pythonanywhere.com/admins/api/user"
+AUTH_URL = "http://127.0.0.1:8000/auth/api/user"
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('login-form');
     const submitBtn = document.getElementById('submit-btn');
@@ -12,9 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.disabled = true;
         spinner.classList.remove('d-none');
         btnText.textContent = 'Signing In...';
-
         try {
-            const response = await fetch(`${ADMIN_URL}/magic-login/`, {
+            const response = await fetch(`${AUTH_URL}/magic-login/`, {
+                
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -24,8 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const data = await response.json();
-            console.log(data.message)
-
+            console.log(data);
             if (response.ok) {
                 showNotification(
                     'success',
@@ -37,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 showNotification(
                     'error',
                     'Account Sign-In Error',
-                    `${data.error}`
+                    `${data.message}`
                 );
             }
         } catch (error) {

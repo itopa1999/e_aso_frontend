@@ -22,9 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
 
             const data = await response.json();
-            renderCartItems(data);
-            updateSummary(data);
-            renderSummary(data)
+            renderCartItems(data.data);
+            updateSummary(data.data);
+            renderSummary(data.data)
             
         } catch (error) {
             alert("Failed to load cart items.");
@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderCartItems(data) {
-        console.log(data)
         cartContainer.innerHTML = "";
         if (!data.items || data.items.length === 0) {
             cartContainer.innerHTML = `
@@ -49,6 +48,16 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             return;
         }
+
+        const headerHTML = `
+            <div class="cart-header">
+                <h2>Cart Items</h2>
+                <button class="delete-all-btn">
+                    <i class="fas fa-trash"></i> Remove All
+                </button>
+            </div>
+        `;
+        cartContainer.innerHTML = headerHTML;
         
         data.items.forEach(item => {
         const descText = item.desc 
@@ -78,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="cart-item-title">${item.product_title}</div>
                     </a>
                     ${descText ? `<div class="cart-item-desc">${descText}</div>` : ""}
-                    <div class="cart-item-price">₦${parseFloat(item.product_price).toLocaleString()}</div>
+                    <div class="cart-item-price">₦${formatNumber(item.product_price)}</div>
                     <div class="cart-item-actions">
                         <div class="quantity-selector">
                             <button class="qty-btn minus">-</button>
@@ -158,6 +167,55 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         attachCartListeners();
+
+        const deleteAllBtn = document.querySelector(".delete-all-btn");
+        deleteAllBtn.addEventListener("click", showDeleteAllDialog);
+
+    }
+
+    function showDeleteAllDialog() {
+        const badge = document.getElementById("cart-count");
+        const overlay = document.createElement("div");
+        overlay.className = "dialog-overlay";
+        overlay.innerHTML = `
+            <div class="dialog-box">
+                <h3>Delete All Items?</h3>
+                <p>Are you sure you want to remove all items from your cart?</p>
+                <div class="dialog-actions">
+                    <button class="cancel-btn">Cancel</button>
+                    <button class="confirm-btn">Yes, Delete All</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        // Handle actions
+        overlay.querySelector(".cancel-btn").addEventListener("click", () => {
+            overlay.remove();
+        });
+
+        overlay.querySelector(".confirm-btn").addEventListener("click", () => {
+            overlay.remove();
+            // TODO: Call your delete-all endpoint here
+            showPreloader("Removing all cart items");
+            fetch(`${ASO_URL}/cart/clear/`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${accessToken}`
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.is_success)
+                    badge.textContent = 0;
+                    renderCartItems({ items: [] });
+            })
+            .catch(error => console.error('Error:', error))
+            .finally(() => {
+                hidePreloader();
+            });;
+        });
     }
 
     document.getElementById('saveEdit').addEventListener('click', function () {
@@ -227,10 +285,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     <a href="product-info.html?id=${item.product_id}" style="text-decoration:none">
                         <div class="order-item-name">${item.product_title}</div>
                     </a>
-                    <div class="order-item-price">₦${parseFloat(item.product_price).toLocaleString()} × ${item.quantity}</div>
+                    <div class="order-item-price">₦${formatNumber(item.product_price)} × ${item.quantity}</div>
                 </div>
             </div>
-            <div class="order-item-total"><b>₦${totalPrice.toLocaleString()}</b></div>
+            <div class="order-item-total"><b>₦${formatNumber(totalPrice)}</b></div>
 
             `;
             summaryContainer.appendChild(cartItem);
@@ -316,23 +374,45 @@ document.addEventListener('DOMContentLoaded', function() {
         const total = isCartEmpty ? 0 : parseFloat(data.total);
 
         document.querySelectorAll('.summary-subtotal').forEach(el => {
-            el.textContent = `₦${subtotal.toLocaleString()}`;
+            el.textContent = `₦${formatNumber(subtotal)}`;
         });
         document.querySelectorAll('.summary-shipping').forEach(el => {
-            el.textContent = `₦${shipping.toLocaleString()}`;
+            el.textContent = `₦${formatNumber(shipping)}`;
         });
         // document.querySelectorAll('.summary-tax').forEach(el => {
         //     el.textContent = `₦${tax.toLocaleString()}`;
         // });
         document.querySelectorAll('.summary-discount').forEach(el => {
-            el.textContent = `₦${discount.toLocaleString()}`;
+            el.textContent = `₦${formatNumber(discount)}`;
         });
         document.querySelectorAll('.summary-total').forEach(el => {
-            el.textContent = `₦${total.toLocaleString()}`;
+            el.textContent = `₦${formatNumber(total)}`;
         });
     }
 
     fetchCartItems()
+
+    async function checkReferralFeature() {
+        try {
+            const res = await fetch(`${ASO_URL}/feature-flag/Referral%20System/`, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+            const result = await res.json();
+
+            const referralSection = document.querySelector(".referral-code-section");
+
+            if (result?.data === true) {
+                referralSection.style.display = "block";
+            } else {
+                referralSection.style.display = "none";
+            }
+        } catch (err) {
+            console.error("Feature flag check failed:", err);
+            document.querySelector(".referral-code-section").style.display = "none";
+        }
+    }
+    checkReferralFeature();
 
     
     const checkoutBtn = document.getElementById('checkout-btn');
@@ -343,7 +423,28 @@ document.addEventListener('DOMContentLoaded', function() {
         const cartCount = parseInt(document.getElementById("cart-count").textContent) || 0;
 
         if (cartCount < 1) {
-            alert("Your cart is empty. Please add at least one item before proceeding to checkout.");
+            const overlay = document.createElement("div");
+            overlay.className = "dialog-overlay";
+            overlay.innerHTML = `
+                <div class="dialog-box">
+                    <p>Your cart is empty. Please add at least one item before proceeding to checkout.</p>
+                    <div class="dialog-actions">
+                        <button class="cancel-btn">Cancel</button>
+                        <button class="confirm-btn1">Okay</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            // Handle actions
+            overlay.querySelector(".cancel-btn").addEventListener("click", () => {
+                overlay.remove();
+            });
+
+            overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+                overlay.remove();
+            });
+
             return;
         }
         checkoutSection.style.display = 'block';
@@ -380,6 +481,48 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
+const applyReferralBtn = document.getElementById("applyReferralBtn");
+const referralInput = document.getElementById("referralInput");
+const referralFeedback = document.getElementById("referralFeedback");
+
+applyReferralBtn.addEventListener("click", async () => {
+    const code = referralInput.value.trim();
+    if (!code) {
+        referralFeedback.textContent = "Please enter a referral code.";
+        referralFeedback.style.color = "orange";
+        return;
+    }
+
+    referralFeedback.textContent = "Checking code...";
+    referralFeedback.style.color = "#555";
+
+    try {
+        const res = await fetch(`${AUTH_URL}/referral/validate/${code}/`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${accessToken}`,
+                "Accept": "application/json"
+            }
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data?.is_success) {
+            referralFeedback.textContent = "✅ Referral code applied successfully!";
+            referralFeedback.style.color = "green";
+
+        } else {
+            referralFeedback.textContent = `❌ ${data.message}.`;
+            referralFeedback.style.color = "red";
+        }
+    } catch (err) {
+        console.error("Referral validation failed:", err);
+        referralFeedback.textContent = "⚠️ Could not verify code. Try again.";
+        referralFeedback.style.color = "red";
+    }
+});
+
+
 
 
 
@@ -399,12 +542,53 @@ document.querySelector('.place-order-btn').addEventListener('click', async funct
 
     // Validation
     if (!firstName || !lastName || !address || !city || !state || !phone) {
-        alert("Please fill in all required fields.");
+        const overlay = document.createElement("div");
+        overlay.className = "dialog-overlay";
+        overlay.innerHTML = `
+            <div class="dialog-box">
+                <p>Please fill in all required fields.</p>
+                <div class="dialog-actions">
+                    <button class="cancel-btn">Cancel</button>
+                    <button class="confirm-btn1">Okay</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        // Handle actions
+        overlay.querySelector(".cancel-btn").addEventListener("click", () => {
+            overlay.remove();
+        });
+
+        overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+            overlay.remove();
+        });
         return;
+
     }
 
     if (parseInt(total) <= 0) {
-        alert("Total amount must be greater than ₦0.");
+        const overlay = document.createElement("div");
+        overlay.className = "dialog-overlay";
+        overlay.innerHTML = `
+            <div class="dialog-box">
+                <p>Total amount must be greater than ₦0</p>
+                <div class="dialog-actions">
+                    <button class="cancel-btn">Cancel</button>
+                    <button class="confirm-btn1">Okay</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        // Handle actions
+        overlay.querySelector(".cancel-btn").addEventListener("click", () => {
+            overlay.remove();
+        });
+
+        overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+            overlay.remove();
+        });
         return;
     }
 
@@ -423,8 +607,6 @@ document.querySelector('.place-order-btn').addEventListener('click', async funct
         }
     };
 
-    console.log(orderData)
-
     showPreloader("placing your order");
 
     try {
@@ -439,9 +621,29 @@ document.querySelector('.place-order-btn').addEventListener('click', async funct
 
         const result = await response.json();
         if (response.ok) {
-            window.open(result.checkout_url, '_blank');
+            window.open(result.data.checkout_url, '_blank');
         } else {
-            alert('Order failed: ' + (result.message || 'Please try again.'));
+            const overlay = document.createElement("div");
+            overlay.className = "dialog-overlay";
+            overlay.innerHTML = `
+                <div class="dialog-box">
+                    <p>Order failed: ' + (${result.message} || 'Please try again.</p>
+                    <div class="dialog-actions">
+                        <button class="cancel-btn">Cancel</button>
+                        <button class="confirm-btn1">Okay</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            // Handle actions
+            overlay.querySelector(".cancel-btn").addEventListener("click", () => {
+                overlay.remove();
+            });
+
+            overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+                overlay.remove();
+            });
         }
     } catch (err) {
         console.error('Order error:', err);
@@ -473,7 +675,7 @@ async function loadStates() {
 
     if (fee) {
       document.getElementById("shippingInfo").textContent =
-        `${selectedOption.value} : Shipping = ₦${parseInt(fee).toLocaleString()}`;
+        `${selectedOption.value} : Shipping = ₦${formatNumber(fee)}`;
     } else {
       document.getElementById("shippingInfo").textContent = '';
     }

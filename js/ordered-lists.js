@@ -34,7 +34,7 @@ async function loadOrders() {
         }
 
         const data = await res.json();
-        allOrders = data.results || [];
+        allOrders = data.data || [];
         renderOrders(allOrders);
 
     } catch (error) {
@@ -78,7 +78,7 @@ function renderOrders(orders) {
                     <a href="product-info.html?id=${item.product_id}" style="text-decoration:none">
                         <div class="order-item-name">${item.product_name}</div>
                     </a>
-                    <div class="order-item-price">₦${parseFloat(item.price).toLocaleString()}</div>
+                    <div class="order-item-price">₦${formatNumber(item.price)}</div>
                     <div class="order-item-qty">Quantity: ${item.quantity}</div>
                 </div>
             </div>
@@ -121,19 +121,19 @@ function renderSummary(order) {
     return `
         <div class="summary-row">
             <div class="summary-label">Subtotal</div>
-            <div class="summary-value">₦${parseFloat(order.subtotal).toLocaleString()}</div>
+            <div class="summary-value">₦${formatNumber(order.subtotal)}</div>
         </div>
         <div class="summary-row">
             <div class="summary-label">Shipping</div>
-            <div class="summary-value">₦${parseFloat(order.shipping).toLocaleString()}</div>
+            <div class="summary-value">₦${formatNumber(order.shipping)}</div>
         </div>
         <div class="summary-row">
             <div class="summary-label">Discount</div>
-            <div class="summary-value" style="color:#28a745;">-₦${parseFloat(order.discount).toLocaleString()}</div>
+            <div class="summary-value" style="color:#28a745;">-₦${formatNumber(order.discount)}</div>
         </div>
         <div class="summary-total">
             <div>Total</div>
-            <div>₦${parseFloat(order.total).toLocaleString()}</div>
+            <div>₦${formatNumber(order.total)}</div>
         </div>
     `;
 }
@@ -151,10 +151,101 @@ function attachActionHandlers() {
     });
 
     document.querySelectorAll('.btn-track').forEach(btn => {
-        btn.addEventListener('click', () => {
-            window.location.href = `ordered-details.html?id=${btn.dataset.id}`;
+        btn.addEventListener('click', async () => {
+            const modal = document.getElementById('trackingModal');
+            modal.style.display = 'flex';
+
+            const steps = document.querySelectorAll('.timeline-step');
+            const headerTitle = document.getElementById('header-title');
+            const progressBar = document.querySelector('.timeline-progress-bar');
+
+            // Example: you can fetch tracking details dynamically
+            const orderId = btn.dataset.id;
+            try {
+                showPreloader("Loading tracking details");
+                const response = await fetch(`${ASO_URL}/track-order/${orderId}/`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`, // optional if auth required
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch tracking info: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                headerTitle.textContent = `Tracking Information for Order ${data.order_number}`;
+
+                const trackingList = data.tracking || [];
+                if (trackingList.length === 0) {
+                    console.warn("No tracking info available for order:", orderId);
+                    return;
+                }
+
+                const statusOrder = ['placed', 'processing', 'shipped', 'in_transit', 'delivered'];
+            const latest = trackingList[0]; // most recent status
+            const orderStatus = latest.status;
+            const currentStepIndex = statusOrder.indexOf(orderStatus.toLowerCase());
+
+            // Update timeline steps
+            steps.forEach((step, index) => {
+                const matchingTrack = trackingList.find(t => statusOrder[index] === t.status.toLowerCase());
+                const stepTitle = step.querySelector('.step-title');
+                const stepDate = step.querySelector('.step-date');
+                const stepDesc = step.querySelector('.step-description');
+
+                step.classList.remove('step-completed', 'step-active');
+
+                if (index < currentStepIndex) {
+                    step.classList.add('step-completed');
+                } else if (index === currentStepIndex) {
+                    step.classList.add('step-active');
+                }
+
+                if (matchingTrack) {
+                    const date = new Date(matchingTrack.date).toLocaleString();
+                    stepTitle.textContent = capitalizeWords(matchingTrack.status.replace(/_/g, " "));
+                    stepDate.textContent = date;
+                    stepDesc.textContent = matchingTrack.description || "Updated";
+                } else {
+                    stepTitle.textContent = capitalizeWords(statusOrder[index].replace(/_/g, " "));
+                    stepDate.textContent = "";
+                    stepDesc.textContent = "";
+                }
+            });
+
+            // progress bar height
+            const percent = (currentStepIndex / (statusOrder.length - 1)) * 100;
+            progressBar.style.height = `${percent}%`;
+
+        } catch (error) {
+            console.error(error);
+        } finally {
+            hidePreloader();
+        }
+            
         });
     });
+
+    function capitalizeWords(str) {
+        return str.replace(/\b\w/g, char => char.toUpperCase());
+    }
+
+    // Close modal when clicking close button
+    document.querySelector('.modal-close').addEventListener('click', () => {
+        document.getElementById('trackingModal').style.display = 'none';
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', e => {
+        const modal = document.getElementById('trackingModal');
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
 }
 
 async function reorderItems(btn) {
@@ -175,7 +266,7 @@ async function reorderItems(btn) {
         if (!res.ok) throw new Error("Failed to reorder items");
 
         const data = await res.json();
-        const itemsAdded = data.items_added || 0;
+        const itemsAdded = data.data.items_added || 0;
 
         let currentCount = parseInt(cartBadge.textContent) || 0;
         cartBadge.textContent = currentCount + itemsAdded;

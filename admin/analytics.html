@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Aso Oke Marketplace</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="icon" type="image/png" href="/img/logo.jpeg">
+    <link rel="stylesheet" href="/css/admin/style.css">
+    <link rel="stylesheet" href="/css/admin/analytics.css">
+    <style>
+
+    </style>
+</head>
+<body>
+    <div class="preloader" id="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Loading.....</div>
+        <div class="preloader-dots">
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+        </div>
+    </div>
+    
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="/index.html" class="logo">AO</a>
+            
+            <div class="admin-info">
+                <div class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="admin-avatar">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <div>
+                    <div>Admin User</div>
+                    <div style="font-size: 0.8rem; opacity: 0.8;">Administrator</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <ul class="sidebar-menu">
+            <li><a href="/admin/dashboard.html" class="menu-item"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+            <li><a href="/admin/products.html" class="menu-item "><i class="fas fa-box"></i> <span>Products</span></a></li>
+            <li><a href="/admin/orders.html" class="menu-item"><i class="fas fa-shopping-cart"></i> <span>Orders</span></a></li>
+            <li><a href="/admin/customers.html" class="menu-item"><i class="fas fa-users"></i> <span>Customers</span></a></li>
+            <li><a href="/admin/analytics.html" class="menu-item actived"><i class="fas fa-chart-bar"></i> <span>Analytics</span></a></li>
+            <li><a href="#" id="logoutUser" class="menu-item"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+        </ul>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div id="main-content-header">
+            <div class="main-header">
+                <h1 class="main-title">Admin Analytics Page</h1>
+                <div class="filter-container">
+                    <div class="filter-group">
+                        <label class="filter-label" for="category">Category</label>
+                        <select class="filter-select" id="category">
+                            <option value="">All Categories</option>
+                            <option value="Aso">Aso Oke</option>
+                            <option value="Ofi">Aso Ofi</option>
+                            <option value="Men">Men</option>
+                            <option value="Women">Women</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label" for="start-date">Start Date</label>
+                        <input type="date" class="filter-input" id="start-date" value="2025-10-01">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label" for="end-date">End Date</label>
+                        <input type="date" class="filter-input" id="end-date" value="2025-10-29">
+                    </div>
+                    <button class="apply-btn" id="apply-filters">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+
+                </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-title">New Customers</div>
+                    <div class="card-loader" id="new-customers-loader">
+                        <div class="loader-spinner"></div>
+                        <div class="loader-text">Loading...</div>
+                    </div>
+                    <div class="kpi-value" id="new-customers-value" style="display: none;">0</div>
+                    <div class="kpi-trend trend-up" id="new-customers-trend" style="display: none;">
+                        <i class="fas fa-arrow-up"></i> <span>12% from last period</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-title">Returning Customers</div>
+                    <div class="card-loader" id="returning-customers-loader">
+                        <div class="loader-spinner"></div>
+                        <div class="loader-text">Loading...</div>
+                    </div>
+                    <div class="kpi-value" id="returning-customers-value" style="display: none;">0</div>
+                    <div class="kpi-trend trend-up" id="returning-customers-trend" style="display: none;">
+                        <i class="fas fa-arrow-up"></i> <span>8% from last period</span>
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-title">Average Order Value</div>
+                    <div class="card-loader" id="avg-order-loader">
+                        <div class="loader-spinner"></div>
+                        <div class="loader-text">Loading...</div>
+                    </div>
+                    <div class="kpi-value" id="avg-order-value" style="display: none;">₦0</div>
+                    <div class="kpi-trend trend-up" id="avg-order-trend" style="display: none;">
+                        <i class="fas fa-arrow-up"></i> <span>5% from last period</span>
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-title">Cart Abandonment Rate</div>
+                    <div class="card-loader" id="abandonment-loader">
+                        <div class="loader-spinner"></div>
+                        <div class="loader-text">Loading...</div>
+                    </div>
+                    <div class="kpi-value" id="abandonment-value" style="display: none;">0%</div>
+                    <div class="kpi-trend trend-down" id="abandonment-trend" style="display: none;">
+                        <i class="fas fa-arrow-down"></i> <span>3% from last period</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Analytics Grid -->
+            <div class="analytics-grid">
+                <!-- Daily Orders Chart -->
+                <div class="analytics-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Daily Orders</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                    </div>
+                    <div class="card-loader" id="daily-orders-loader">
+                        <div class="loader-spinner"></div>
+                        <div class="loader-text">Loading daily orders...</div>
+                    </div>
+                    <div class="chart-container" id="daily-orders-chart" style="display: none;">
+                        <canvas id="dailyOrdersCanvas"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Category Sales Chart -->
+                <div class="analytics-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Sales by Category</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                    </div>
+                    <div class="card-loader" id="category-sales-loader">
+                        <div class="loader-spinner"></div>
+                        <div class="loader-text">Loading category sales...</div>
+                    </div>
+                    <div class="chart-container" id="category-sales-chart" style="display: none;">
+                        <canvas id="categorySalesCanvas"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Top Products Chart -->
+                <div class="analytics-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Top Products</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="card-loader" id="top-products-loader">
+                        <div class="loader-spinner"></div>
+                        <div class="loader-text">Loading top products...</div>
+                    </div>
+                    <div class="chart-container" id="top-products-chart" style="display: none;">
+                        <canvas id="topProductsCanvas"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Customer Insights Chart -->
+                <div class="analytics-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Customer Insights</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="card-loader" id="customer-insights-loader">
+                        <div class="loader-spinner"></div>
+                        <div class="loader-text">Loading customer insights...</div>
+                    </div>
+                    <div class="chart-container" id="customer-insights-chart" style="display: none;">
+                        <canvas id="customerInsightsCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Fulfillment -->
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Order Fulfillment</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                    </div>
+                    <div class="card-loader" id="fulfillment-loader">
+                        <div class="loader-spinner"></div>
+                        <div class="loader-text">Loading fulfillment data...</div>
+                    </div>
+                    <div id="fulfillment-content" style="display: none;">
+                        <div class="kpi-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 20px;">
+                            <div class="kpi-card">
+                                <div class="kpi-title">Pending Orders</div>
+                                <div class="kpi-value" id="pending-orders-value">0</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-title">Completed Orders</div>
+                                <div class="kpi-value" id="completed-orders-value">0</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-title">Cancelled Orders</div>
+                                <div class="kpi-value" id="cancelled-orders-value">0</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-title">Avg Delivery Days</div>
+                                <div class="kpi-value" id="avg-delivery-value">0</div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="fulfillmentChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Most Viewed Products -->
+                <div class="analytics-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Most Viewed Products</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                    </div>
+                    <div class="card-loader" id="product-views-loader">
+                        <div class="loader-spinner"></div>
+                        <div class="loader-text">Loading product views...</div>
+                    </div>
+                    <div class="chart-container" id="product-views-chart" style="display: none;">
+                        <canvas id="productViewsCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tables Section -->
+            <div class="analytics-grid full-width">
+                <!-- Top Buyers Table -->
+                <div class="analytics-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Top Buyers</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                    </div>
+                    <div class="card-loader" id="top-buyers-loader">
+                        <div class="loader-spinner"></div>
+                        <div class="loader-text">Loading top buyers...</div>
+                    </div>
+                    <div class="table-container" id="top-buyers-table" style="display: none;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Total Spent</th>
+                                    <th>Orders</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top-buyers-body">
+                                <!-- Top buyers data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Top Rated Products Table -->
+                <div class="analytics-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Top Rated Products</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="card-loader" id="top-rated-loader">
+                        <div class="loader-spinner"></div>
+                        <div class="loader-text">Loading top rated products...</div>
+                    </div>
+                    <div class="table-container" id="top-rated-table" style="display: none;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top-rated-body">
+                                <!-- Top rated products data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Customer Locations -->
+            <div class="analytics-card full-width">
+                <div class="card-header">
+                    <h3 class="card-title">Customer Locations</h3>
+                    <div class="card-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                </div>
+                <div class="card-loader" id="locations-loader">
+                    <div class="loader-spinner"></div>
+                    <div class="loader-text">Loading customer locations...</div>
+                </div>
+                <div id="locations-content" style="display: none;">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>City</th>
+                                    <th>State</th>
+                                    <th>Total Customers</th>
+                                </tr>
+                            </thead>
+                            <tbody id="locations-body">
+                                <!-- Customer locations data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="map-container">
+                        <i class="fas fa-map fa-3x" style="margin-bottom: 15px;"></i>
+                        <p>Geographical visualization would appear here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+    <button id="goToTopBtn" title="Go to top">&#8679;</button>
+    <script src="/js/admin/main.js"></script>
+    <script src="/js/admin/analytics.js"></script>

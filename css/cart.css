@@ -693,3 +693,82 @@ select{
   outline: none;
   box-shadow: 0 0 5px rgba(212, 163, 115, 0.5);
 }
+
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1.2rem;
+    padding: 0.5rem 0;
+    border-bottom: 2px solid #eee;
+
+}
+
+.cart-header h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.delete-all-btn {
+    background: none;
+    border: none;
+    color: #e63946;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.2s ease;
+}
+
+.delete-all-btn:hover {
+    color: #c82333;
+}
+
+.referral-code-section {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 12px;
+    border-radius: 10px;
+}
+
+.referral-label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.referral-input-box {
+    display: flex;
+    gap: 10px;
+}
+
+#referralInput {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+#applyReferralBtn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+#applyReferralBtn:hover {
+    background: var(--primary-color);
+}
+
+.referral-feedback {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85rem;
+}

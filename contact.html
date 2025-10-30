@@ -640,10 +640,30 @@
                 
                 // Validate inputs
                 if (!name || !email || !subject || !message) {
-                    alert('Please fill in all fields');
+                    const overlay = document.createElement("div");
+                    overlay.className = "dialog-overlay";
+                    overlay.innerHTML = `
+                        <div class="dialog-box">
+                            <p>Please fill in all fields</p>
+                            <div class="dialog-actions">
+                                <button class="cancel-btn">Cancel</button>
+                                <button class="confirm-btn1">Okay</button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(overlay);
+
+                    // Handle actions
+                    overlay.querySelector(".cancel-btn").addEventListener("click", () => {
+                        overlay.remove();
+                    });
+
+                    overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+                        overlay.remove();
+                    });
+
                     return;
                 }
-                
                 // Show loading state
                 const submitBtn = contactForm.querySelector('button');
                 const originalBtnText = submitBtn.innerHTML;

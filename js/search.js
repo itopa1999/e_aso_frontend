@@ -104,7 +104,6 @@ function renderList(data, append = false) {
         const starsHTML = getStarHTML(product.rating);
         const isActive = product.watchlisted ? "active" : "";
 
-        console.log(product.main_image)
 
         const card = document.createElement("div");
         card.className = "product-card fade-in";
@@ -150,6 +149,19 @@ function renderList(data, append = false) {
         });
 
         productsGrid.appendChild(card);
+
+        const btn = card.querySelector(".add-to-cart");
+        if (product.cart_added) {
+            btn.textContent = "Added!";
+            btn.style.backgroundColor = "#28a745";
+            btn.disabled = true;
+            btn.style.cursor = "not-allowed";
+        } else {
+            btn.textContent = "Add to Cart";
+            btn.disabled = false;
+            btn.style.cursor = "pointer";
+        }
+        
     });
 
     
@@ -206,21 +218,19 @@ function attachCartEvents() {
                 if (!res.ok) throw new Error("Failed to move items to cart");
 
                 const data = await res.json();
-                const itemsMoved = data.items_added;
+                const itemsMoved = data.data.items_added;
                 let currentCount = parseInt(cartBadge.textContent) || 0;
                 cartBadge.textContent = currentCount + itemsMoved;
 
                 btn.textContent = '✓ Added!';
                 btn.style.backgroundColor = '#28a745';
+                btn.disabled = true;
+                btn.style.cursor = "not-allowed";
             } catch (error) {
                 console.error(error);
                 alert("Error moving items to cart.");
             } finally {
                 hidePreloader();
-                setTimeout(() => {
-                    btn.textContent = 'Add to Cart';
-                    btn.style.backgroundColor = '';
-                }, 2000);
             }
         });
     });
@@ -260,7 +270,7 @@ function attachWatchlistEvents() {
                 const data = await res.json();
 
                 let count = parseInt(wishlistCountElement.textContent);
-                if (data.watchlisted) {
+                if (data.data.watchlisted) {
                     btn.classList.add("active");
                     count += 1;
                 } else {
@@ -303,7 +313,6 @@ document.getElementById('search-input').addEventListener('keydown', function (e)
 
 document.getElementById("sort-by-select").addEventListener("change", function () {
     const sortValue = this.value;
-    console.log("Sort by:", sortValue);
 
     currentFilters.sort_by = sortValue;
     currentFilters.page = 1;
@@ -313,7 +322,6 @@ document.getElementById("sort-by-select").addEventListener("change", function ()
 // Price range dropdown
 document.getElementById("price-range-select").addEventListener("change", function () {
     const priceRange = this.value;
-    console.log("Price range selected:", priceRange);
 
     currentFilters.price_range = priceRange;
     currentFilters.page = 1;
