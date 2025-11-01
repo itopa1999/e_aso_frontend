@@ -788,3 +788,263 @@
         font-size: 1.8rem;
     }
 }
+
+
+
+/* ===== DARK MODE STYLES FOR INDEX.CSS ===== */
+
+/* Product Grid - Dark Mode */
+.dark-mode .product-card {
+    background: var(--card-bg);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.dark-mode .product-card:hover {
+    box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+}
+
+.dark-mode .product-title {
+    color: var(--text-color);
+}
+
+.dark-mode .product-features {
+    color: #aaa;
+}
+
+.dark-mode .wishlist-button {
+    background: rgba(42, 42, 42, 0.8);
+    color: var(--text-color);
+}
+
+.dark-mode .wishlist-button:hover {
+    background: var(--card-bg);
+}
+
+/* Section Titles - Dark Mode */
+.dark-mode .section-title {
+    color: var(--text-color);
+}
+
+.dark-mode .tagline {
+    color: #aaa;
+    border-bottom: 1px solid #444;
+}
+
+/* Filter Sidebar - Dark Mode */
+.dark-mode .filter-sidebar {
+    background-color: var(--card-bg);
+    border-left: 1px solid #444;
+    box-shadow: -8px 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .filter-title {
+    color: var(--text-color);
+}
+
+.dark-mode .close-filter {
+    color: #aaa;
+}
+
+.dark-mode .close-filter:hover {
+    color: var(--primary-color);
+}
+
+.dark-mode .filter-section h3 {
+    color: var(--text-color);
+}
+
+.dark-mode .filter-input {
+    background: var(--bg-color);
+    border: 1px solid #555;
+    color: var(--text-color);
+}
+
+.dark-mode .filter-input:focus {
+    background: var(--card-bg);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(201, 125, 90, 0.1);
+}
+
+.dark-mode .filter-option label {
+    color: var(--text-color);
+}
+
+/* Price Range Slider - Dark Mode */
+.dark-mode .price-range {
+    background: #555;
+}
+
+.dark-mode .price-range::-webkit-slider-thumb {
+    background: var(--primary-color);
+}
+
+.dark-mode .price-range::-moz-range-thumb {
+    background: var(--primary-color);
+}
+
+.dark-mode .price-values {
+    color: #aaa;
+}
+
+/* Filter Buttons - Dark Mode */
+.dark-mode .filter-btn {
+    background: var(--card-bg);
+    color: var(--text-color);
+    border: 2px solid #555;
+}
+
+.dark-mode .filter-btn.active, 
+.dark-mode .filter-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* No Products Message - Dark Mode */
+.dark-mode .no-products-message {
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+}
+
+.dark-mode .no-products-message h2 {
+    color: var(--primary-color);
+}
+
+.dark-mode .no-products-message p {
+    color: #aaa;
+}
+
+/* Feedback Modal - Dark Mode */
+.dark-mode .feedback-modal {
+    background: var(--modal-bg);
+}
+
+.dark-mode .form-input {
+    background: var(--bg-color);
+    border: 2px solid #555;
+    color: var(--text-color);
+}
+
+.dark-mode .form-input:focus {
+    background: var(--card-bg);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(201, 125, 90, 0.1);
+}
+
+.dark-mode .form-label {
+    color: var(--text-color);
+}
+
+.dark-mode .rating-title {
+    color: var(--text-color);
+}
+
+.dark-mode .rating-text {
+    color: #aaa;
+}
+
+.dark-mode .form-footer {
+    color: #aaa;
+}
+
+.dark-mode .success-title {
+    color: var(--text-color);
+}
+
+.dark-mode .success-text {
+    color: #aaa;
+}
+
+/* Hero Section - Dark Mode */
+.dark-mode #hero img {
+    filter: brightness(0.8);
+}
+
+/* Original Price - Dark Mode */
+.dark-mode .original-price {
+    color: #888;
+}
+
+/* Filter Header Border - Dark Mode */
+.dark-mode .filter-header {
+    border-bottom: 1px solid #444;
+}
+
+/* Scrollable Filter Options - Dark Mode */
+.dark-mode .filter-options2 {
+    scrollbar-color: #555 transparent; /* Firefox */
+}
+
+/* Arrow Buttons - Dark Mode */
+.dark-mode .arrow-btn {
+    background: var(--primary-color);
+}
+
+.dark-mode .arrow-btn:hover {
+    background: var(--dark-color);
+}
+
+/* Add to Cart Button - Dark Mode */
+.dark-mode .add-to-cart {
+    background: var(--primary-color);
+}
+
+.dark-mode .add-to-cart:hover {
+    background: var(--dark-color);
+}
+
+/* Apply Filters Button - Dark Mode */
+.dark-mode .apply-filters {
+    background: var(--primary-color);
+}
+
+.dark-mode .apply-filters:hover {
+    background: var(--dark-color);
+}
+
+/* Clear Filters Button - Dark Mode */
+.dark-mode .clear-filters-btn {
+    background: var(--primary-color);
+}
+
+.dark-mode .clear-filters-btn:hover {
+    background: var(--dark-color);
+}
+
+/* Star Rating - Dark Mode */
+.dark-mode .star {
+    color: #666;
+}
+
+.dark-mode .star:hover,
+.dark-mode .star.active {
+    color: #ffc107;
+}
+
+/* Modal Close Button - Dark Mode */
+.dark-mode .modal-close {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+}
+
+.dark-mode .modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Submit Button - Dark Mode */
+.dark-mode .submit-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+}
+
+/* Responsive Adjustments for Dark Mode */
+@media (max-width: 768px) {
+    .dark-mode .filter-sidebar {
+        background-color: var(--card-bg);
+    }
+}
+
+@media (max-width: 576px) {
+    .dark-mode .filter-sidebar {
+        background-color: var(--card-bg);
+    }
+}

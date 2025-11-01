@@ -443,3 +443,220 @@
     background-color: var(--dark-color);
     transform: translateY(-2px);
 }
+
+/* ===== DARK MODE STYLES FOR SEARCH.CSS ===== */
+
+/* Search Section - Dark Mode */
+.dark-mode .search-section {
+    background: linear-gradient(to right, rgba(201, 125, 90, 0.9), rgba(45, 27, 26, 0.9)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23c97d5a"/><path d="M20,20 L80,80 M80,20 L20,80" stroke="%23b18747" stroke-width="2"/></svg>');
+}
+
+.dark-mode .search-subtitle {
+    color: var(--secondary-color);
+}
+
+.dark-mode .search-box {
+    background: var(--card-bg);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.dark-mode .search-input {
+    background: var(--card-bg);
+    color: var(--text-color);
+}
+
+.dark-mode .search-button {
+    background: var(--accent-color);
+}
+
+.dark-mode .search-button:hover {
+    background: var(--secondary-color);
+}
+
+.dark-mode .search-meta {
+    color: rgba(255,255,255,0.7);
+}
+
+/* Filter Bar - Dark Mode */
+.dark-mode .results-count {
+    color: var(--text-color);
+}
+
+.dark-mode .filter-select {
+    background: var(--card-bg);
+    border: 1px solid #555;
+    color: var(--text-color);
+}
+
+.dark-mode .view-btn {
+    background: var(--card-bg);
+    border: 1px solid #555;
+    color: var(--text-color);
+}
+
+.dark-mode .view-btn.active,
+.dark-mode .view-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Product Grid - Dark Mode */
+.dark-mode .product-card {
+    background: var(--card-bg);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.dark-mode .product-card:hover {
+    box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+}
+
+.dark-mode .product-title {
+    color: var(--text-color);
+}
+
+.dark-mode .product-features {
+    color: #aaa;
+}
+
+.dark-mode .wishlist-button {
+    background: rgba(42, 42, 42, 0.8);
+    color: var(--text-color);
+}
+
+.dark-mode .wishlist-button:hover {
+    background: var(--card-bg);
+}
+
+.dark-mode .original-price {
+    color: #888;
+}
+
+/* Pagination - Dark Mode */
+.dark-mode .pagination-btn {
+    background: var(--card-bg);
+    border: 1px solid #555;
+    color: var(--text-color);
+}
+
+.dark-mode .pagination-btn.active,
+.dark-mode .pagination-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* No Products Message - Dark Mode */
+.dark-mode .no-products-message {
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+}
+
+.dark-mode .no-products-message h2 {
+    color: var(--primary-color);
+}
+
+.dark-mode .no-products-message p {
+    color: #aaa;
+}
+
+.dark-mode .clear-filters-btn {
+    background: var(--primary-color);
+}
+
+.dark-mode .clear-filters-btn:hover {
+    background: var(--dark-color);
+}
+
+/* Responsive Adjustments for Dark Mode */
+
+/* Mobile: 0px to 767px */
+@media (max-width: 767px) {
+    .dark-mode .filter-bar {
+        background: var(--bg-color);
+    }
+}
+
+/* Tablet: 768px to 1023px */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .dark-mode .filter-bar {
+        background: var(--bg-color);
+    }
+}
+
+/* Desktop: 1024px and up */
+@media (min-width: 1024px) {
+    .dark-mode .product-section {
+        background: var(--bg-color);
+    }
+}
+
+/* Large Desktop: 1200px and up */
+@media (min-width: 1200px) {
+    .dark-mode .products-grid {
+        background: var(--bg-color);
+    }
+}
+
+/* Additional Dark Mode Enhancements */
+
+/* Search input placeholder color */
+.dark-mode .search-input::placeholder {
+    color: #888;
+}
+
+/* Filter select dropdown arrow */
+.dark-mode .filter-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23aaa' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+}
+
+/* Rating stars in dark mode */
+.dark-mode .rating {
+    color: #ffc107; /* Keep the gold color for ratings */
+}
+
+/* Discount badge in dark mode */
+.dark-mode .discount {
+    background: #ff6b6b; /* Keep the red color for discounts */
+}
+
+/* Product badge in dark mode */
+.dark-mode .product-badge {
+    background: var(--accent-color);
+    color: white;
+}
+
+/* Add to cart button in dark mode */
+.dark-mode .add-to-cart {
+    background: var(--primary-color);
+}
+
+.dark-mode .add-to-cart:hover {
+    background: var(--dark-color);
+}
+
+/* Current price in dark mode */
+.dark-mode .current-price {
+    color: var(--primary-color);
+}
+
+/* Scrollbar for webkit browsers in dark mode */
+.dark-mode ::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
+}

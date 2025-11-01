@@ -362,6 +362,57 @@ btn.onclick = function () {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
+
+// DOM Elements
+const themeToggle = document.getElementById('themeToggle');
+const body = document.body;
+const themeIcon = themeToggle.querySelector('i');
+const themeText = themeToggle.querySelector('.toggle-text');
+
+// Check for saved theme preference or respect OS preference
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        enableDarkMode();
+    } else {
+        disableDarkMode();
+    }
+}
+
+// Enable dark mode
+function enableDarkMode() {
+    body.classList.add('dark-mode');
+    themeIcon.className = 'fas fa-sun';
+    themeText.textContent = 'Light Mode';
+    localStorage.setItem('theme', 'dark');
+}
+
+// Disable dark mode
+function disableDarkMode() {
+    body.classList.remove('dark-mode');
+    themeIcon.className = 'fas fa-moon';
+    themeText.textContent = 'Dark Mode';
+    localStorage.setItem('theme', 'light');
+}
+
+// Toggle theme
+function toggleTheme() {
+    if (body.classList.contains('dark-mode')) {
+        disableDarkMode();
+    } else {
+        enableDarkMode();
+    }
+}
+
+
+// Event Listeners
+themeToggle.addEventListener('click', toggleTheme);
+
+// Initialize
+initTheme();
+
 // Call it after DOM loads
 document.addEventListener("DOMContentLoaded", updateCartAndWatchlistCounts);
 
