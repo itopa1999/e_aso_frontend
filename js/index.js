@@ -283,6 +283,158 @@ function attachWatchlistEvents() {
 // PAGE INIT
 // =========================
 document.addEventListener('DOMContentLoaded', async function () {
+
+    const feedbackModal = document.getElementById('feedbackModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const closeSuccessBtn = document.getElementById('closeSuccess');
+    const feedbackForm = document.getElementById('feedbackForm');
+    const successMessage = document.getElementById('successMessage');
+    const stars = document.querySelectorAll('.star');
+    const ratingValue = document.getElementById('ratingValue');
+    const userRatingInput = document.getElementById('userRating');
+    const submitBtn = document.getElementById('submitFeedback');
+    const userName = document.getElementById('FeedbackUserName');
+    const userFeedback = document.getElementById('userFeedback');
+
+    // Check if user has visited before using localStorage
+    const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
+    
+    // Show modal if user has visited before (not first time)
+    // For demo purposes, we'll show it after a delay
+    // In production, you would check: if (hasVisitedBefore) { showModal(); }
+    setTimeout(() => {
+        if (!hasVisitedBefore) {
+            // First visit - set the flag for next time
+            localStorage.setItem('hasVisitedBefore', 'true');
+        } else {
+            // Returning visitor - show the modal after 2 seconds
+            setTimeout(showModal, 2000);
+        }
+    }, 1000);
+    
+    // Show modal function
+    function showModal() {
+        feedbackModal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+    }
+    
+    // Hide modal function
+    function hideModal() {
+        feedbackModal.classList.remove('active');
+        document.body.style.overflow = ''; // Re-enable scrolling
+    }
+    
+    // Close modal events
+    closeModalBtn.addEventListener('click', hideModal);
+    closeSuccessBtn.addEventListener('click', hideModal);
+    
+    // Close modal when clicking outside
+    feedbackModal.addEventListener('click', function(e) {
+        if (e.target === feedbackModal) {
+            hideModal();
+        }
+    });
+
+    stars.forEach(star => {
+    star.style.pointerEvents = 'auto'; // ensure clickable
+    star.addEventListener('click', (e) => {
+        e.stopPropagation(); // prevent modal click event
+        const rating = parseInt(e.currentTarget.getAttribute('data-rating'));
+        console.log("⭐ Star clicked:", rating);
+        setRating(rating);
+    });
+
+    star.addEventListener('mouseover', (e) => {
+        const rating = parseInt(e.currentTarget.getAttribute('data-rating'));
+        highlightStars(rating);
+    });
+});
+
+            
+    // Reset stars when mouse leaves the rating container
+    document.querySelector('.star-rating').addEventListener('mouseleave', function() {
+        const currentRating = parseInt(userRatingInput.value);
+        highlightStars(currentRating);
+    });
+    
+    // Set rating function
+    function setRating(rating) {
+        userRatingInput.value = rating;
+        ratingValue.textContent = rating;
+        highlightStars(rating);
+        
+        // Enable submit button if all fields are filled
+        validateForm();
+    }
+    
+    // Highlight stars based on rating
+    function highlightStars(rating) {
+        stars.forEach(star => {
+            const starRating = parseInt(star.getAttribute('data-rating'));
+            if (starRating <= rating) {
+                star.innerHTML = '<i class="fas fa-star"></i>';
+                star.classList.add('active');
+            } else {
+                star.innerHTML = '<i class="far fa-star"></i>';
+                star.classList.remove('active');
+            }
+        });
+    }
+    
+    // Form validation
+    function validateForm() {
+        console.log("userRatingInput value:", userRatingInput.value);
+        console.log("ValUserName value:", userName.value);
+        console.log("ValUserFeedback value:", userFeedback.value);
+        const ValUserName = userName.value.trim();
+        const ValUserFeedback = userFeedback.value.trim();
+        const userRating = userRatingInput.value;
+        
+        if (ValUserName && ValUserFeedback && userRating !== '0') {
+            submitBtn.disabled = false;
+        } else {
+            submitBtn.disabled = true;
+        }
+    }
+    
+    // Add input event listeners for form validation
+    userName.addEventListener('input', validateForm);
+    userFeedback.addEventListener('input', validateForm);
+    
+    // Form submission
+    feedbackForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const ValUserName = userName.value.trim();
+        const ValUserFeedback = userFeedback.value.trim();
+        const userRating = userRatingInput.value;
+        
+        // In a real application, you would send this data to your server
+        console.log('Feedback submitted:', {
+            user: ValUserName,
+            feedback: ValUserFeedback,
+            rating: userRating
+        });
+        
+        // Show success message
+        feedbackForm.style.display = 'none';
+        successMessage.style.display = 'block';
+        
+        // In a real application, you would:
+        // 1. Send data to your API endpoint
+        // 2. Handle success/error responses
+        // 3. Possibly store in localStorage that feedback was submitted to avoid showing again
+    });
+
+    
+    // Demo: Show modal after 3 seconds (for testing)
+    // Remove this in production
+    // setTimeout(showModal, 3000);
+    showModal();
+
+
+
     const heroImage = document.getElementById("hero-image");
     const heroLink = document.getElementById("hero-link");
 

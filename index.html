@@ -61,7 +61,9 @@
     <!-- Main Content -->
     <main class="container">
         <section id="hero">
-            <img id="hero-image" src="" alt="Hero Banner" style="width:100%; display:block;">
+            <div id="hero-link" href="#">
+                <img id="hero-image" src="" alt="Hero Banner" style="width:100%; display:block;">
+            </div>
         </section>
 
         <div class="filter-wrapper">
@@ -186,6 +188,69 @@
 
 
     <button class="apply-filters">Apply Filters</button>
+</div>
+
+<div class="feedback-modal-overlay" id="feedbackModal">
+    <div class="feedback-modal">
+        <div class="modal-header">
+            <button class="modal-close" id="closeModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-logo">
+                <img id="modal-logo-image" src="img/logo.jpeg" alt="">
+            </div>
+            <h2 class="modal-title">Share Your Experience</h2>
+            <p class="modal-subtitle">Help us improve our service</p>
+        </div>
+        
+        <div class="modal-body">
+            <form id="feedbackForm">
+                <div class="form-group">
+                    <label for="FeedbackUserName" class="form-label">Your Name</label>
+                    <input type="text" id="FeedbackUserName" class="form-input" placeholder="Enter your name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="userFeedback" class="form-label">Your Feedback</label>
+                    <textarea id="userFeedback" class="form-input form-textarea" placeholder="Tell us about your experience, suggestions for improvement, or any inquiries..." required></textarea>
+                </div>
+                
+                <div class="rating-container">
+                    <div class="rating-title">How would you rate your experience?</div>
+                    <div class="star-rating">
+                        <span class="star" data-rating="1"><i class="far fa-star"></i></span>
+                        <span class="star" data-rating="2"><i class="far fa-star"></i></span>
+                        <span class="star" data-rating="3"><i class="far fa-star"></i></span>
+                        <span class="star" data-rating="4"><i class="far fa-star"></i></span>
+                        <span class="star" data-rating="5"><i class="far fa-star"></i></span>
+                    </div>
+                    <div class="rating-text">
+                        Your rating: <span class="rating-value" id="ratingValue">0</span>/5
+                    </div>
+                    <input type="hidden" id="userRating" value="0" required>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitFeedback">
+                    <i class="fas fa-paper-plane"></i> Submit Feedback
+                </button>
+                
+                <div class="form-footer">
+                    Your feedback helps us serve you better
+                </div>
+            </form>
+            
+            <div class="success-message" id="successMessage">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 class="success-title">Thank You!</h3>
+                <p class="success-text">Your feedback has been received. We appreciate you taking the time to help us improve.</p>
+                <button class="submit-btn" id="closeSuccess">
+                    <i class="fas fa-check"></i> Continue Browsing
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
     

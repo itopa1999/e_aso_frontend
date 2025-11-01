@@ -4,7 +4,7 @@ const access = getCookie('access');
 const email = getCookie('email');
 const name = getCookie("name");
 const group = getCookie("group")?.toLowerCase();
-
+const AdminUserName = document.getElementById('adminUserName');
 
 // Helper to read cookies
 function getCookie(name) {
@@ -21,6 +21,12 @@ function getCookie(name) {
     return value;
 }
 
+
+const safeName = name || "";
+
+AdminUserName.textContent = safeName.length > 15 
+    ? safeName.slice(0, 12) + '...' 
+    : safeName || "User";
 
 const logoutButton = document.getElementById('logoutUser');
 
