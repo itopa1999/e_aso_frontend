@@ -57,6 +57,9 @@ body {
     color: var(--dark-color);
     font-size: 18px;
     text-decoration: none;
+    background-image: url('/img/logo.jpeg');
+    background-size: cover; /* Make it fill the circle */
+    background-position: center;
 }
 
 .admin-info {
