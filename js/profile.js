@@ -47,6 +47,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         const data = await response.json();
+        
+        renderTransactionsTable(data.data.transactions);
 
         if (response.ok) {
             renderRecentOrders(data.data.recent_orders)
@@ -146,8 +148,47 @@ document.addEventListener('DOMContentLoaded', async function() {
         `;
 
         orderList.appendChild(orderItem);
-    });
-}
+        });
+    }
+
+    function renderTransactionsTable(transactions) {
+        const transactionsList = document.querySelector('.transactions-list');
+        transactionsList.innerHTML = '';
+
+        if (transactions && transactions.length > 0) {
+        transactionsList.innerHTML = transactions
+            .map(tx => `
+            <div class="transaction-card">
+                <div class="transaction-info">
+                <p><strong>Type:</strong> ${tx.transaction_type}</p>
+                <p><strong>Amount:</strong> ₦${Number(tx.amount).toLocaleString()}</p>
+                <p><strong>Order ID:</strong> ${tx.order_id}</p>
+                <p><strong>Status:</strong> <span class="status ${tx.status.toLowerCase()}">${tx.status}</span></p>
+                </div>
+                <div class="transaction-meta">
+                <p><strong>Channel:</strong> ${tx.channel}</p> 
+                <p><strong>Reference:</strong> ${tx.reference}</p>
+                <p><strong>Date:</strong> ${new Date(tx.created_at).toLocaleString()}</p>
+                </div>
+            </div>
+            `)
+            .join("");
+        } else {
+            transactionsList.innerHTML = "<p>No transactions found.</p>";
+        }
+    }
+
+    // document.getElementById("filterBtn").addEventListener("click", () => {
+    //     const fromDate = document.getElementById("fromDate").value;
+    //     const toDate = document.getElementById("toDate").value;
+
+    //     if (!fromDate || !toDate) {
+    //         alert("Please select both start and end dates.");
+    //         return;
+    //     }
+
+    //     fetchTransactions(fromDate, toDate);
+    // });
 
     // Show modal
     editProfileBtn.addEventListener('click', function() {

@@ -34,6 +34,7 @@ loadLists()
     
 function renderList(data) {
     const products = data;
+    console.log(products);
     const productsGrid = document.querySelector(".products-grid");
     
 
@@ -88,7 +89,7 @@ function renderList(data) {
 
         const btn = card.querySelector(".add-to-cart");
         if (product.cart_added) {
-            btn.textContent = "Added!";
+            btn.textContent = "✓ Added!";
             btn.style.backgroundColor = "#28a745";
             btn.disabled = true;
             btn.style.cursor = "not-allowed";

@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderCartItems(data) {
+        console.log(data);
         cartContainer.innerHTML = "";
         if (!data.items || data.items.length === 0) {
             cartContainer.innerHTML = `
