@@ -31,7 +31,13 @@ async function fetchProductDetails() {
 function renderProductDetails(data) {
 
     // Basic Product Info
-    document.querySelector('.product-badge').textContent = data.badge;
+    const badgeEl = document.querySelector('.product-badge');
+    if (data.badge) {
+    badgeEl.textContent = data.badge;
+    badgeEl.style.display = 'block';
+    } else {
+    badgeEl.style.display = 'none';
+    }
     document.querySelector('.product-title').textContent = data.title;
     document.querySelector('.product-description-short').textContent = data.description;
     document.querySelector('.rating-count').textContent = `(${formatReviews(data.reviews_count)} reviews) | ${data.product_number}`;

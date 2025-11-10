@@ -75,7 +75,7 @@ function renderList(data, append = false) {
         card.className = "product-card fade-in";
 
         card.innerHTML = `
-            <div class="product-badge">${product.badge || ""}</div>
+            ${product.badge ? `<div class="product-badge">${product.badge}</div>` : ""}
             <button class="wishlist-button ${isActive}" data-id="${product.id}">
                 <i class="fas fa-heart"></i>
             </button>

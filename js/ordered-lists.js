@@ -176,9 +176,9 @@ function attachActionHandlers() {
 
                 const data = await response.json();
 
-                headerTitle.textContent = `Tracking Information for Order ${data.order_number}`;
+                headerTitle.textContent = `Tracking Information for Order ${data.data.order_number}`;
 
-                const trackingList = data.tracking || [];
+                const trackingList = data.data.tracking || [];
                 if (trackingList.length === 0) {
                     console.warn("No tracking info available for order:", orderId);
                     return;

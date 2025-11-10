@@ -15,6 +15,7 @@ async function loadCats() {
 }
 
 function renderCatButtons(data) {
+    console.log("Categories data:", data);
     const badgeSelect = document.getElementById('category');
     badgeSelect.innerHTML = '<option value="">All Categories</option>';
 
@@ -22,8 +23,8 @@ function renderCatButtons(data) {
     productCategories.forEach(cat => {
         const option = document.createElement('option');
         option.value = cat.name;
-        option.textContent = cat.name;
-        container.appendChild(option);
+        option.textContent = '🏷️ ' + cat.name;
+        badgeSelect.appendChild(option);
     });
 }
 
