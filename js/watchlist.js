@@ -51,7 +51,7 @@ function renderList(data) {
         card.className = "product-card fade-in";
 
         card.innerHTML = `
-            <div class="product-badge">${product.badge}</div>
+            ${product.badge ? `<div class="product-badge">${product.badge}</div>` : ""}
             <button class="wishlist-button active" data-id="${product.id}">
                 <i class="fas fa-heart"></i>
             </button>
@@ -88,7 +88,7 @@ function renderList(data) {
 
         const btn = card.querySelector(".add-to-cart");
         if (product.cart_added) {
-            btn.textContent = "Added!";
+            btn.textContent = "✓ Added!";
             btn.style.backgroundColor = "#28a745";
             btn.disabled = true;
             btn.style.cursor = "not-allowed";

@@ -145,6 +145,24 @@ function getStarHTML(rating) {
     return starHTML;
 }
 
+const toggle = document.querySelector('.accordion-toggle');
+const info = document.querySelector('.product-informations');
+
+// Only run if both elements exist
+if (toggle && info) {
+toggle.addEventListener('click', () => {
+    const isVisible = info.style.display === 'block';
+
+    if (isVisible) {
+    info.style.display = 'none';
+    toggle.classList.remove('active');
+    } else {
+    info.style.display = 'block';
+    toggle.classList.add('active');
+    }
+});
+}
+
 
 ANALYTICS_URL = "https://luck1999.pythonanywhere.com/admins/api/analytics"
 ADMIN_URL = "https://luck1999.pythonanywhere.com/admins/api/admin"

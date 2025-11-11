@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="icon" type="image/png" href="/img/logo.jpeg">
     <link rel="stylesheet" href="/css/admin/style.css">
-    <link rel="stylesheet" href="/css/admin/feedbacks.css">
+    <link rel="stylesheet" href="/css/admin/transactions.css">
     <style>
 
     </style>
@@ -57,8 +57,8 @@
             <li><a href="/admin/orders.html" class="menu-item"><i class="fas fa-shopping-cart"></i> <span>Orders</span></a></li>
             <li><a href="/admin/customers.html" class="menu-item"><i class="fas fa-users"></i> <span>Customers</span></a></li>
             <li><a href="/admin/analytics.html" class="menu-item"><i class="fas fa-chart-bar"></i> <span>Analytics</span></a></li>
-            <li><a href="/admin/feedbacks.html" class="menu-item active"><i class="fas fa-comments"></i> <span>Feedbacks</span></a></li>
-            <li><a href="/admin/transactions.html" class="menu-item"><i class="fas fa-exchange-alt"></i> <span>Transactions</span></a></li>
+            <li><a href="/admin/feedbacks.html" class="menu-item"><i class="fas fa-comments"></i> <span>Feedbacks</span></a></li>
+            <li><a href="/admin/transactions.html" class="menu-item active"><i class="fas fa-exchange-alt"></i> <span>Transactions</span></a></li>
             <li><a href="/admin/featureflag.html" class="menu-item"><i class="fas fa-flag"></i> <span>Feature Flags</span></a></li>
             <li><a href="#" id="logoutUser" class="menu-item"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
         </ul>
@@ -67,91 +67,118 @@
     <div class="main-content" id="mainContent">
         <div id="main-content-header">
             <div class="main-header">
-                <h1 class="main-title">Admin Feedbacks Page</h1>
+                <h1 class="main-title">Admin Transactions Page</h1>
                 <div class="filter-container">
                     <div class="filter-group">
-                        <label class="filter-label" for="name">Name</label>
-                        <input type="text" class="filter-input" id="name", placeholder="name">
+                        <label class="search-label" for="search-input">Search Transactions</label>
+                        <input type="text" class="filter-input" id="search-input" placeholder="Search by reference, order ID, or amount...">
                     </div>
                     <div class="filter-group">
-                        <label class="filter-label" for="start-date">Start Date</label>
+                        <label class="search-label" for="start-date">Start Date</label>
                         <input type="date" class="filter-input" id="start-date" value="">
                     </div>
                     <div class="filter-group">
-                        <label class="filter-label" for="end-date">End Date</label>
+                        <label class="search-label" for="end-date">End Date</label>
                         <input type="date" class="filter-input" id="end-date" value="">
                     </div>
-                    <button class="apply-btn" id="apply-filters">
+                    <button class="apply-btn" id="search-button">
                         <i class="fas fa-filter"></i> Apply Filters
                     </button>
 
                 </div>
             </div>
 
-            <!-- Stats Cards -->
+             <!-- Stats Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <i class="fas fa-comment-dots"></i>
+                        <i class="fas fa-money-bill-wave"></i>
                     </div>
-                    <div class="stat-value" id="total-feedbacks">0</div>
-                    <div class="stat-label">Total Feedbacks</div>
+                    <div class="stat-value" id="total-transactions">0</div>
+                    <div class="stat-label">Total Transactions</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <i class="fas fa-star"></i>
+                        <i class="fas fa-receipt"></i>
                     </div>
-                    <div class="stat-value" id="avg-rating">0.0</div>
-                    <div class="stat-label">Average Rating</div>
+                    <div class="stat-value" id="total-amount">₦0</div>
+                    <div class="stat-label">Total Amount</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <i class="fas fa-smile"></i>
+                        <i class="fas fa-check-circle"></i>
                     </div>
-                    <div class="stat-value" id="positive-feedbacks">0</div>
-                    <div class="stat-label">Positive (4-5 stars)</div>
+                    <div class="stat-value" id="successful-transactions">0</div>
+                    <div class="stat-label">Successful</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <i class="fas fa-frown"></i>
+                        <i class="fas fa-exchange-alt"></i>
                     </div>
-                    <div class="stat-value" id="critical-feedbacks">0</div>
-                    <div class="stat-label">Critical (1-2 stars)</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <div class="stat-value" id="resolved-feedbacks">0</div>
-                    <div class="stat-label">Marked as Resolved</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-question"></i>
-                    </div>
-                    <div class="stat-value" id="unresolved-feedbacks">0</div>
-                    <div class="stat-label">Unresolved</div>
+                    <div class="stat-value" id="average-transaction">₦0</div>
+                    <div class="stat-label">Average Transaction</div>
                 </div>
             </div>
 
-            <!-- Feedback Container -->
-            <div class="feedback-container" id="feedback-container">
-                <div class="feedback-loader" id="feedback-loader">
-                    <div class="loader-spinner"></div>
-                    <div class="loader-text">Loading feedback data...</div>
+            
+
+            <!-- Transactions Table -->
+            <div class="transactions-container">
+                <div class="table-container">
+                    <div class="transactions-loader" id="transactions-loader">
+                        <div class="loader-spinner"></div>
+                        <div class="loader-text">Loading transactions...</div>
+                    </div>
+                    
+                    <table class="transactions-table" id="transactions-table" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Amount</th>
+                                <th>Type</th>
+                                <th>Reference</th>
+                                <th>Channel</th>
+                                <th>Status</th>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-body">
+                            <!-- Transactions will be populated here -->
+                        </tbody>
+                    </table>
                 </div>
-                
-                <!-- Feedback cards will be populated here -->
+
+                <!-- Pagination -->
+                <div class="pagination-container" id="pagination-container" style="display: none;">
+                    <div class="pagination-info" id="pagination-info">
+                        Showing 0 of 0 transactions
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="pagination-btn" id="prev-page" disabled>
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                        <div class="pagination-current" id="current-page">1</div>
+                        <button class="pagination-btn" id="next-page" disabled>
+                            Next <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="empty-state" style="display: none;">
+                    <i class="fas fa-exchange-alt"></i>
+                    <h3>No Transactions Found</h3>
+                    <p>No transactions match your search criteria. Try adjusting your search terms.</p>
+                </div>
             </div>
+
         </div>
     </div>
 
-
-
     <button id="goToTopBtn" title="Go to top">&#8679;</button>
     <script src="/js/admin/main.js"></script>
-    <script src="/js/admin/feedbacks.js"></script>
+    <script src="/js/admin/transactions.js"></script>
 
 </body>
 </html>
-

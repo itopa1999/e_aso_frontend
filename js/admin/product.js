@@ -247,7 +247,6 @@ function showProductDetail(product) {
     productsGrid.style.display = 'none';
     productDetail.style.display = 'block';
     
-    console.log(product)
     // Update breadcrumb
     breadcrumbProductName.textContent = product.title;
     
@@ -409,6 +408,13 @@ function showProductDetail(product) {
 
         tbody.appendChild(tr);
     });
+
+    document.querySelector('.product-created-by').textContent = product.created_by || "—";
+    document.querySelector('.product-modified-by').textContent = product.modified_by || "—";
+    document.querySelector('.product-is-deleted').textContent = product.is_deleted ? "Yes" : "No";
+    document.querySelector('.product-deleted-at').textContent = product.deleted_at || "—";
+    document.querySelector('.product-deleted-by').textContent = product.deleted_by || "—";
+    document.querySelector('.product-display').textContent = product.display_product ? "Yes" : "No";
 
 
     

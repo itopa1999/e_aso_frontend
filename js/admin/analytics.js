@@ -4,6 +4,29 @@ if (!accessToken) {
 }
 showPreloader("Loading Analytics data");
 
+async function loadCats() {
+    try {
+        const res = await fetch(`${ASO_URL}/lookups/`, { method: "GET", headers: { "Accept": "application/json" } });
+        const data = await res.json();
+        renderCatButtons(data);
+    } catch (error) {
+        console.error("Error loading categories:", error);
+    }
+}
+
+function renderCatButtons(data) {
+    const badgeSelect = document.getElementById('category');
+    badgeSelect.innerHTML = '<option value="">All Categories</option>';
+
+    const productCategories = data.filter(cat => cat.category === 'product_cat');
+    productCategories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat.name;
+        option.textContent = '🏷️ ' + cat.name;
+        badgeSelect.appendChild(option);
+    });
+}
+
 let charts = {};
 
 const applyFiltersBtn = document.getElementById('apply-filters');
@@ -13,6 +36,7 @@ const endDateInput = document.getElementById('end-date');
 
 // Initialize dashboard on page load
 document.addEventListener('DOMContentLoaded', function() {
+    loadCats(); 
     // Set default dates (current month)
     const now = new Date();
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);

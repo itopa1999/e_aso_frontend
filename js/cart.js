@@ -393,8 +393,9 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchCartItems()
 
     async function checkReferralFeature() {
+        const featureFlagName = "Referral System";
         try {
-            const res = await fetch(`${ASO_URL}/feature-flag/Referral%20System/`, {
+            const res = await fetch(`${ASO_URL}/feature-flag/${encodeURIComponent(featureFlagName)}/`, {
                 method: "GET",
                 headers: { "Accept": "application/json" }
             });
