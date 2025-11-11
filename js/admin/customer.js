@@ -138,6 +138,12 @@ function showCustomerDetail(customer) {
             </tr>
         `;
     }
+
+    document.querySelector('.product-created-by').textContent = customer.created_by || "—";
+    document.querySelector('.product-modified-by').textContent = customer.modified_by || "—";
+    document.querySelector('.product-is-deleted').textContent = customer.is_deleted ? "Yes" : "No";
+    document.querySelector('.product-deleted-at').textContent = customer.deleted_at || "—";
+    document.querySelector('.product-deleted-by').textContent = customer.deleted_by || "—";
 }
 
 // Add back to customers functionality

@@ -54,7 +54,6 @@ async function filterProducts() {
 }
 
 function renderOrders(orders) {
-    console.log(orders)
     ordersTableBody.innerHTML = '';
                 
     if (orders.length === 0) {
@@ -293,7 +292,6 @@ function showOrderDetail(order) {
 
     const feedbackData = order.feedback
 
-    console.log(order.feedback)
     const feedbackContainer = document.getElementById("feedback-box");
     feedbackContainer.innerHTML = ""; // Clear previous feedback
 
@@ -314,9 +312,13 @@ function showOrderDetail(order) {
         feedbackContainer.innerHTML += feedbackHTML;
     });
 
+    }
+
     // Return logic
     const returnContainer = document.getElementById('returnProductContainer');
-    returnContainer.innerHTML = order.return_product.length
+
+    if (returnContainer && order?.return_product) {
+    returnContainer.innerHTML = order.return_product.length > 0
         ? order.return_product.map(item => `
             <div style="
                 background-color: var(--light-color);
@@ -338,9 +340,13 @@ function showOrderDetail(order) {
             </div>
         `).join('')
         : `<div style="color: var(--dark-color); font-size: 0.9rem;">No returns found.</div>`;
+    }
 
-
-}
+        document.querySelector('.product-created-by').textContent = order.created_by || "—";
+        document.querySelector('.product-modified-by').textContent = order.modified_by || "—";
+        document.querySelector('.product-is-deleted').textContent = order.is_deleted ? "Yes" : "No";
+        document.querySelector('.product-deleted-at').textContent = order.deleted_at || "—";
+        document.querySelector('.product-deleted-by').textContent = order.deleted_by || "—";
 
 
     // Scroll to top

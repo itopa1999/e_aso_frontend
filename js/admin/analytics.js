@@ -15,7 +15,6 @@ async function loadCats() {
 }
 
 function renderCatButtons(data) {
-    console.log("Categories data:", data);
     const badgeSelect = document.getElementById('category');
     badgeSelect.innerHTML = '<option value="">All Categories</option>';
 

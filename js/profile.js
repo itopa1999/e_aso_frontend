@@ -64,7 +64,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 referrerCode: data.data.referral_code || ''
             };
 
-            console.log("User Data:", userData);
             setUserData();
         } else {
             alert("Unable to fetch profile: " + (data.error || "Unknown error"));

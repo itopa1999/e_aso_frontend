@@ -45,7 +45,6 @@ async function fetchDashboardInfo() {
 
 
 function renderData(data) {
-    console.log(data)
      // --- Update Stats ---
     document.querySelector('.stats-container').innerHTML = data.order_status 
         ? `

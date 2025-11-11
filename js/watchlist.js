@@ -34,7 +34,6 @@ loadLists()
     
 function renderList(data) {
     const products = data;
-    console.log(products);
     const productsGrid = document.querySelector(".products-grid");
     
 

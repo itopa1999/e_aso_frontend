@@ -153,7 +153,6 @@ function loadAllFeedback() {
         // API returns wrapped data (BaseResultWithData)
         const data = res || [];
 
-        console.log('Fetched feedback data:', data);
         
         // Optional: filter by name if user typed something
         const nameValue = nameInput?.value?.trim()?.toLowerCase() || "";

@@ -29,7 +29,7 @@ async function checkReferralFeature() {
 
         
         if (result?.data === true) {
-            console.log("Feature flag response:", result);
+            console.log("Feature flag response:");
         } else {
             window.location.href = "404.html";
         }
@@ -96,7 +96,6 @@ function renderProducts() {
     offersGrid.innerHTML = '';
     
     products.forEach(product => {
-        console.log("Rendering product:", product);
         const offerCard = document.createElement('div');
         offerCard.className = 'offer-card';
         
