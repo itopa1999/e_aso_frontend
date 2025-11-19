@@ -126,9 +126,9 @@ function renderProductDetails(data) {
     const mainImage = document.getElementById('mainImage');
 
     if (data.main_image) {
-        mainImage.style.background = `url('${data.main_image}')`;
+        mainImage.style.backgroundImage  = `url('${data.main_image}')`;
     } else {
-        mainImage.style.background = `url("img/product_image.png")`;
+        mainImage.style.backgroundImage  = `url("img/product_image.png")`;
     }
 
     mainImage.style.backgroundSize = 'contain';

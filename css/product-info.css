@@ -27,7 +27,7 @@
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    background: linear-gradient(45deg, #8a4b38, #4a2c2a);
+    background: white;
     aspect-ratio: 1/1;
     display: flex;
     align-items: center;
