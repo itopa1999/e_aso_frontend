@@ -1,17 +1,34 @@
-AUTH_URL = "http://127.0.0.1:8000/auth/api/user"
+AUTH_URL = "http://127.0.0.1:8000/auth/api/user";
+
+// DOM CACHE
+const AUTH_DOM = {
+    loginForm: null,
+    submitBtn: null,
+    spinner: null,
+    btnText: null,
+    googleBtn: null
+};
+
+function cacheAuthDOM() {
+    AUTH_DOM.loginForm = document.getElementById('login-form');
+    AUTH_DOM.submitBtn = document.getElementById('submit-btn');
+    AUTH_DOM.spinner = document.getElementById('spinner');
+    AUTH_DOM.btnText = AUTH_DOM.submitBtn?.querySelector('.btn-text');
+    AUTH_DOM.googleBtn = document.querySelector('.btn-google');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    const loginForm = document.getElementById('login-form');
-    const submitBtn = document.getElementById('submit-btn');
-    const spinner = document.getElementById('spinner');
-    const btnText = submitBtn.querySelector('.btn-text');        
-    loginForm.addEventListener('submit', async function (e) {
+    cacheAuthDOM();
+    
+    if (!AUTH_DOM.loginForm) return;        
+    AUTH_DOM.loginForm.addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        const email = loginForm.querySelector('input[name="email"]').value;
+        const email = AUTH_DOM.loginForm.querySelector('input[name="email"]').value;
         // Disable button and show spinner
-        submitBtn.disabled = true;
-        spinner.classList.remove('d-none');
-        btnText.textContent = 'Signing In...';
+        AUTH_DOM.submitBtn.disabled = true;
+        AUTH_DOM.spinner.classList.remove('d-none');
+        AUTH_DOM.btnText.textContent = 'Signing In...';
         try {
             const response = await fetch(`${AUTH_URL}/magic-login/`, {
                 
@@ -30,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Account Sign-In', 
                     `${data.message}`
                 );
-                loginForm.reset();
+                AUTH_DOM.loginForm.reset();
             } else {
                 showNotification(
                     'error',
@@ -48,15 +65,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Re-enable button and hide spinner
-        submitBtn.disabled = false;
-        spinner.classList.add('d-none');
-        btnText.textContent = 'Sign In';
+        AUTH_DOM.submitBtn.disabled = false;
+        AUTH_DOM.spinner.classList.add('d-none');
+        AUTH_DOM.btnText.textContent = 'Sign In';
     });
     
     // Google SSO
-    document.querySelector('.btn-google').addEventListener('click', function() {
-        alert('Google SSO would open here\n(In a real app, this would authenticate with Google)');
-    });
+    if (AUTH_DOM.googleBtn) {
+        AUTH_DOM.googleBtn.addEventListener('click', function() {
+            alert('Google SSO would open here\n(In a real app, this would authenticate with Google)');
+        });
+    }
 
 });
 

@@ -5,6 +5,45 @@ if (!accessToken) {
 
 showPreloader("Loading your ordered details");
 
+// DOM CACHE
+const ORDER_DETAILS_DOM = {
+    orderId: null,
+    statusText: null,
+    statusSubtitle: null,
+    statusBadge: null,
+    shippingInfo: null,
+    itemsContainer: null,
+    orderSummary: null,
+    addressDetails: null,
+    paymentInfo: null,
+    otherInfo: null,
+    totalPayment: null,
+    progressBar: null,
+    reorderBtn: null,
+    contactBtn: null,
+    returnBtn: null,
+    cartBadge: null
+};
+
+function cacheOrderDetailsDOM() {
+    ORDER_DETAILS_DOM.orderId = document.querySelector('.order-id');
+    ORDER_DETAILS_DOM.statusText = document.querySelector('.status-title');
+    ORDER_DETAILS_DOM.statusSubtitle = document.querySelector('.status-subtitle');
+    ORDER_DETAILS_DOM.statusBadge = document.querySelector('.order-status');
+    ORDER_DETAILS_DOM.shippingInfo = document.querySelector('.shipping-info');
+    ORDER_DETAILS_DOM.itemsContainer = document.querySelector('.order-items');
+    ORDER_DETAILS_DOM.orderSummary = document.querySelector('.order-summary');
+    ORDER_DETAILS_DOM.addressDetails = document.querySelector('.address-details');
+    ORDER_DETAILS_DOM.paymentInfo = document.querySelector('.payment-info');
+    ORDER_DETAILS_DOM.otherInfo = document.querySelector('.other-info');
+    ORDER_DETAILS_DOM.totalPayment = document.getElementById('total-payment');
+    ORDER_DETAILS_DOM.progressBar = document.getElementById('progressBar');
+    ORDER_DETAILS_DOM.reorderBtn = document.querySelector('.btn-reorder');
+    ORDER_DETAILS_DOM.contactBtn = document.querySelector('.btn-contact');
+    ORDER_DETAILS_DOM.returnBtn = document.querySelector('.btn-return');
+    ORDER_DETAILS_DOM.cartBadge = document.getElementById('cart-count');
+}
+
 const orderId = getQueryParam('id');
 if (!orderId) {
     window.location.href = "404.html";
@@ -38,29 +77,32 @@ async function fetchOrderDetails() {
 }
 
 function renderOrderDetails(order) {
-    main_product_number = document.querySelector('.order-id').textContent = order.order_number;
-    main_product_number = order.order_number;
+    if (ORDER_DETAILS_DOM.orderId) {
+        ORDER_DETAILS_DOM.orderId.textContent = order.order_number;
+    }
 
-
-    const statusText = document.querySelector('.status-title');
-    const statusSubtitle = document.querySelector('.status-subtitle');
-    const statusBadge = document.querySelector('.order-status');
-
-    statusText.textContent = order.order_status || "Placed";
-    statusBadge.textContent = statusText.textContent;
-    statusBadge.className = `order-status status-${statusText.textContent.toLowerCase()}`;
+    if (ORDER_DETAILS_DOM.statusText) {
+        ORDER_DETAILS_DOM.statusText.textContent = order.order_status || "Placed";
+    }
+    
+    if (ORDER_DETAILS_DOM.statusBadge && ORDER_DETAILS_DOM.statusText) {
+        ORDER_DETAILS_DOM.statusBadge.textContent = ORDER_DETAILS_DOM.statusText.textContent;
+        ORDER_DETAILS_DOM.statusBadge.className = `order-status status-${ORDER_DETAILS_DOM.statusText.textContent.toLowerCase()}`;
+    }
     
     const deliveryDate = order.estimated_delivery_date
         ? formatDateToHuman(order.estimated_delivery_date)
         : null;
 
-    statusSubtitle.textContent = deliveryDate
-        ? "Estimated delivery: " + deliveryDate
-        : "Estimated delivery: Not set yet";
-
+    if (ORDER_DETAILS_DOM.statusSubtitle) {
+        ORDER_DETAILS_DOM.statusSubtitle.textContent = deliveryDate
+            ? "Estimated delivery: " + deliveryDate
+            : "Estimated delivery: Not set yet";
+    }
 
     // Update tracking info
-    document.querySelector('.shipping-info').innerHTML = `
+    if (ORDER_DETAILS_DOM.shippingInfo) {
+        ORDER_DETAILS_DOM.shippingInfo.innerHTML = `
         <div style="display: flex; gap: 15px; align-items: center;">
             <i class="fas fa-box" style="font-size: 1.2rem; color: var(--primary-color);"></i>
             <div>
@@ -68,22 +110,26 @@ function renderOrderDetails(order) {
                 <div style="color: #777;">Carrier: ${order.carrier}</div>
             </div>
         </div>
-    `;
+        `;
+    }
 
-    // Populate items
-    const itemsContainer = document.querySelector('.order-items');
-    itemsContainer.innerHTML = "";
-    order.items.forEach(item => {
+    // Populate items with fragment
+    if (ORDER_DETAILS_DOM.itemsContainer) {
+        ORDER_DETAILS_DOM.itemsContainer.innerHTML = "";
+        
+        const fragment = document.createDocumentFragment();
+        order.items.forEach(item => {
     const descText = item.desc 
             ? `<div class="desc-container">
                     <span><strong>Desc:</strong> Color: ${item.desc.color || 'N/A'}, Size: ${item.desc.size || 'N/A'}</span>
             </div>`
             : `<div class="desc-container">
                     <span><strong>Desc:</strong> Color: N/A, Size: N/A</span>
-            </div>`;
+                </div>`;
 
-        itemsContainer.innerHTML += `
-            <div class="order-item">
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'order-item';
+            itemDiv.innerHTML = `
                 <a href="product-info.html?id=${item.product_id}">
                     <div class="order-item-image" 
                         style="background-image: url('${item.product_image || "img/product_image.png"}');">
@@ -98,21 +144,26 @@ function renderOrderDetails(order) {
                         <div class="order-item-price">₦${formatNumber(item.price)}</div>
                     <div class="order-item-qty">Quantity: ${item.quantity}</div>
                 </div>
-            </div>
-        `;
-    });
+            `;
+            fragment.appendChild(itemDiv);
+        });
+        ORDER_DETAILS_DOM.itemsContainer.appendChild(fragment);
+    }
 
     // Totals
-    document.querySelector('.order-summary').innerHTML = `
+    if (ORDER_DETAILS_DOM.orderSummary) {
+        ORDER_DETAILS_DOM.orderSummary.innerHTML = `
         <div class="summary-row"><div class="summary-label">Subtotal</div><div class="summary-value">₦${formatNumber(order.subtotal)}</div></div>
         <div class="summary-row"><div class="summary-label">Shipping</div><div class="summary-value">₦${formatNumber(order.shipping_fee)}</div></div>
         <div class="summary-row"><div class="summary-label">Discount</div><div class="summary-value" style="color:#28a745;">-₦${formatNumber(order.discount)}</div></div>
         <div class="summary-total"><div>Total</div><div>₦${formatNumber(order.total)}</div></div>
-    `;
+        `;
+    }
 
     // Shipping address
     const addr = order.shipping_address;
-    document.querySelector('.address-details').innerHTML = `
+    if (ORDER_DETAILS_DOM.addressDetails) {
+        ORDER_DETAILS_DOM.addressDetails.innerHTML = `
         <div class="address-name">${addr.full_name}</div>
         <div class="address-line">${addr.first_name} ${addr.last_name}</div>
         <div class="address-line">${addr.address}</div>
@@ -125,25 +176,29 @@ function renderOrderDetails(order) {
         <div class="address-line">
             <i class="fas fa-phone"></i> Alt: ${addr.alt_phone}
         </div>
-    `;
+        `;
+    }
 
     const otherInfo = order.other_info;
-
-    const otherInfoDiv = document.querySelector('.other-info');
-
-    if (otherInfo && otherInfo.trim() !== "") {
-        otherInfoDiv.innerHTML = otherInfo.replace(/\n/g, "<br>");
-    } else {
-        otherInfoDiv.innerHTML = "<em>This is not set yet.</em>";
+    if (ORDER_DETAILS_DOM.otherInfo) {
+        if (otherInfo && otherInfo.trim() !== "") {
+            ORDER_DETAILS_DOM.otherInfo.innerHTML = otherInfo.replace(/\n/g, "<br>");
+        } else {
+            ORDER_DETAILS_DOM.otherInfo.innerHTML = "<em>This is not set yet.</em>";
+        }
     }
 
     // Payment info
     const payment = order.payment_detail;
-    document.querySelector('.payment-info').innerHTML = `
+    if (ORDER_DETAILS_DOM.paymentInfo) {
+        ORDER_DETAILS_DOM.paymentInfo.innerHTML = `
         <div class="payment-name">${payment.method}</div>
-    `;
+        `;
+    }
 
-    document.getElementById("total-payment").innerText  = `₦${formatNumber(order.total)}`;
+    if (ORDER_DETAILS_DOM.totalPayment) {
+        ORDER_DETAILS_DOM.totalPayment.innerText = `₦${formatNumber(order.total)}`;
+    }
 
 
 
@@ -151,7 +206,7 @@ function renderOrderDetails(order) {
 
     function updateProgressBarFromBackend(orderStatus, trackingList) {
         const steps = document.querySelectorAll('.timeline-step');
-        const progressBar = document.getElementById('progressBar');
+        const progressBar = ORDER_DETAILS_DOM.progressBar;
         const statusBar = document.querySelector('.status-bar');
         const statusTitle = statusBar.querySelector('.status-title');
         const statusSubtitle = statusBar.querySelector('.status-subtitle');
@@ -204,17 +259,14 @@ function renderOrderDetails(order) {
 
 }
 
-fetchOrderDetails()
-
 document.addEventListener('DOMContentLoaded', function() {
-    
+    cacheOrderDetailsDOM();
+    fetchOrderDetails();
 
-    
+    if (!ORDER_DETAILS_DOM.reorderBtn) return;
+
     // Reorder button functionality
-    const reorderBtn = document.querySelector('.btn-reorder');
-    const cartBadge = document.getElementById("cart-count");
-
-    reorderBtn.addEventListener('click', async function () {
+    ORDER_DETAILS_DOM.reorderBtn.addEventListener('click', async function () {
 
         try {
             showPreloader("Adding to cart");
@@ -234,8 +286,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const itemsAdded = data.items_added || 0;
 
             // Update cart count
-            let currentCount = parseInt(cartBadge.textContent) || 0;
-            cartBadge.textContent = currentCount + itemsAdded;
+            if (ORDER_DETAILS_DOM.cartBadge) {
+                let currentCount = parseInt(ORDER_DETAILS_DOM.cartBadge.textContent) || 0;
+                ORDER_DETAILS_DOM.cartBadge.textContent = currentCount + itemsAdded;
+            }
 
             // Success UI feedback
             this.innerHTML = '<i class="fas fa-check"></i> Added to Cart!';
@@ -262,15 +316,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Contact Seller Modal
     const contactModal = document.getElementById('contactModal');
-    const contactClose = contactModal.querySelector('.close');
+    const contactClose = contactModal?.querySelector('.close');
     const complaintMessageInput = document.getElementById('complaintMessage');
     const sendComplaintBtn = document.getElementById('sendComplaint');
 
-    document.querySelector('.btn-contact').addEventListener('click', () => {
-        contactModal.style.display = 'block';
-    });
+    if (ORDER_DETAILS_DOM.contactBtn && contactModal) {
+        ORDER_DETAILS_DOM.contactBtn.addEventListener('click', () => {
+            contactModal.style.display = 'block';
+        });
+    }
 
-    contactClose.addEventListener('click', () => contactModal.style.display = 'none');
+    if (contactClose) {
+        contactClose.addEventListener('click', () => contactModal.style.display = 'none');
+    }
 
     window.addEventListener('click', (event) => {
         if (event.target === contactModal) contactModal.style.display = 'none';
@@ -319,10 +377,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Return Modal
     const returnModal = document.getElementById('returnModal');
-    const returnClose = returnModal.querySelector('.close');
+    const returnClose = returnModal?.querySelector('.close');
 
-    document.querySelector('.btn-return').addEventListener('click', () => {
-        const currentStatus = document.querySelector('.status-title').textContent.trim().toLowerCase();
+    if (ORDER_DETAILS_DOM.returnBtn && returnModal) {
+        ORDER_DETAILS_DOM.returnBtn.addEventListener('click', () => {
+            const currentStatus = ORDER_DETAILS_DOM.statusText?.textContent.trim().toLowerCase();
         if (currentStatus === 'delivered') {
             returnModal.style.display = 'flex';
         } else {
@@ -349,9 +408,12 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
         }
-    });
+        });
+    }
 
-    returnClose.addEventListener('click', () => returnModal.style.display = 'none');
+    if (returnClose) {
+        returnClose.addEventListener('click', () => returnModal.style.display = 'none');
+    }
 
     window.addEventListener('click', (event) => {
         if (event.target === returnModal) returnModal.style.display = 'none';

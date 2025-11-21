@@ -4,13 +4,28 @@ if (!accessToken) {
     window.location.href = "auth.html";
 }
 
-// ================== DOM ELEMENTS ==================
-const ordersContainer = document.querySelector('.orders-container');
-const cartBadge = document.querySelector('.icon-badge');
+// ================== DOM CACHE ==================
+const ORDERS_DOM = {
+    ordersContainer: null,
+    cartBadge: null,
+    filterBtns: null,
+    noOrdersMsg: null,
+    trackingModal: null
+};
+
+function cacheOrdersDOM() {
+    ORDERS_DOM.ordersContainer = document.querySelector('.orders-container');
+    ORDERS_DOM.cartBadge = document.querySelector('.icon-badge');
+    ORDERS_DOM.filterBtns = document.querySelectorAll('.filter-btn');
+    ORDERS_DOM.noOrdersMsg = document.getElementById('noOrdersMessage');
+    ORDERS_DOM.trackingModal = document.getElementById('trackingModal');
+}
+
 let allOrders = [];
 
 // ================== INIT ==================
 document.addEventListener('DOMContentLoaded', () => {
+    cacheOrdersDOM();
     loadOrders();
     setupFilterButtons();
 });
@@ -47,7 +62,8 @@ async function loadOrders() {
 
 // ================== RENDER ORDERS ==================
 function renderOrders(orders) {
-    ordersContainer.innerHTML = "";
+    if (!ORDERS_DOM.ordersContainer) return;
+    ORDERS_DOM.ordersContainer.innerHTML = "";
 
     if (!orders.length) {
         ordersContainer.innerHTML = `
@@ -62,6 +78,8 @@ function renderOrders(orders) {
         `;
         return;
     }
+
+    const fragment = document.createDocumentFragment();
 
     orders.forEach(order => {
         const statusClass = `status-${order.order_status.replace(/_/g, '-')}`;
@@ -110,10 +128,11 @@ function renderOrders(orders) {
             </div>
         `;
 
-        ordersContainer.appendChild(card);
+        fragment.appendChild(card);
     });
 
-    attachActionHandlers();
+    ORDERS_DOM.ordersContainer.appendChild(fragment);
+    setupOrdersDelegation();
 }
 
 // ================== SUMMARY RENDER ==================
@@ -139,20 +158,27 @@ function renderSummary(order) {
 }
 
 // ================== ACTION HANDLERS ==================
-function attachActionHandlers() {
-    document.querySelectorAll('.btn-reorder').forEach(btn => {
-        btn.addEventListener('click', () => reorderItems(btn));
-    });
-
-    document.querySelectorAll('.btn-view').forEach(btn => {
-        btn.addEventListener('click', () => {
-            window.location.href = `ordered-details.html?id=${btn.dataset.id}`;
-        });
-    });
-
-    document.querySelectorAll('.btn-track').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            const modal = document.getElementById('trackingModal');
+function setupOrdersDelegation() {
+    if (!ORDERS_DOM.ordersContainer) return;
+    
+    ORDERS_DOM.ordersContainer.addEventListener('click', async function(e) {
+        const reorderBtn = e.target.closest('.btn-reorder');
+        const viewBtn = e.target.closest('.btn-view');
+        const trackBtn = e.target.closest('.btn-track');
+        
+        if (reorderBtn) {
+            await reorderItems(reorderBtn);
+            return;
+        }
+        
+        if (viewBtn) {
+            window.location.href = `ordered-details.html?id=${viewBtn.dataset.id}`;
+            return;
+        }
+        
+        if (trackBtn) {
+            const modal = ORDERS_DOM.trackingModal;
+            if (!modal) return;
             modal.style.display = 'flex';
 
             const steps = document.querySelectorAll('.timeline-step');
@@ -220,13 +246,12 @@ function attachActionHandlers() {
             const percent = (currentStepIndex / (statusOrder.length - 1)) * 100;
             progressBar.style.height = `${percent}%`;
 
-        } catch (error) {
-            console.error(error);
-        } finally {
-            hidePreloader();
+            } catch (error) {
+                console.error(error);
+            } finally {
+                hidePreloader();
+            }
         }
-            
-        });
     });
 
     function capitalizeWords(str) {
@@ -268,8 +293,8 @@ async function reorderItems(btn) {
         const data = await res.json();
         const itemsAdded = data.data.items_added || 0;
 
-        let currentCount = parseInt(cartBadge.textContent) || 0;
-        cartBadge.textContent = currentCount + itemsAdded;
+        let currentCount = parseInt(ORDERS_DOM.cartBadge.textContent) || 0;
+        ORDERS_DOM.cartBadge.textContent = currentCount + itemsAdded;
 
         btn.innerHTML = '<i class="fas fa-check"></i> Added to Cart!';
         btn.style.background = '#28a745';
@@ -291,14 +316,12 @@ async function reorderItems(btn) {
 
 // ================== FILTER ==================
 function setupFilterButtons() {
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const noOrdersMsg = document.getElementById('noOrdersMessage');
+    if (!ORDERS_DOM.filterBtns || !ORDERS_DOM.filterBtns.length) return;
+    
     showPreloader("Loading your ordered items");
-    filterBtns.forEach(btn => {
+    ORDERS_DOM.filterBtns.forEach(btn => {
         btn.addEventListener('click', function () {
-            
-
-            filterBtns.forEach(b => b.classList.remove('active'));
+            ORDERS_DOM.filterBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
 
             const filter = this.textContent.trim().toLowerCase();
@@ -316,10 +339,8 @@ function setupFilterButtons() {
             });
 
             // Show or hide the "No orders" message
-            if (visibleCount === 0) {
-                noOrdersMsg.style.display = 'block';
-            } else {
-                noOrdersMsg.style.display = 'none';
+            if (ORDERS_DOM.noOrdersMsg) {
+                ORDERS_DOM.noOrdersMsg.style.display = visibleCount === 0 ? 'block' : 'none';
             }
 
             hidePreloader();

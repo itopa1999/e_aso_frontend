@@ -19,6 +19,43 @@ let isLoadingMore = false;
 let nextPageUrl = null;
 
 // =========================
+// DOM CACHE - PERFORMANCE OPTIMIZATION
+// =========================
+const DOM = {
+    productsGrid: null,
+    noProductsWrapper: null,
+    cartBadge: null,
+    wishlistBadge: null,
+    filterSidebar: null,
+    overlay: null,
+    priceRange: null,
+    priceValue: null,
+    searchInput: null,
+    badgeFilter: null,
+    filterContainer: null,
+    applyFiltersBtn: null,
+    heroImage: null,
+    heroLink: null
+};
+
+function cacheDOMElements() {
+    DOM.productsGrid = document.querySelector(".product-grid");
+    DOM.noProductsWrapper = document.querySelector(".no-products-wrapper");
+    DOM.cartBadge = document.getElementById("cart-count");
+    DOM.wishlistBadge = document.getElementById("watchlist-count");
+    DOM.filterSidebar = document.getElementById('filter-sidebar');
+    DOM.overlay = document.getElementById('overlay');
+    DOM.priceRange = document.querySelector('.price-range');
+    DOM.priceValue = document.querySelector('.price-values span:nth-child(2)');
+    DOM.searchInput = document.getElementById("search-title-or-number");
+    DOM.badgeFilter = document.getElementById("badge-filter");
+    DOM.filterContainer = document.querySelector('.filter-options2');
+    DOM.applyFiltersBtn = document.querySelector(".apply-filters");
+    DOM.heroImage = document.getElementById("hero-image");
+    DOM.heroLink = document.getElementById("hero-link");
+}
+
+// =========================
 // UTILITY FUNCTIONS
 // =========================
 function buildQueryParams() {
@@ -50,21 +87,26 @@ function setActiveButton(selectedBtn) {
 // RENDER FUNCTIONS
 // =========================
 function renderList(data, append = false) {
-    const productsGrid = document.querySelector(".product-grid");
     const products = data.results || [];
 
     if (!append) {
-        productsGrid.innerHTML = "";
-        document.querySelector(".no-products-wrapper").style.display = products.length ? "none" : "block";
+        DOM.productsGrid.innerHTML = "";
+        DOM.noProductsWrapper.style.display = products.length ? "none" : "block";
         if (!products.length) {
-            document.querySelector('.clear-filters-btn')?.addEventListener('click', () => {
-                resetFilters();
-                loadLists();
-            });
+            const clearBtn = document.querySelector('.clear-filters-btn');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', () => {
+                    resetFilters();
+                    loadLists();
+                }, { once: true });
+            }
             nextPageUrl = null;
             return;
         }
     }
+
+    // Use DocumentFragment for batch DOM insertion
+    const fragment = document.createDocumentFragment();
 
     products.forEach(product => {
         const reviewFormatted = formatReviews(product.reviews_count);
@@ -106,8 +148,6 @@ function renderList(data, append = false) {
             </div>
         `;
 
-        productsGrid.appendChild(card);
-
         const btn = card.querySelector(".add-to-cart");
         if (product.cart_added) {
             btn.textContent = "✓ Added!";
@@ -119,26 +159,26 @@ function renderList(data, append = false) {
             btn.disabled = false;
             btn.style.cursor = "pointer";
         }
+
+        fragment.appendChild(card);
     });
 
+    // Single DOM insertion
+    DOM.productsGrid.appendChild(fragment);
+
     nextPageUrl = data.next;
-    attachCartEvents();
-    attachWatchlistEvents();
 }
 
 function renderCatButtons(data) {
-    const container = document.querySelector('.filter-options2');
-    container.innerHTML = '';
+    DOM.filterContainer.innerHTML = '';
+
+    const fragment = document.createDocumentFragment();
 
     const allBtn = document.createElement('button');
     allBtn.className = 'filter-btn active';
     allBtn.textContent = 'All Categories';
-    allBtn.addEventListener('click', () => {
-        resetFilters();
-        setActiveButton(allBtn);
-        loadLists();
-    });
-    container.appendChild(allBtn);
+    allBtn.dataset.category = '';
+    fragment.appendChild(allBtn);
 
     const productCategories = data.filter(cat => cat.category === 'product_cat');
 
@@ -146,27 +186,41 @@ function renderCatButtons(data) {
         const button = document.createElement('button');
         button.className = 'filter-btn';
         button.textContent = cat.name;
-        button.addEventListener('click', () => {
-            currentFilters.category = cat.name;
-            setActiveButton(button);
+        button.dataset.category = cat.name;
+        fragment.appendChild(button);
+    });
+
+    DOM.filterContainer.appendChild(fragment);
+
+    // Event delegation for category buttons
+    DOM.filterContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('filter-btn')) {
+            const category = e.target.dataset.category;
+            if (category === '') {
+                resetFilters();
+            } else {
+                currentFilters.category = category;
+            }
+            setActiveButton(e.target);
             loadLists();
-        });
-        container.appendChild(button);
+        }
     });
 }
 
 function renderBadgeButtons(data) {
-    const badgeSelect = document.getElementById('badge-filter');
-    badgeSelect.innerHTML = '<option value="">All</option>';
+    DOM.badgeFilter.innerHTML = '<option value="">All</option>';
 
     const badges = data.filter(item => item.category === 'badge_cat');
+    const fragment = document.createDocumentFragment();
 
     badges.forEach(badge => {
         const option = document.createElement('option');
         option.value = badge.name;
         option.textContent = badge.name;
-        badgeSelect.appendChild(option);
+        fragment.appendChild(option);
     });
+
+    DOM.badgeFilter.appendChild(fragment);
 }
 
 
@@ -206,15 +260,20 @@ async function loadCats() {
 }
 
 // =========================
-// EVENT ATTACHMENTS
+// EVENT DELEGATION - PERFORMANCE OPTIMIZATION
 // =========================
-function attachCartEvents() {
-    const cartBadge = document.getElementById("cart-count");
-    document.querySelectorAll('.add-to-cart').forEach(btn => {
-        btn.addEventListener('click', async function () {
-            if (!accessToken) return (window.location.href = "auth.html");
+function setupEventDelegation() {
+    // Cart events - single listener on parent
+    DOM.productsGrid.addEventListener('click', async function(e) {
+        const cartBtn = e.target.closest('.add-to-cart');
+        if (cartBtn && !cartBtn.disabled) {
+            e.preventDefault();
+            if (!accessToken) {
+                window.location.href = "auth.html";
+                return;
+            }
 
-            const product_id = this.dataset.id;
+            const product_id = cartBtn.dataset.id;
             try {
                 showPreloader("Adding items to cart...");
                 const res = await fetch(`${ASO_URL}/add-to-cart/?product_id=${product_id}`, {
@@ -222,33 +281,38 @@ function attachCartEvents() {
                     headers: { "Authorization": `Bearer ${accessToken}`, "Content-Type": "application/json" }
                 });
 
-                if (res.status === 401) return (window.location.href = "auth.html");
+                if (res.status === 401) {
+                    window.location.href = "auth.html";
+                    return;
+                }
                 if (!res.ok) throw new Error("Failed to move items to cart");
 
                 const data = await res.json();
-                cartBadge.textContent = (parseInt(cartBadge.textContent) || 0) + data.data.items_added;
+                DOM.cartBadge.textContent = (parseInt(DOM.cartBadge.textContent) || 0) + data.data.items_added;
 
-                btn.textContent = '✓ Added!';
-                btn.style.backgroundColor = '#28a745';
-                btn.disabled = true;
-                btn.style.cursor = "not-allowed";
+                cartBtn.textContent = '✓ Added!';
+                cartBtn.style.backgroundColor = '#28a745';
+                cartBtn.disabled = true;
+                cartBtn.style.cursor = "not-allowed";
             } catch (error) {
                 console.error(error);
                 alert("Error moving items to cart.");
             } finally {
                 hidePreloader();
             }
-        });
-    });
-}
+            return;
+        }
 
-function attachWatchlistEvents() {
-    const wishlistCountElement = document.getElementById("watchlist-count");
-    document.querySelectorAll(".wishlist-button").forEach(button => {
-        button.addEventListener("click", async function () {
-            if (!accessToken) return (window.location.href = "auth.html");
+        // Wishlist events - handle in same delegation
+        const wishlistBtn = e.target.closest('.wishlist-button');
+        if (wishlistBtn) {
+            e.preventDefault();
+            if (!accessToken) {
+                window.location.href = "auth.html";
+                return;
+            }
 
-            const productId = this.dataset.id;
+            const productId = wishlistBtn.dataset.id;
             try {
                 showPreloader("Updating watchlist...");
                 const res = await fetch(`${ASO_URL}/toggle-watchlist/${productId}/`, {
@@ -256,33 +320,56 @@ function attachWatchlistEvents() {
                     headers: { "Authorization": `Bearer ${accessToken}` }
                 });
 
-                if (res.status === 401) return (window.location.href = "auth.html");
+                if (res.status === 401) {
+                    window.location.href = "auth.html";
+                    return;
+                }
                 if (!res.ok) throw new Error("Failed to toggle watchlist");
 
                 const data = await res.json();
-                let count = parseInt(wishlistCountElement.textContent) || 0;
+                let count = parseInt(DOM.wishlistBadge.textContent) || 0;
                 if (data.data.watchlisted) {
-                    this.classList.add("active");
+                    wishlistBtn.classList.add("active");
                     count++;
                 } else {
-                    this.classList.remove("active");
+                    wishlistBtn.classList.remove("active");
                     count = Math.max(0, count - 1);
                 }
-                wishlistCountElement.textContent = count;
+                DOM.wishlistBadge.textContent = count;
             } catch (error) {
                 console.error(error);
                 alert("Failed to update watchlist.");
             } finally {
                 hidePreloader();
             }
-        });
+        }
     });
+}
+
+// Event delegation handles cart and wishlist - no individual attachments needed
+
+// =========================
+// UTILITY: DEBOUNCE FOR PERFORMANCE
+// =========================
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
 // =========================
 // PAGE INIT
 // =========================
 document.addEventListener('DOMContentLoaded', async function () {
+    // Cache all DOM elements first
+    cacheDOMElements();
+    setupEventDelegation();
 
 //     const feedbackModal = document.getElementById('feedbackModal');
 //     const closeModalBtn = document.getElementById('closeModal');
@@ -435,91 +522,116 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
 
-    const heroImage = document.getElementById("hero-image");
-    const heroLink = document.getElementById("hero-link");
-
     try {
         const res = await fetch(`${ADMIN_URL}/banners/hero/`);
         const json = await res.json();
         if (json.is_success && json.data && json.data.length > 0) {
-        const banner = json.data[0]; // use the first hero banner
-        heroImage.src = banner.image;
-        heroLink.href = banner.link || "#";
+            const banner = json.data[0];
+            if (DOM.heroImage) DOM.heroImage.src = banner.image;
+            if (DOM.heroLink) DOM.heroLink.href = banner.link || "#";
         } else {
-        console.warn("No hero banner found");
+            console.warn("No hero banner found");
         }
     } catch (err) {
         console.error("Error loading hero banner:", err);
     }
-    
 
-    
     loadLists();
     loadCats();
 
-    // Price range slider
-    const priceRange = document.querySelector('.price-range');
-    const priceValue = document.querySelector('.price-values span:nth-child(2)');
-    if (priceRange) {
-        priceRange.addEventListener('input', function () {
-            priceValue.textContent = '₦' + formatNumber(this.value);
+    // Price range slider with debounce
+    if (DOM.priceRange && DOM.priceValue) {
+        const updatePrice = debounce((value) => {
+            DOM.priceValue.textContent = '₦' + formatNumber(value);
+        }, 100);
+        DOM.priceRange.addEventListener('input', function () {
+            updatePrice(this.value);
         });
     }
 
-    // Apply filters
-    document.querySelector(".apply-filters").addEventListener("click", function () {
-        currentFilters.search = document.getElementById("search-title-or-number").value.trim();
-        currentFilters.badge = document.getElementById("badge-filter").value;
-        currentFilters.max_price = document.querySelector(".price-range").value;
+    // Apply filters with cached DOM
+    if (DOM.applyFiltersBtn) {
+        DOM.applyFiltersBtn.addEventListener("click", function () {
+            currentFilters.search = DOM.searchInput ? DOM.searchInput.value.trim() : '';
+            currentFilters.badge = DOM.badgeFilter ? DOM.badgeFilter.value : '';
+            currentFilters.max_price = DOM.priceRange ? DOM.priceRange.value : '';
 
-        const ratings = ["rating1", "rating2", "rating3", "rating4"];
-        const ratingValues = ["5.0", "4.0", "3.0", "2.0"];
-        currentFilters.rating = "";
-        ratings.forEach((id, idx) => { if (document.getElementById(id).checked) currentFilters.rating = ratingValues[idx]; });
+            const ratings = ["rating1", "rating2", "rating3", "rating4"];
+            const ratingValues = ["5.0", "4.0", "3.0", "2.0"];
+            currentFilters.rating = "";
+            ratings.forEach((id, idx) => {
+                const ratingEl = document.getElementById(id);
+                if (ratingEl && ratingEl.checked) currentFilters.rating = ratingValues[idx];
+            });
 
-        currentFilters.page = 1;
-        document.getElementById('filter-sidebar').classList.remove('open');
-        document.getElementById('overlay').classList.remove('active');
+            currentFilters.page = 1;
+            if (DOM.filterSidebar) DOM.filterSidebar.classList.remove('open');
+            if (DOM.overlay) DOM.overlay.classList.remove('active');
 
-        loadLists();
-    });
+            loadLists();
+        });
+    }
 
-    // Filter sidebar
-    document.getElementById('filter-button').addEventListener('click', () => {
-        document.getElementById('filter-sidebar').classList.add('open');
-        document.getElementById('overlay').classList.add('active');
-    });
-    document.getElementById('close-filter').addEventListener('click', () => {
-        document.getElementById('filter-sidebar').classList.remove('open');
-        document.getElementById('overlay').classList.remove('active');
-    });
-    document.getElementById('overlay').addEventListener('click', () => {
-        document.getElementById('filter-sidebar').classList.remove('open');
-        document.getElementById('overlay').classList.remove('active');
-    });
+    // Filter sidebar with cached DOM
+    const filterButton = document.getElementById('filter-button');
+    const closeFilter = document.getElementById('close-filter');
+    
+    if (filterButton && DOM.filterSidebar && DOM.overlay) {
+        filterButton.addEventListener('click', () => {
+            DOM.filterSidebar.classList.add('open');
+            DOM.overlay.classList.add('active');
+        });
+    }
+    
+    if (closeFilter && DOM.filterSidebar && DOM.overlay) {
+        closeFilter.addEventListener('click', () => {
+            DOM.filterSidebar.classList.remove('open');
+            DOM.overlay.classList.remove('active');
+        });
+    }
+    
+    if (DOM.overlay && DOM.filterSidebar) {
+        DOM.overlay.addEventListener('click', () => {
+            DOM.filterSidebar.classList.remove('open');
+            DOM.overlay.classList.remove('active');
+        });
+    }
 
-    // Scroll arrows
-    const container = document.querySelector('.filter-options2');
-    document.querySelector('.left-arrow').addEventListener('click', () => container.scrollBy({ left: -200, behavior: 'smooth' }));
-    document.querySelector('.right-arrow').addEventListener('click', () => container.scrollBy({ left: 200, behavior: 'smooth' }));
+    // Scroll arrows with cached DOM
+    const leftArrow = document.querySelector('.left-arrow');
+    const rightArrow = document.querySelector('.right-arrow');
+    
+    if (leftArrow && DOM.filterContainer) {
+        leftArrow.addEventListener('click', () => DOM.filterContainer.scrollBy({ left: -200, behavior: 'smooth' }));
+    }
+    if (rightArrow && DOM.filterContainer) {
+        rightArrow.addEventListener('click', () => DOM.filterContainer.scrollBy({ left: 200, behavior: 'smooth' }));
+    }
 
-    // Infinite scroll
-    window.addEventListener("scroll", async () => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 && !isLoadingMore && nextPageUrl) {
-            isLoadingMore = true;
-            showPreloader("Loading more products...");
-            try {
-                const res = await fetch(nextPageUrl, {
-                    headers: { "Authorization": `Bearer ${accessToken}`, "Accept": "application/json" }
-                });
-                const data = await res.json();
-                renderList(data, true);
-            } catch (err) {
-                console.error("Error loading more products:", err);
-            } finally {
-                isLoadingMore = false;
-                hidePreloader();
+    // Infinite scroll with throttle for performance
+    let scrollTimeout;
+    window.addEventListener("scroll", () => {
+        if (scrollTimeout) return;
+        
+        scrollTimeout = setTimeout(async () => {
+            scrollTimeout = null;
+            
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 && !isLoadingMore && nextPageUrl) {
+                isLoadingMore = true;
+                showPreloader("Loading more products...");
+                try {
+                    const res = await fetch(nextPageUrl, {
+                        headers: { "Authorization": `Bearer ${accessToken}`, "Accept": "application/json" }
+                    });
+                    const data = await res.json();
+                    renderList(data, true);
+                } catch (err) {
+                    console.error("Error loading more products:", err);
+                } finally {
+                    isLoadingMore = false;
+                    hidePreloader();
+                }
             }
-        }
-    });
+        }, 150);
+    }, { passive: true });
 });

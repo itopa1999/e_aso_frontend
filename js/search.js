@@ -1,6 +1,39 @@
 const accessToken = getCookie("access");
 showPreloader("Loading search products");
 
+// =========================
+// DOM CACHE FOR PERFORMANCE
+// =========================
+const SEARCH_DOM = {
+    productsGrid: null,
+    searchInput: null,
+    searchButton: null,
+    sortBySelect: null,
+    priceRangeSelect: null,
+    searchMeta: null,
+    resultsCount: null,
+    noProduct: null,
+    clearFiltersBtn: null,
+    searchSubtitle: null,
+    wishlistBadge: null,
+    cartBadge: null
+};
+
+function cacheSearchDOM() {
+    SEARCH_DOM.productsGrid = document.querySelector('.products-grid');
+    SEARCH_DOM.searchInput = document.getElementById('search-input');
+    SEARCH_DOM.searchButton = document.querySelector('.search-button');
+    SEARCH_DOM.sortBySelect = document.getElementById('sort-by-select');
+    SEARCH_DOM.priceRangeSelect = document.getElementById('price-range-select');
+    SEARCH_DOM.searchMeta = document.querySelector('.search-meta');
+    SEARCH_DOM.resultsCount = document.querySelector('.results-count');
+    SEARCH_DOM.noProduct = document.querySelector('.no-products-wrapper');
+    SEARCH_DOM.clearFiltersBtn = document.querySelector('.clear-filters-btn');
+    SEARCH_DOM.searchSubtitle = document.querySelector('.search-subtitle');
+    SEARCH_DOM.wishlistBadge = document.getElementById('watchlist-count');
+    SEARCH_DOM.cartBadge = document.getElementById('cart-count');
+}
+
 let currentFilters = {
     featured: "",
     price_range: "",
@@ -76,12 +109,12 @@ function buildQueryParams() {
 
 function renderList(data, append = false) {
     const products = data.results;
-    const productsGrid = document.querySelector(".products-grid");
-    const noProduct = document.querySelector(".no-products-wrapper")
+    const productsGrid = SEARCH_DOM.productsGrid;
+    const noProduct = SEARCH_DOM.noProduct;
     noProduct.style.display = "none";
 
-    document.querySelector(".search-meta").innerHTML="Found " + products.length + ' products matching your search'
-    document.querySelector(".results-count").innerHTML=products.length + " products Found "
+    SEARCH_DOM.searchMeta.innerHTML="Found " + products.length + ' products matching your search';
+    SEARCH_DOM.resultsCount.innerHTML=products.length + " products Found "
         
 
     if (!append) {
@@ -98,6 +131,8 @@ function renderList(data, append = false) {
             return;
         }
     }
+
+    const fragment = document.createDocumentFragment();
 
     products.forEach(product => {
         const reviewFormatted = formatReviews(product.reviews_count);
@@ -143,12 +178,7 @@ function renderList(data, append = false) {
             </div>
         `;
 
-        document.querySelector('.clear-filters-btn')?.addEventListener('click', () => {
-            resetFilters();
-            loadLists();
-        });
-
-        productsGrid.appendChild(card);
+        fragment.appendChild(card);
 
         const btn = card.querySelector(".add-to-cart");
         if (product.cart_added) {
@@ -164,11 +194,9 @@ function renderList(data, append = false) {
         
     });
 
-    
+    productsGrid.appendChild(fragment);
 
     nextPageUrl = data.next;
-    attachWatchlistEvents();
-    attachCartEvents();
 }
 
 function resetFilters() {
@@ -180,7 +208,7 @@ function resetFilters() {
     };
     
     // Reset UI elements
-    document.getElementById("search-input").value = "";
+    if (SEARCH_DOM.searchInput) SEARCH_DOM.searchInput.value = "";
 
     const filterSelects = document.querySelectorAll('.filter-select');
     filterSelects.forEach(select => {
@@ -190,65 +218,67 @@ function resetFilters() {
     
 }
 
-function attachCartEvents() {
-    const cartBadge = document.getElementById("cart-count");
-    document.querySelectorAll('.add-to-cart').forEach(btn => {
-        btn.addEventListener('click', async function () {
-            if (!accessToken) {
-                window.location.href = "auth.html";
-                return;
-            }
-            const product_id = this.getAttribute('data-id');
-            try {
-                showPreloader("Adding items to cart...");
+function setupSearchDelegation() {
+    if (!SEARCH_DOM.productsGrid) return;
+    
+    // Cart button delegation
+    SEARCH_DOM.productsGrid.addEventListener('click', async function(e) {
+        const btn = e.target.closest('.add-to-cart');
+        if (!btn || btn.disabled) return;
 
-                const res = await fetch(`${ASO_URL}/add-to-cart/?product_id=${product_id}`, {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${accessToken}`,
-                        "Content-Type": "application/json"
-                    }
-                });
+        if (!accessToken) {
+            window.location.href = "auth.html";
+            return;
+        }
+        
+        const product_id = btn.getAttribute('data-id');
+        try {
+            showPreloader("Adding items to cart...");
 
-                if (res.status === 401) {
-                    window.location.href = "auth.html";
-                    return;
+            const res = await fetch(`${ASO_URL}/add-to-cart/?product_id=${product_id}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": "application/json"
                 }
+            });
 
-                if (!res.ok) throw new Error("Failed to move items to cart");
-
-                const data = await res.json();
-                const itemsMoved = data.data.items_added;
-                let currentCount = parseInt(cartBadge.textContent) || 0;
-                cartBadge.textContent = currentCount + itemsMoved;
-
-                btn.textContent = '✓ Added!';
-                btn.style.backgroundColor = '#28a745';
-                btn.disabled = true;
-                btn.style.cursor = "not-allowed";
-            } catch (error) {
-                console.error(error);
-                alert("Error moving items to cart.");
-            } finally {
-                hidePreloader();
-            }
-        });
-    });
-}
-
-function attachWatchlistEvents() {
-    const buttons = document.querySelectorAll(".wishlist-button");
-    const wishlistCountElement = document.getElementById("watchlist-count");
-
-    buttons.forEach(button => {
-        button.addEventListener("click", async function () {
-            if (!accessToken) {
+            if (res.status === 401) {
                 window.location.href = "auth.html";
                 return;
             }
 
-            const productId = this.dataset.id;
-            const btn = this;
+            if (!res.ok) throw new Error("Failed to move items to cart");
+
+            const data = await res.json();
+            const itemsMoved = data.data.items_added;
+            let currentCount = parseInt(SEARCH_DOM.cartBadge.textContent) || 0;
+            SEARCH_DOM.cartBadge.textContent = currentCount + itemsMoved;
+
+            btn.textContent = '✓ Added!';
+            btn.style.backgroundColor = '#28a745';
+            btn.disabled = true;
+            btn.style.cursor = "not-allowed";
+        } catch (error) {
+            console.error(error);
+            alert("Error moving items to cart.");
+        } finally {
+            hidePreloader();
+        }
+    });
+    
+    // Wishlist button delegation
+    SEARCH_DOM.productsGrid.addEventListener('click', async function(e) {
+        const button = e.target.closest('.wishlist-button');
+        if (!button) return;
+
+        if (!accessToken) {
+            window.location.href = "auth.html";
+            return;
+        }
+
+        const productId = button.dataset.id;
+        const btn = button;
 
             try {
                 showPreloader("Updating watchlist...");
@@ -269,70 +299,90 @@ function attachWatchlistEvents() {
 
                 const data = await res.json();
 
-                let count = parseInt(wishlistCountElement.textContent);
-                if (data.data.watchlisted) {
-                    btn.classList.add("active");
-                    count += 1;
-                } else {
-                    btn.classList.remove("active");
-                    count = Math.max(0, count - 1);
-                }
-                wishlistCountElement.textContent = count;
-
-            } catch (error) {
-                console.error(error);
-                alert("Failed to update watchlist.");
-            } finally {
-                hidePreloader();
+            let count = parseInt(SEARCH_DOM.wishlistBadge.textContent);
+            if (data.data.watchlisted) {
+                btn.classList.add("active");
+                count += 1;
+            } else {
+                btn.classList.remove("active");
+                count = Math.max(0, count - 1);
             }
-        });
+            SEARCH_DOM.wishlistBadge.textContent = count;
+
+        } catch (error) {
+            console.error(error);
+            alert("Failed to update watchlist.");
+        } finally {
+            hidePreloader();
+        }
     });
 }
 
-document.querySelector('.search-button').addEventListener('click', function () {
-    const searchValue = document.getElementById('search-input').value.trim();
-    if (searchValue === "") return;
-    currentFilters.search = searchValue;
-    currentFilters.page = 1;
-    loadLists();
+function setupSearchListeners() {
+    if (SEARCH_DOM.searchButton) {
+        SEARCH_DOM.searchButton.addEventListener('click', function () {
+            const searchValue = SEARCH_DOM.searchInput.value.trim();
+            if (searchValue === "") return;
+            currentFilters.search = searchValue;
+            currentFilters.page = 1;
+            loadLists();
 
-    document.querySelector(".search-subtitle").innerHTML = 'Search Result for "' + searchValue.toUpperCase() + '"';
-});
-
-document.getElementById('search-input').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
-        const searchValue = this.value.trim();
-        if (searchValue === "") return;
-        currentFilters.search = searchValue;
-        currentFilters.page = 1;
-        loadLists();
-        document.querySelector(".search-subtitle").innerHTML = 'Search Result for "' + searchValue.toUpperCase() + '"';
+            if (SEARCH_DOM.searchSubtitle) {
+                SEARCH_DOM.searchSubtitle.innerHTML = 'Search Result for "' + searchValue.toUpperCase() + '"';
+            }
+        });
     }
-});
 
+    if (SEARCH_DOM.searchInput) {
 
-document.getElementById("sort-by-select").addEventListener("change", function () {
-    const sortValue = this.value;
+        SEARCH_DOM.searchInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                const searchValue = this.value.trim();
+                if (searchValue === "") return;
+                currentFilters.search = searchValue;
+                currentFilters.page = 1;
+                loadLists();
+                if (SEARCH_DOM.searchSubtitle) {
+                    SEARCH_DOM.searchSubtitle.innerHTML = 'Search Result for "' + searchValue.toUpperCase() + '"';
+                }
+            }
+        });
+    }
 
-    currentFilters.sort_by = sortValue;
-    currentFilters.page = 1;
-    loadLists();
-});
+    if (SEARCH_DOM.sortBySelect) {
+        SEARCH_DOM.sortBySelect.addEventListener("change", function () {
+            const sortValue = this.value;
+            currentFilters.sort_by = sortValue;
+            currentFilters.page = 1;
+            loadLists();
+        });
+    }
 
-// Price range dropdown
-document.getElementById("price-range-select").addEventListener("change", function () {
-    const priceRange = this.value;
+    if (SEARCH_DOM.priceRangeSelect) {
+        SEARCH_DOM.priceRangeSelect.addEventListener("change", function () {
+            const priceRange = this.value;
+            currentFilters.price_range = priceRange;
+            currentFilters.page = 1;
+            loadLists();
+        });
+    }
 
-    currentFilters.price_range = priceRange;
-    currentFilters.page = 1;
-    loadLists();
-});
+    if (SEARCH_DOM.clearFiltersBtn) {
+        SEARCH_DOM.clearFiltersBtn.addEventListener('click', () => {
+            resetFilters();
+            loadLists();
+        });
+    }
+}
 
 
 
 // Wishlist functionality
 document.addEventListener('DOMContentLoaded', function() {
-    hidePreloader()
+    cacheSearchDOM();
+    setupSearchListeners();
+    setupSearchDelegation();
+    hidePreloader();
     // View toggle functionality
     const viewBtns = document.querySelectorAll('.view-btn');
     

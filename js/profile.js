@@ -4,6 +4,35 @@ if (!accessToken) {
 }
 showPreloader("Loading your profile");
 
+// DOM CACHE
+const PROFILE_DOM = {
+    firstName: null,
+    lastName: null,
+    phoneNumber: null,
+    profileUserName: null,
+    profileUserEmail: null,
+    totalOrders: null,
+    emailAddress: null,
+    profilePic: null,
+    editModal: null,
+    orderList: null,
+    transactionsList: null
+};
+
+function cacheProfileDOM() {
+    PROFILE_DOM.firstName = document.getElementById('firstName');
+    PROFILE_DOM.lastName = document.getElementById('lastName');
+    PROFILE_DOM.phoneNumber = document.getElementById('phoneNumber');
+    PROFILE_DOM.profileUserName = document.getElementById('profileUserName');
+    PROFILE_DOM.profileUserEmail = document.getElementById('profileUserEmail');
+    PROFILE_DOM.totalOrders = document.getElementById('total_orders');
+    PROFILE_DOM.emailAddress = document.getElementById('emailAddress');
+    PROFILE_DOM.profilePic = document.getElementById('profile-pic');
+    PROFILE_DOM.editModal = document.getElementById('editModal');
+    PROFILE_DOM.orderList = document.querySelector('.order-list');
+    PROFILE_DOM.transactionsList = document.querySelector('.transactions-list');
+}
+
 async function checkReferralFeature() {
     const featureFlagName = "Referral System";
     try {
@@ -27,6 +56,7 @@ async function checkReferralFeature() {
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
+    cacheProfileDOM();
     await checkReferralFeature();
     try {
         const response = await fetch(`${AUTH_URL}/profile/`, {
@@ -84,16 +114,16 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Set user data on page load
     function setUserData() {
-        document.getElementById('firstName').textContent = userData.firstName;
-        document.getElementById('lastName').textContent = userData.lastName;
-        document.getElementById('phoneNumber').textContent = userData.phone;
-        document.getElementById('profileUserName').textContent = `${userData.firstName} ${userData.lastName}`;
-        document.getElementById('profileUserEmail').textContent = userData.email;
-        document.getElementById('total_orders').textContent = userData.totalOrders;
-        document.getElementById('emailAddress').textContent = userData.email;
+        if (PROFILE_DOM.firstName) PROFILE_DOM.firstName.textContent = userData.firstName;
+        if (PROFILE_DOM.lastName) PROFILE_DOM.lastName.textContent = userData.lastName;
+        if (PROFILE_DOM.phoneNumber) PROFILE_DOM.phoneNumber.textContent = userData.phone;
+        if (PROFILE_DOM.profileUserName) PROFILE_DOM.profileUserName.textContent = `${userData.firstName} ${userData.lastName}`;
+        if (PROFILE_DOM.profileUserEmail) PROFILE_DOM.profileUserEmail.textContent = userData.email;
+        if (PROFILE_DOM.totalOrders) PROFILE_DOM.totalOrders.textContent = userData.totalOrders;
+        if (PROFILE_DOM.emailAddress) PROFILE_DOM.emailAddress.textContent = userData.email;
         const firstInitial = userData.firstName?.charAt(0).toUpperCase() || '';
         const lastInitial = userData.lastName?.charAt(0).toUpperCase() || '';
-        document.getElementById('profile-pic').textContent = `${firstInitial}${lastInitial}`;
+        if (PROFILE_DOM.profilePic) PROFILE_DOM.profilePic.textContent = `${firstInitial}${lastInitial}`;
 
         const totalNeeded = 5;
         const current = Math.min(userData.referralsSuccessful, totalNeeded);
@@ -126,10 +156,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     setUserData();
 
     function renderRecentOrders(recentOrders) {
-    const orderList = document.querySelector('.order-list');
-    orderList.innerHTML = '';
+        if (!PROFILE_DOM.orderList) return;
+        PROFILE_DOM.orderList.innerHTML = '';
 
-    recentOrders.forEach(order => {
+        const fragment = document.createDocumentFragment();
+
+        recentOrders.forEach(order => {
         const orderItem = document.createElement('div');
         orderItem.className = 'order-item';
 
@@ -147,16 +179,18 @@ document.addEventListener('DOMContentLoaded', async function() {
             </div>
         `;
 
-        orderList.appendChild(orderItem);
+            fragment.appendChild(orderItem);
         });
+        
+        PROFILE_DOM.orderList.appendChild(fragment);
     }
 
     function renderTransactionsTable(transactions) {
-        const transactionsList = document.querySelector('.transactions-list');
-        transactionsList.innerHTML = '';
+        if (!PROFILE_DOM.transactionsList) return;
+        PROFILE_DOM.transactionsList.innerHTML = '';
 
         if (transactions && transactions.length > 0) {
-        transactionsList.innerHTML = transactions
+            PROFILE_DOM.transactionsList.innerHTML = transactions
             .map(tx => `
             <div class="transaction-card">
                 <div class="transaction-info">
@@ -174,7 +208,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             `)
             .join("");
         } else {
-            transactionsList.innerHTML = "<p>No transactions found.</p>";
+            PROFILE_DOM.transactionsList.innerHTML = "<p>No transactions found.</p>";
         }
     }
 
