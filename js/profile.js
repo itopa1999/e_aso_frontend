@@ -96,11 +96,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             setUserData();
         } else {
-            alert("Unable to fetch profile: " + (data.error || "Unknown error"));
+            showErrorModal(data.error || "Unable to fetch profile: Unknown error");
         }
     } catch (error) {
         console.error("Fetch error:", error);
-        alert("Failed to fetch user profile.");
+        showErrorModal(error.message || "Failed to fetch user profile.");
     } finally {
         hidePreloader();
     }
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     //     const toDate = document.getElementById("toDate").value;
 
     //     if (!fromDate || !toDate) {
-    //         alert("Please select both start and end dates.");
+    //         showErrorModal("Please select both start and end dates.");
     //         return;
     //     }
 
@@ -324,12 +324,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                     errorMessage += "Unknown error";
                 }
 
-                alert(errorMessage)
+                showErrorModal(errorMessage);
             }
 
         } catch (err) {
             console.error("Update error:", err);
-            alert("Something went wrong while updating profile.");
+            showErrorModal(err.message || "Something went wrong while updating profile.");
         } finally {
             loadingIndicator.remove();
         }

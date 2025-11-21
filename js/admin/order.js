@@ -14,7 +14,7 @@ async function filterProducts() {
     const searchTerm = searchInput.value.trim();
 
     if (!searchTerm){
-        alert("Please provide at least one filter option.");
+        showErrorModal("Please provide at least one filter option.");
         return;
     }
 
@@ -191,13 +191,13 @@ function showOrderDetail(order) {
     const statusFlow = ['placed', 'processing', 'shipped', 'in_transit', 'delivered'];
     moveButton.addEventListener('click', () => {
         if (['in_transit', 'delivered', 'cancelled'].includes(currentStatus)) {
-            alert("This order cannot be moved forward from its current status.");
+            showErrorModal("This order cannot be moved forward from its current status.");
             return;
         }
 
         const currentIndex = statusFlow.indexOf(currentStatus);
         if (currentIndex === -1 || currentIndex === statusFlow.length - 1) {
-            alert("This order cannot be moved forward.");
+            showErrorModal("This order cannot be moved forward.");
             return;
         }
 
@@ -210,7 +210,7 @@ function showOrderDetail(order) {
     confirmMove.addEventListener('click', async () => {
         modal.classList.add('hidden');
         if (!moveComment.value.trim()) {
-            alert('Please enter a comment before moving forward.');
+            showErrorModal('Please enter a comment before moving forward.');
             return;
         }
 
@@ -241,14 +241,14 @@ function showOrderDetail(order) {
             }
 
             if (response.ok) {
-                alert('Order status updated successfully!');
-                location.reload();
+                showErrorModal('Order status updated successfully!');
+                setTimeout(() => location.reload(), 1500);
             } else {
                 const data = await response.json();
-                alert(`Failed to update status: ${data.message || 'Unknown error'}`);
+                showErrorModal(`Failed to update status: ${data.message || 'Unknown error'}`);
             }
         } catch (error) {
-            alert('Error connecting to the server.');
+            showErrorModal(error.message || 'Error connecting to the server.');
             console.error(error);
         } finally {
             hidePreloader()

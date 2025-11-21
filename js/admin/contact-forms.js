@@ -119,7 +119,7 @@ function renderContactForms(forms) {
 
 // Reply action
 function replyToContact(id) {
-    alert(`Reply to contact form with ID: ${id}`);
+    showErrorModal(`Reply to contact form with ID: ${id}`);
 }
 
 
@@ -128,7 +128,7 @@ function deleteContact(id) {
     if (confirm("Are you sure you want to delete this contact form submission?")) {
         contactForms = contactForms.filter(form => form.id !== id);
         renderContactForms(contactForms);
-        alert(`Contact form with ID ${id} has been deleted.`);
+        showErrorModal(`Contact form with ID ${id} has been deleted.`);
     }
 }
 

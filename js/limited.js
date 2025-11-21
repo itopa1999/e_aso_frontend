@@ -224,7 +224,7 @@ function setupLimitedDelegation() {
                 btn.style.cursor = "not-allowed";
             } catch (error) {
                 console.error(error);
-                alert("Error moving items to cart.");
+                showErrorModal(error.message || "Error moving items to cart.");
             }
     });
 }

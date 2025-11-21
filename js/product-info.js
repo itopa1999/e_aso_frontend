@@ -321,7 +321,7 @@ function attachCartEvents(id) {
         
         } catch (error) {
             console.error(error);
-            alert("Error moving items to cart.");
+            showErrorModal(error.message || "Error moving items to cart.");
         } finally {
             hidePreloader();
         }
@@ -366,7 +366,7 @@ function attachWatchlistEvents(id) {
             }
             wishlistCountElement.textContent = count;
         } catch (error) {
-            alert("Failed to toggle watchlist");
+            showErrorModal(error.message || "Failed to toggle watchlist");
         } finally {
             hidePreloader();
         }

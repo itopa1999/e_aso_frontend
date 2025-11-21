@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Google SSO
     if (AUTH_DOM.googleBtn) {
         AUTH_DOM.googleBtn.addEventListener('click', function() {
-            alert('Google SSO would open here\n(In a real app, this would authenticate with Google)');
+            showErrorModal('Google SSO would open here\n(In a real app, this would authenticate with Google)');
         });
     }
 

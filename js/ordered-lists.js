@@ -54,7 +54,10 @@ async function loadOrders() {
 
     } catch (error) {
         console.error("Error loading orders:", error);
-        ordersContainer.innerHTML = "<p>Failed to load orders. Please try again.</p>";
+        if (ORDERS_DOM.ordersContainer) {
+            ORDERS_DOM.ordersContainer.innerHTML = "<p>Failed to load orders. Please try again.</p>";
+        }
+        showErrorModal(error.message || "Failed to load orders. Please try again.");
     } finally {
         hidePreloader();
     }
@@ -301,7 +304,7 @@ async function reorderItems(btn) {
         btn.style.borderColor = '#28a745';
 
     } catch (error) {
-        alert("Failed to reorder items: " + error.message);
+        showErrorModal(error.message || "Failed to reorder items");
         btn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Try Again';
         btn.style.background = '#dc3545';
     } finally {

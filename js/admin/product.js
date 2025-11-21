@@ -94,7 +94,7 @@ async function filterProducts() {
         !badgeValue &&
         !featuredValue
     ) {
-    alert("Please provide at least one filter option.");
+    showErrorModal("Please provide at least one filter option.");
     return;
     }
 

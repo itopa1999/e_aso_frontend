@@ -69,11 +69,11 @@ async function fetchRiderInfo(url = `${RIDER_URL}/rider/`, append = false, searc
             nextPageUrl = data.next; // Store next page link from DRF
             renderProfile(data.results, append);
         } else {
-            alert("Unable to fetch profile: " + (data.error || "Unknown error"));
+            showErrorModal(data.error || "Unable to fetch profile: Unknown error");
         }
     } catch (error) {
         console.error("Fetch error:", error);
-        alert("Failed to fetch user profile.");
+        showErrorModal(error.message || "Failed to fetch user profile.");
     } finally {
         hidePreloader();
         isLoading = false;
@@ -267,11 +267,12 @@ function openDetails(orderNumber) {
 
         
         } else {
-            alert("unable to retrieve details")
+            showErrorModal(data.message || "Unable to retrieve details");
         }
     })
     .catch(error => {
-        console.error("unable to connect ro server")
+        console.error("unable to connect to server", error);
+        showErrorModal(error.message || "Network error. Unable to connect to server.");
     })
     .finally(() => {
         hidePreloader();
@@ -629,12 +630,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Refresh rider info after completion
                 fetchRiderInfo();
             } else {
-                alert(data.error || "Failed to mark order as delivered");
+                showErrorModal(data.error || "Failed to mark order as delivered");
             }
         })
         .catch(error => {
             console.error('Error marking delivery complete:', error);
-            alert("An error occurred while marking delivery complete");
+            showErrorModal(error.message || "An error occurred while marking delivery complete");
         })
         .finally(() => {
             completeDeliveryBtn.innerHTML = originalText;

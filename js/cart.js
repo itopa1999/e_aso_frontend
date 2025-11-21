@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
         } catch (error) {
             console.error('Error fetching cart items:', error);
-            alert("Failed to load cart items.", error);
+            showErrorModal(error.message || "Failed to load cart items.");
         } finally {
             hidePreloader();
         }
@@ -352,8 +352,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(() => {
             fetchCartItems();
         })
-        .catch(() => {
-            alert("Error updating quantity.");
+        .catch((error) => {
+            showErrorModal(error.message || "Error updating quantity.");
         })
         .finally(() => {
             hidePreloader();
@@ -385,8 +385,8 @@ document.addEventListener('DOMContentLoaded', function() {
             badge.textContent = Math.max(0, current - 1);
             fetchCartItems();
         })
-        .catch(() => {
-            alert("Error removing item.");
+        .catch((error) => {
+            showErrorModal(error.message || "Error removing item.");
         })
         .finally(() => {
             hidePreloader();
@@ -679,7 +679,7 @@ document.querySelector('.place-order-btn').addEventListener('click', async funct
         }
     } catch (err) {
         console.error('Order error:', err);
-        alert('An error occurred. Please try again.');
+        showErrorModal(err.message || 'An error occurred. Please try again.');
     } finally {
         hidePreloader();
     }

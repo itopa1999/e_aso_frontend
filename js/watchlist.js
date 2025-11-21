@@ -160,7 +160,7 @@ function setupCartDelegation() {
 
         } catch (error) {
             console.error(error);
-            alert("Error moving items to cart.");
+            showErrorModal(error.message || "Error moving items to cart.");
         } finally {
             hidePreloader();
         }
@@ -197,7 +197,7 @@ function setupWatchlistDelegation() {
             }
         } catch (error) {
             console.error(error);
-            alert("Failed to remove from watchlist.");
+            showErrorModal(error.message || "Failed to remove from watchlist.");
         } finally {
             hidePreloader();
         }
@@ -261,7 +261,7 @@ if (WATCHLIST_DOM.clearAllBtn) {
 
     } catch (error) {
         console.error(error);
-        alert("Failed to remove watchlist.");
+        showErrorModal(error.message || "Failed to remove watchlist.");
     } finally {
         hidePreloader();
     }
@@ -344,7 +344,7 @@ if (WATCHLIST_DOM.moveAllBtn) {
 
     } catch (error) {
         console.error(error);
-        alert("Error moving items to cart.");
+        showErrorModal(error.message || "Error moving items to cart.");
     } finally {
         hidePreloader();
     }

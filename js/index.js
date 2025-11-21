@@ -296,7 +296,7 @@ function setupEventDelegation() {
                 cartBtn.style.cursor = "not-allowed";
             } catch (error) {
                 console.error(error);
-                alert("Error moving items to cart.");
+                showErrorModal(error.message || "Error moving items to cart.");
             } finally {
                 hidePreloader();
             }
@@ -338,7 +338,7 @@ function setupEventDelegation() {
                 DOM.wishlistBadge.textContent = count;
             } catch (error) {
                 console.error(error);
-                alert("Failed to update watchlist.");
+                showErrorModal(error.message || "Failed to update wishlist.");
             } finally {
                 hidePreloader();
             }

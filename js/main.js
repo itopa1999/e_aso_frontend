@@ -341,6 +341,21 @@ function getQueryParam(param) {
     return urlParams.get(param);
 }
 
+function showErrorModal(message) {
+    const overlay = document.createElement("div");
+    overlay.className = "dialog-overlay";
+    overlay.innerHTML = `
+        <div class="dialog-box">
+            <p>${message}</p>
+            <div class="dialog-actions">
+                <button class="confirm-btn1">Okay</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    overlay.querySelector(".confirm-btn1").addEventListener("click", () => overlay.remove());
+}
+
 async function updateCartAndWatchlistCounts() {
     if (!access) return;
     try {

@@ -69,7 +69,7 @@ async function fetchOrderDetails() {
         const data = await response.json();
         renderOrderDetails(data.data);
     } catch (error) {
-        alert("Failed to load order: " + error.message);
+        showErrorModal(error.message || "Failed to load order");
     }
     finally{
         hidePreloader();
@@ -297,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             } catch (error) {
                 console.error(error);
-                alert("Failed to reorder items: " + error.message);
+                showErrorModal(error.message || "Failed to reorder items");
                 this.innerHTML = '<i class="fas fa-exclamation-circle"></i> Try Again';
                 this.style.background = '#dc3545';
             } finally {
@@ -453,7 +453,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Example: simulate sending request
-        alert(`Return request submitted.\nReasons: ${checkedOptions.join(', ')}\nMessage: ${message}\nWe will reach out to you shortly.`);
+        showErrorModal(`Return request submitted.\nReasons: ${checkedOptions.join(', ')}\nMessage: ${message}\nWe will reach out to you shortly.`);
         
         // Close modal after submission
         document.getElementById('returnModal').style.display = 'none';
