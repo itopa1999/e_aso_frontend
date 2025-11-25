@@ -33,11 +33,11 @@ async function fetchDashboardInfo() {
         if (response.ok) {
             renderData(data.data);
         } else {
-            alert("Unable to fetch data: " + (data.error || "Unknown error"));
+            showErrorModal(data.error || "Unable to fetch data: Unknown error");
         }
     } catch (error) {
         console.error("Fetch error:", error);
-        alert("Failed to fetch data.");
+        showErrorModal(error.message || "Failed to fetch data.");
     } finally {
         hidePreloader();
     }

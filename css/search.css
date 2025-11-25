@@ -26,10 +26,11 @@
 }
 
 .search-box {
+    position: relative;
     display: flex;
     background: white;
     border-radius: 50px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
 
@@ -60,6 +61,68 @@
     color: rgba(255,255,255,0.8);
     margin-top: 20px;
     font-size: 0.9rem;
+}
+
+/* Smart Search Dropdown */
+.smart-search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    margin-top: 5px;
+}
+
+.smart-search-dropdown.active {
+    display: block;
+}
+
+.smart-search-item {
+    padding: 15px 25px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.smart-search-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 20px 20px;
+}
+
+.smart-search-item:hover {
+    background-color: #f8f9fa;
+}
+
+.smart-search-item i {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+}
+
+.smart-search-item span {
+    color: var(--dark-color);
+    font-size: 1rem;
+}
+
+.smart-search-loading {
+    padding: 20px;
+    text-align: center;
+    color: var(--accent-color);
+}
+
+.smart-search-no-results {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    font-style: italic;
 }
 
 /* Filter Bar */

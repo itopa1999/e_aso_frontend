@@ -1,4 +1,28 @@
-ASO_URL = "https://luck1999.pythonanywhere.com/aso/api/product"
+ASO_URL = "http://127.0.0.1:8000/aso/api/product";
+
+// DOM CACHE
+const LIMITED_DOM = {
+    offersGrid: null,
+    bubblesContainer: null,
+    countdownDays: null,
+    countdownHours: null,
+    countdownMinutes: null,
+    countdownSeconds: null,
+    discountHighlight: null,
+    saleInfo: null
+};
+
+function cacheLimitedDOM() {
+    LIMITED_DOM.offersGrid = document.getElementById('offers-grid');
+    LIMITED_DOM.bubblesContainer = document.getElementById('bubbles');
+    LIMITED_DOM.countdownDays = document.getElementById('countdown-days');
+    LIMITED_DOM.countdownHours = document.getElementById('countdown-hours');
+    LIMITED_DOM.countdownMinutes = document.getElementById('countdown-minutes');
+    LIMITED_DOM.countdownSeconds = document.getElementById('countdown-seconds');
+    LIMITED_DOM.discountHighlight = document.querySelector('.discount-highlight');
+    LIMITED_DOM.saleInfo = document.querySelector('.sale-info');
+}
+
 function getCookie(name) {
     const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
     if (!match) return null;
@@ -57,6 +81,7 @@ async function FetchLimitedProducts() {
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
+    cacheLimitedDOM();
     createBubbles();
     FetchLimitedProducts();
     checkReferralFeature();
@@ -64,7 +89,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Create floating bubbles
 function createBubbles() {
-    const bubblesContainer = document.getElementById('bubbles');
+    if (!LIMITED_DOM.bubblesContainer) return;
+    const bubblesContainer = LIMITED_DOM.bubblesContainer;
     const bubbleCount = 15;
     
     for (let i = 0; i < bubbleCount; i++) {
@@ -90,10 +116,13 @@ function createBubbles() {
 
 // Render products from API response
 function renderProducts() {
-    const offersGrid = document.getElementById('offers-grid');
+    if (!LIMITED_DOM.offersGrid) return;
+    const offersGrid = LIMITED_DOM.offersGrid;
     const products = apiResponse.data.limited_products;
     
     offersGrid.innerHTML = '';
+    
+    const fragment = document.createDocumentFragment();
     
     products.forEach(product => {
         const offerCard = document.createElement('div');
@@ -147,7 +176,7 @@ function renderProducts() {
             </div>
         `;
         
-        offersGrid.appendChild(offerCard);
+        fragment.appendChild(offerCard);
 
         const btn = offerCard.querySelector(".action-button");
         if (product.cart_added) {
@@ -162,16 +191,23 @@ function renderProducts() {
 
     });
 
-    attachCartEvents();
+    offersGrid.appendChild(fragment);
+    setupLimitedDelegation();
 }
 
 
-function attachCartEvents() {
-    document.querySelectorAll('.action-button').forEach(btn => {
-        btn.addEventListener('click', async function () {
-            if (!access) return (window.location.href = "auth.html");
+function setupLimitedDelegation() {
+    if (!LIMITED_DOM.offersGrid) return;
+    
+    LIMITED_DOM.offersGrid.addEventListener('click', async function(e) {
+        const btn = e.target.closest('.action-button');
+        if (!btn || btn.disabled) return;
+        if (!access) {
+            window.location.href = "auth.html";
+            return;
+        }
 
-            const product_id = this.dataset.id;
+        const product_id = btn.dataset.id;
             try {
                 const res = await fetch(`${ASO_URL}/add-to-cart/?product_id=${product_id}`, {
                     method: "POST",
@@ -188,10 +224,8 @@ function attachCartEvents() {
                 btn.style.cursor = "not-allowed";
             } catch (error) {
                 console.error(error);
-                alert("Error moving items to cart.");
-            } finally {
+                showErrorModal(error.message || "Error moving items to cart.");
             }
-        });
     });
 }
 
@@ -207,12 +241,12 @@ function startCountdown() {
         
         if (distance < 0) {
             // Sale has ended
-            document.getElementById('countdown-days').textContent = '00';
-            document.getElementById('countdown-hours').textContent = '00';
-            document.getElementById('countdown-minutes').textContent = '00';
-            document.getElementById('countdown-seconds').textContent = '00';
+            if (LIMITED_DOM.countdownDays) LIMITED_DOM.countdownDays.textContent = '00';
+            if (LIMITED_DOM.countdownHours) LIMITED_DOM.countdownHours.textContent = '00';
+            if (LIMITED_DOM.countdownMinutes) LIMITED_DOM.countdownMinutes.textContent = '00';
+            if (LIMITED_DOM.countdownSeconds) LIMITED_DOM.countdownSeconds.textContent = '00';
             
-            document.querySelector('.sale-info').innerHTML = 
+            if (LIMITED_DOM.saleInfo) LIMITED_DOM.saleInfo.innerHTML = 
                 'The sale has ended. Check back soon for new offers!';
             return;
         }
@@ -224,13 +258,13 @@ function startCountdown() {
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
         
         // Update display
-        document.getElementById('countdown-days').textContent = days.toString().padStart(2, '0');
-        document.getElementById('countdown-hours').textContent = hours.toString().padStart(2, '0');
-        document.getElementById('countdown-minutes').textContent = minutes.toString().padStart(2, '0');
-        document.getElementById('countdown-seconds').textContent = seconds.toString().padStart(2, '0');
+        if (LIMITED_DOM.countdownDays) LIMITED_DOM.countdownDays.textContent = days.toString().padStart(2, '0');
+        if (LIMITED_DOM.countdownHours) LIMITED_DOM.countdownHours.textContent = hours.toString().padStart(2, '0');
+        if (LIMITED_DOM.countdownMinutes) LIMITED_DOM.countdownMinutes.textContent = minutes.toString().padStart(2, '0');
+        if (LIMITED_DOM.countdownSeconds) LIMITED_DOM.countdownSeconds.textContent = seconds.toString().padStart(2, '0');
         
         // Update discount percentage
-        document.querySelector('.discount-highlight').textContent = 
+        if (LIMITED_DOM.discountHighlight) LIMITED_DOM.discountHighlight.textContent = 
             `${apiResponse.data.limited_flag.discount_percent}% OFF`;
     }
     

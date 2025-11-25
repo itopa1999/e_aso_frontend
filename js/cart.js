@@ -2,15 +2,33 @@ const accessToken = getCookie("access");
 
 showPreloader("Loading your cart items");
 
+// =========================
+// DOM CACHE FOR PERFORMANCE
+// =========================
+const CART_DOM = {
+    cartContainer: null,
+    summaryContainer: null,
+    cartBadge: null,
+    stateSelect: null,
+    editModal: null
+};
+
+function cacheCartDOM() {
+    CART_DOM.cartContainer = document.querySelector('.cart-items');
+    CART_DOM.summaryContainer = document.querySelector('.summary-container');
+    CART_DOM.cartBadge = document.getElementById("cart-count");
+    CART_DOM.stateSelect = document.getElementById('stateSelect');
+    CART_DOM.editModal = document.getElementById('editModal');
+}
 
 
 document.addEventListener('DOMContentLoaded', function() {
+    cacheCartDOM();
+    
     if (!accessToken){
         hidePreloader();
         return;
     } 
-    const cartContainer = document.querySelector('.cart-items');
-    const summaryContainer = document.querySelector('.summary-container'); 
 
     async function fetchCartItems() {
         try {
@@ -27,16 +45,17 @@ document.addEventListener('DOMContentLoaded', function() {
             renderSummary(data.data)
             
         } catch (error) {
-            alert("Failed to load cart items.");
+            console.error('Error fetching cart items:', error);
+            showErrorModal(error.message || "Failed to load cart items.");
         } finally {
             hidePreloader();
         }
     }
 
     function renderCartItems(data) {
-        cartContainer.innerHTML = "";
+        CART_DOM.cartContainer.innerHTML = "";
         if (!data.items || data.items.length === 0) {
-            cartContainer.innerHTML = `
+            CART_DOM.cartContainer.innerHTML = `
                 <div class="empty-cart-message">
                     <i class="fas fa-shopping-cart"></i>
                     <p>Your cart is empty</p>
@@ -57,7 +76,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 </button>
             </div>
         `;
-        cartContainer.innerHTML = headerHTML;
+        CART_DOM.cartContainer.innerHTML = headerHTML;
+        
+        // Use DocumentFragment for batch DOM insertion
+        const fragment = document.createDocumentFragment();
         
         data.items.forEach(item => {
         const descText = item.desc 
@@ -100,9 +122,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             `;
-            cartContainer.appendChild(cartItem);
+            fragment.appendChild(cartItem);
         });
-        document.querySelectorAll('.edit-desc-btn').forEach(btn => {
+        
+        // Single DOM insertion
+        CART_DOM.cartContainer.appendChild(fragment);
+        
+        // Event delegation for edit buttons
+        CART_DOM.cartContainer.addEventListener('click', (e) => {
+            const editBtn = e.target.closest('.edit-desc-btn');
+            if (!editBtn) return;
+            
+            editingItemId = editBtn.dataset.itemId;
             btn.addEventListener('click', (e) => {
                 editingItemId = e.target.closest('button').dataset.itemId;
 
@@ -270,7 +301,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderSummary(data) {
-        summaryContainer.innerHTML = "";
+        CART_DOM.summaryContainer.innerHTML = "";
 
         data.items.forEach(item => {
             const cartItem = document.createElement('div');
@@ -291,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="order-item-total"><b>₦${formatNumber(totalPrice)}</b></div>
 
             `;
-            summaryContainer.appendChild(cartItem);
+            CART_DOM.summaryContainer.appendChild(cartItem);
 
         })
     }
@@ -321,8 +352,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(() => {
             fetchCartItems();
         })
-        .catch(() => {
-            alert("Error updating quantity.");
+        .catch((error) => {
+            showErrorModal(error.message || "Error updating quantity.");
         })
         .finally(() => {
             hidePreloader();
@@ -354,8 +385,8 @@ document.addEventListener('DOMContentLoaded', function() {
             badge.textContent = Math.max(0, current - 1);
             fetchCartItems();
         })
-        .catch(() => {
-            alert("Error removing item.");
+        .catch((error) => {
+            showErrorModal(error.message || "Error removing item.");
         })
         .finally(() => {
             hidePreloader();
@@ -648,7 +679,7 @@ document.querySelector('.place-order-btn').addEventListener('click', async funct
         }
     } catch (err) {
         console.error('Order error:', err);
-        alert('An error occurred. Please try again.');
+        showErrorModal(err.message || 'An error occurred. Please try again.');
     } finally {
         hidePreloader();
     }

@@ -1,30 +1,37 @@
-// Simple animation for page elements
+// Simple animation for page elements with optimized event handling
 document.addEventListener('DOMContentLoaded', function() {
-    // Add hover effect to buttons
+    // Cache DOM elements
     const homeButton = document.querySelector('.btn-home');
+    const navContainer = document.querySelector('.bottom-nav');
     
-    homeButton.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateY(-3px)';
-    });
+    // Add hover effect to buttons
+    if (homeButton) {
+        homeButton.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px)';
+        });
+        
+        homeButton.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    }
     
-    homeButton.addEventListener('mouseleave', function() {
-        this.style.transform = 'translateY(0)';
-    });
-    
-    // Add click effect to bottom nav items
-    const navItems = document.querySelectorAll('.nav-item');
-    
-    navItems.forEach(item => {
-        item.addEventListener('click', function(e) {
+    // Use event delegation for nav items
+    if (navContainer) {
+        const navItems = navContainer.querySelectorAll('.nav-item');
+        
+        navContainer.addEventListener('click', function(e) {
+            const navItem = e.target.closest('.nav-item');
+            if (!navItem) return;
+            
             // Remove active class from all items
             navItems.forEach(i => i.classList.remove('active'));
             // Add active class to clicked item
-            this.classList.add('active');
+            navItem.classList.add('active');
         });
-    });
-    
-    // Set the home nav item as active
-    if (navItems.length > 0) {
-        navItems[0].classList.add('active');
+        
+        // Set the home nav item as active
+        if (navItems.length > 0) {
+            navItems[0].classList.add('active');
+        }
     }
 });

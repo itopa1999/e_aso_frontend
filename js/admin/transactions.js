@@ -152,6 +152,8 @@ const emptyState = document.getElementById('empty-state');
         function processTransactionsResponse(response) {
             // Hide loader
             transactionsLoader.style.display = 'none';
+
+            console.log('Transactions response:', response.results.data);
             
             // Extract transactions data
             const transactions = response.results.data;

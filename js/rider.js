@@ -1,11 +1,38 @@
-showPreloader("loading rider info");
-
 const accessToken = getCookie("access");
 if (!accessToken) {
     window.location.href = "404.html";
 }
 
-RIDER_URL = "https://luck1999.pythonanywhere.com/rider/api"
+RIDER_URL = "http://127.0.0.1:8000/rider/api";
+
+// DOM CACHE FOR PERFORMANCE
+const RIDER_DOM = {
+    riderName: null,
+    riderId: null,
+    deliveriesCount: null,
+    tableBody: null,
+    ordersList: null,
+    searchInput: null,
+    searchBtn: null,
+    deliveryModal: null,
+    productModal: null,
+    startDeliveryBtn: null,
+    preloader: null
+};
+
+function cacheRiderDOM() {
+    RIDER_DOM.riderName = document.querySelector('.rider-name');
+    RIDER_DOM.riderId = document.querySelector('.rider-id');
+    RIDER_DOM.deliveriesCount = document.querySelector('.stat-value');
+    RIDER_DOM.tableBody = document.querySelector('.orders-table tbody');
+    RIDER_DOM.ordersList = document.querySelector('.orders-list');
+    RIDER_DOM.searchInput = document.getElementById('orderSearch');
+    RIDER_DOM.searchBtn = document.getElementById('searchBtn');
+    RIDER_DOM.deliveryModal = document.getElementById('deliveryModal');
+    RIDER_DOM.productModal = document.getElementById('productModal');
+    RIDER_DOM.startDeliveryBtn = document.getElementById('startDeliveryBtn');
+    RIDER_DOM.preloader = document.getElementById('preloader');
+}
 
 let nextPageUrl = `${RIDER_URL}/rider/`; // First page endpoint
 let isLoading = false;
@@ -42,11 +69,11 @@ async function fetchRiderInfo(url = `${RIDER_URL}/rider/`, append = false, searc
             nextPageUrl = data.next; // Store next page link from DRF
             renderProfile(data.results, append);
         } else {
-            alert("Unable to fetch profile: " + (data.error || "Unknown error"));
+            showErrorModal(data.error || "Unable to fetch profile: Unknown error");
         }
     } catch (error) {
         console.error("Fetch error:", error);
-        alert("Failed to fetch user profile.");
+        showErrorModal(error.message || "Failed to fetch user profile.");
     } finally {
         hidePreloader();
         isLoading = false;
@@ -57,25 +84,24 @@ async function fetchRiderInfo(url = `${RIDER_URL}/rider/`, append = false, searc
 function renderProfile(data, append = false) {
     // Only update profile info on first load
     if (!append) {
-        const nameEl = document.querySelector('.rider-name');
-        const riderIdEl = document.querySelector('.rider-id');
-        const deliveriesEl = document.querySelector('.stat-value');
-
-        nameEl.textContent = data.profile.name || 'Unknown Rider';
-        riderIdEl.textContent = `Rider ID: ${data.profile.rider_id ?? 'N/A'}`;
-        deliveriesEl.textContent = data.profile.deliveries_count ?? 0;
+        if (RIDER_DOM.riderName) RIDER_DOM.riderName.textContent = data.profile.name || 'Unknown Rider';
+        if (RIDER_DOM.riderId) RIDER_DOM.riderId.textContent = `Rider ID: ${data.profile.rider_id ?? 'N/A'}`;
+        if (RIDER_DOM.deliveriesCount) RIDER_DOM.deliveriesCount.textContent = data.profile.deliveries_count ?? 0;
 
         // Clear lists for fresh load
-        document.querySelector('.orders-table tbody').innerHTML = '';
-        document.querySelector('.orders-list').innerHTML = '';
+        if (RIDER_DOM.tableBody) RIDER_DOM.tableBody.innerHTML = '';
+        if (RIDER_DOM.ordersList) RIDER_DOM.ordersList.innerHTML = '';
     }
 
-    const tableBody = document.querySelector('.orders-table tbody');
-    const ordersList = document.querySelector('.orders-list');
+    if (!RIDER_DOM.tableBody || !RIDER_DOM.ordersList) return;
+
+    const tableFragment = document.createDocumentFragment();
+    const listFragment = document.createDocumentFragment();
 
     data.recent_deliveries.forEach(delivery => {
         // Desktop table row
-        const row = `
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
             <tr>
                 <td><span style="cursor: pointer; font-weight: bold;" onclick="openDetails('${delivery.order_number}')">${delivery.order_number}</span></td>
                 <td>${delivery.customer_first_name} ${delivery.customer_last_name}</td>
@@ -84,10 +110,12 @@ function renderProfile(data, append = false) {
             </tr>
         `;
 
-        tableBody.insertAdjacentHTML('beforeend', row);
+        tableFragment.appendChild(tr);
 
         // Mobile card
-        const card = `
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'order-card';
+        cardDiv.innerHTML = `
             <div class="order-card">
                 <div class="order-header">
                     <div class="order-id" style="cursor: pointer; font-weight: bold;" onclick="openDetails('${delivery.order_number}')">${delivery.order_number}</div>
@@ -103,10 +131,35 @@ function renderProfile(data, append = false) {
                 </div>
             </div>
         `;
-        ordersList.insertAdjacentHTML('beforeend', card);
-
-        
+        listFragment.appendChild(cardDiv);
     });
+
+    RIDER_DOM.tableBody.appendChild(tableFragment);
+    RIDER_DOM.ordersList.appendChild(listFragment);
+}
+
+function setupRiderDelegation() {
+    if (RIDER_DOM.tableBody) {
+        RIDER_DOM.tableBody.addEventListener('click', (e) => {
+            const target = e.target.closest('[onclick]');
+            if (target) {
+                e.preventDefault();
+                const orderNum = target.textContent;
+                openDetails(orderNum);
+            }
+        });
+    }
+    
+    if (RIDER_DOM.ordersList) {
+        RIDER_DOM.ordersList.addEventListener('click', (e) => {
+            const target = e.target.closest('[onclick]');
+            if (target) {
+                e.preventDefault();
+                const orderNum = target.textContent;
+                openDetails(orderNum);
+            }
+        });
+    }
 }
 
 function openDetails(orderNumber) {
@@ -214,11 +267,12 @@ function openDetails(orderNumber) {
 
         
         } else {
-            alert("unable to retrieve details")
+            showErrorModal(data.message || "Unable to retrieve details");
         }
     })
     .catch(error => {
-        console.error("unable to connect ro server")
+        console.error("unable to connect to server", error);
+        showErrorModal(error.message || "Network error. Unable to connect to server.");
     })
     .finally(() => {
         hidePreloader();
@@ -235,20 +289,21 @@ document.getElementById("closeProductModal").addEventListener("click", function 
 });
 
 
-const searchInput = document.getElementById("orderSearch");
-const searchBtn = document.getElementById("searchBtn");
+function setupSearchListeners() {
+    if (!RIDER_DOM.searchInput) return;
 
-searchInput.addEventListener("input", () => {
-    const term = searchInput.value.trim();
-    fetchRiderInfo(`${RIDER_URL}/rider/`, false, term);
-});
-
-searchInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-        const term = searchInput.value.trim();
+    RIDER_DOM.searchInput.addEventListener("input", () => {
+        const term = RIDER_DOM.searchInput.value.trim();
         fetchRiderInfo(`${RIDER_URL}/rider/`, false, term);
-    }
-});
+    });
+
+    RIDER_DOM.searchInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            const term = RIDER_DOM.searchInput.value.trim();
+            fetchRiderInfo(`${RIDER_URL}/rider/`, false, term);
+        }
+    });
+}
 
 
 // Helper function to format date
@@ -257,30 +312,27 @@ function formatDate(dateStr) {
     return date.toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
-window.addEventListener("scroll", async () => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 && !isLoading && nextPageUrl) {
-        if (nextPageUrl) {
-            fetchRiderInfo(nextPageUrl, true);
-        }
-    }
-});
-
-// Infinite scroll for desktop table container
-const tableContainer = document.querySelector('.orders-table').parentElement;
-tableContainer.style.overflowY = 'auto'; // Ensure scrollable
-window.addEventListener("scroll", async () => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 && !isLoading && nextPageUrl) {
-        if (nextPageUrl) {
-            fetchRiderInfo(nextPageUrl, true);
-        }
-    }
-});
-
-fetchRiderInfo(nextPageUrl, false);
+function setupScrollListener() {
+    let scrollTimeout;
+    window.addEventListener("scroll", () => {
+        if (scrollTimeout) return;
+        scrollTimeout = setTimeout(() => {
+            scrollTimeout = null;
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 && !isLoading && nextPageUrl) {
+                fetchRiderInfo(nextPageUrl, true);
+            }
+        }, 150);
+    }, { passive: true });
+}
 
 document.addEventListener('DOMContentLoaded', function() {
+    cacheRiderDOM();
+    setupRiderDelegation();
+    setupSearchListeners();
+    setupScrollListener();
+    showPreloader("loading rider info");
+    fetchRiderInfo(nextPageUrl, false);
 
-    
     // DOM Elements
     const deliveryModal = document.getElementById('deliveryModal');
     const closeModal = document.getElementById('closeModal');
@@ -578,12 +630,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Refresh rider info after completion
                 fetchRiderInfo();
             } else {
-                alert(data.error || "Failed to mark order as delivered");
+                showErrorModal(data.error || "Failed to mark order as delivered");
             }
         })
         .catch(error => {
             console.error('Error marking delivery complete:', error);
-            alert("An error occurred while marking delivery complete");
+            showErrorModal(error.message || "An error occurred while marking delivery complete");
         })
         .finally(() => {
             completeDeliveryBtn.innerHTML = originalText;
@@ -591,49 +643,66 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
         
-    hidePreloader()
+    setupStarRating();
+    hidePreloader();
 });
 
-const stars = document.querySelectorAll('.star');
+function setupStarRating() {
+    const starsContainer = document.querySelector('.rating-stars');
+    if (!starsContainer) return;
 
-// Handle click (set permanent selection)
-stars.forEach((star, index) => {
-    star.addEventListener('click', () => {
+    starsContainer.addEventListener('click', (e) => {
+        const star = e.target.closest('.star');
+        if (!star) return;
+        
+        const stars = starsContainer.querySelectorAll('.star');
+        const index = Array.from(stars).indexOf(star);
+        
         stars.forEach(s => s.classList.remove('active'));
         for (let i = 0; i <= index; i++) {
             stars[i].classList.add('active');
         }
     });
 
-    // Handle hover (temporary highlight)
-    star.addEventListener('mouseover', () => {
+    starsContainer.addEventListener('mouseover', (e) => {
+        const star = e.target.closest('.star');
+        if (!star) return;
+        
+        const stars = starsContainer.querySelectorAll('.star');
+        const index = Array.from(stars).indexOf(star);
+        
         stars.forEach(s => s.classList.remove('hover'));
         for (let i = 0; i <= index; i++) {
             stars[i].classList.add('hover');
         }
     });
 
-    // Remove hover highlight when mouse leaves the container
-    star.addEventListener('mouseout', () => {
+    starsContainer.addEventListener('mouseout', () => {
+        const stars = starsContainer.querySelectorAll('.star');
         stars.forEach(s => s.classList.remove('hover'));
     });
-});
+}
 
 
 // Function to hide preloader
 function hidePreloader() {
+    const preloader = RIDER_DOM.preloader || document.getElementById('preloader');
+    if (!preloader) return;
     preloader.classList.add('hidden');
     setTimeout(() => {
         preloader.style.display = 'none';
     }, 500);
 }
 
-
 // Function to show preloader
 function showPreloader(message) {
-    document.querySelector('.preloader-text').textContent = message;
-    preloader.classList.remove('hidden');
-    preloader.style.display = 'flex';
+    const preloader = RIDER_DOM.preloader || document.getElementById('preloader');
+    const preloaderText = document.querySelector('.preloader-text');
+    if (preloaderText) preloaderText.textContent = message;
+    if (preloader) {
+        preloader.classList.remove('hidden');
+        preloader.style.display = 'flex';
+    }
 }
 
 function getCookie(name) {

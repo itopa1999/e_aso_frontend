@@ -1,3 +1,26 @@
+// =========================
+// DOM CACHE FOR PERFORMANCE
+// =========================
+const DOM_CACHE = {
+    preloader: null,
+    userIcon: null,
+    userDropdown: null,
+    dropdownItems: null,
+    userName: null,
+    userEmail: null,
+    goToTopBtn: null
+};
+
+function initDOMCache() {
+    DOM_CACHE.preloader = document.getElementById('preloader');
+    DOM_CACHE.userIcon = document.getElementById('user-icon');
+    DOM_CACHE.userDropdown = document.getElementById('userDropdown');
+    DOM_CACHE.dropdownItems = DOM_CACHE.userDropdown?.querySelector('.dropdown-items');
+    DOM_CACHE.userName = document.getElementById('userName');
+    DOM_CACHE.userEmail = document.getElementById('userEmail');
+    DOM_CACHE.goToTopBtn = document.getElementById('goToTopBtn');
+}
+
 const urlParams = new URLSearchParams(window.location.search);
 
 function setCookie(name, value, days = 1) {
@@ -14,24 +37,37 @@ if (email1) {
     ["access", "refresh", "email", "name", "group"].forEach(param => {
         const value = urlParams.get(param);
         if (value) {
-            setCookie(param, value, 1); // always 1 day expiry
+            setCookie(param, value, 7); // always 1 day expiry
         }
     });
 }
 
 
-const userIcon = document.getElementById('user-icon');
-const userDropdown = document.getElementById('userDropdown');
-const logoutButton = document.getElementById('logoutButton');
-const dropdownItems = userDropdown.querySelector('.dropdown-items');
-const userName = document.getElementById('userName');
-const userEmail = document.getElementById('userEmail');
+// Initialize auth data
+let authData = {
+    access: null,
+    email: null,
+    name: null,
+    groups: []
+};
 
-const access = getCookie('access');
-const email = getCookie('email');
-const name = getCookie("name");
-const groupString = getCookie("group")?.toLowerCase() || "";
-const groups = groupString.split(",").map(g => g.trim());
+function loadAuthData() {
+    authData.access = getCookie("access");
+    authData.email = getCookie("email");
+    authData.name = getCookie("name");
+    const groupString = getCookie("group")?.toLowerCase() || "";
+    authData.groups = groupString ? groupString.split(",").map(g => g.trim()) : [];
+}
+
+// Load auth data immediately
+loadAuthData();
+
+// Backward compatibility
+const access = authData.access;
+const email = authData.email;
+const name = authData.name;
+const groups = authData.groups;
+
 
 
 // Helper to read cookies
@@ -48,137 +84,115 @@ function getCookie(name) {
 
     return value;
 }
-// Handle auth-based content
+// Handle auth-based content - optimized with cached DOM
 function updateDropdown() {
-    if (access && email) {
-        // Use empty string if null/undefined
-        const safeName = name || "";
+    if (!DOM_CACHE.userName || !DOM_CACHE.userEmail || !DOM_CACHE.dropdownItems) return;
 
-        userName.textContent = safeName.length > 15 
+    if (authData.access && authData.email) {
+        const safeName = authData.name || "";
+        DOM_CACHE.userName.textContent = safeName.length > 15 
             ? safeName.slice(0, 12) + '...' 
             : safeName || "User";
-
-        userEmail.textContent = email;
+        DOM_CACHE.userEmail.textContent = authData.email;
         
-        let riderLink = "";
-        if (groups.includes("rider")) {
-            riderLink = `
-                <a href="rider-page.html" class="dropdown-item">
-                    <i class="fas fa-motorcycle"></i>
-                    <span>Go to Rider</span>
-                </a>
-            `;
+        const links = [
+            '<a href="profile.html" class="dropdown-item"><i class="fas fa-user-circle"></i><span>My Profile</span></a>',
+            '<a href="ordered-lists.html" class="dropdown-item"><i class="fas fa-shopping-bag"></i><span>My Orders</span></a>',
+            '<a href="watchlist.html" class="dropdown-item"><i class="fas fa-heart"></i><span>My Wishlist</span></a>'
+        ];
+        
+        if (authData.groups.includes("rider")) {
+            links.push('<a href="rider-page.html" class="dropdown-item"><i class="fas fa-motorcycle"></i><span>Go to Rider</span></a>');
         }
-
-        let adminLink = "";
-        if (groups.includes("admin")) { 
-            adminLink = `
-                <a href="admin/dashboard.html" class="dropdown-item">
-                    <i class="fas fa-tachometer-alt"></i>
-                    <span>Admin Dashboard</span>
-                </a>
-            `;
+        
+        if (authData.groups.includes("admin")) {
+            links.push('<a href="/admin/dashboard.html" class="dropdown-item"><i class="fas fa-tachometer-alt"></i><span>Admin Dashboard</span></a>');
         }
-
-        dropdownItems.innerHTML = `
-            <a href="profile.html" class="dropdown-item">
-                <i class="fas fa-user-circle"></i>
-                <span>My Profile</span>
-            </a>
-            <a href="ordered-lists.html" class="dropdown-item">
-                <i class="fas fa-shopping-bag"></i>
-                <span>My Orders</span>
-            </a>
-            <a href="watchlist.html" class="dropdown-item">
-                <i class="fas fa-heart"></i>
-                <span>My Wishlist</span>
-            </a>
-            ${riderLink}
-            ${adminLink}
-            <a href="about.html" class="dropdown-item">
-                <i class="fas fa-info-circle"></i>
-                <span>About Us</span>
-            </a>
-            <a href="contact.html" class="dropdown-item">
-                <i class="fas fa-envelope"></i>
-                <span>Contact Us</span>
-            </a>
-            <a href="#" class="dropdown-item logout-item" id="logoutButton">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </a>
-        `;
+        
+        links.push(
+            '<a href="about.html" class="dropdown-item"><i class="fas fa-info-circle"></i><span>About Us</span></a>',
+            '<a href="contact.html" class="dropdown-item"><i class="fas fa-envelope"></i><span>Contact Us</span></a>',
+            '<a href="#" class="dropdown-item logout-item" id="logoutButton"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>'
+        );
+        
+        DOM_CACHE.dropdownItems.innerHTML = links.join('');
     } else {
-        // Unauthenticated view
-        userName.textContent = "Guest";
-        userEmail.textContent = "Please log in";
-
-        dropdownItems.innerHTML = `
-            <a href="about.html" class="dropdown-item">
-                <i class="fas fa-info-circle"></i>
-                <span>About Us</span>
-            </a>
-            <a href="contact.html" class="dropdown-item">
-                <i class="fas fa-envelope"></i>
-                <span>Contact Us</span>
-            </a>
-            <a href="auth.html" class="dropdown-item">
-                <i class="fas fa-sign-in-alt"></i>
-                <span>Sign In</span>
-            </a>
+        DOM_CACHE.userName.textContent = "Guest";
+        DOM_CACHE.userEmail.textContent = "Please log in";
+        DOM_CACHE.dropdownItems.innerHTML = `
+            <a href="about.html" class="dropdown-item"><i class="fas fa-info-circle"></i><span>About Us</span></a>
+            <a href="contact.html" class="dropdown-item"><i class="fas fa-envelope"></i><span>Contact Us</span></a>
+            <a href="auth.html" class="dropdown-item"><i class="fas fa-sign-in-alt"></i><span>Sign In</span></a>
         `;
     }
 }
 
-// Set up dropdown toggle
-userIcon.addEventListener('click', function (e) {
-    e.preventDefault();
-    updateDropdown();
-    userDropdown.classList.toggle('active');
-});
-
-// Close dropdown on outside click
-document.addEventListener('click', function (e) {
-    if (!userIcon.contains(e.target) && !userDropdown.contains(e.target)) {
-        userDropdown.classList.remove('active');
-    }
-});
-
-// Dynamic logout delegation (since logout button is injected dynamically)
-document.addEventListener('click', function (e) {
-    if (e.target.closest('#logoutButton')) {
+// Set up dropdown toggle - optimized
+function setupDropdownToggle() {
+    if (!DOM_CACHE.userIcon || !DOM_CACHE.userDropdown) return;
+    
+    DOM_CACHE.userIcon.addEventListener('click', function (e) {
         e.preventDefault();
-        document.cookie = "access=; Max-Age=0; path=/";
-        document.cookie = "refresh=; Max-Age=0; path=/";
-        document.cookie = "email=; Max-Age=0; path=/";
-        document.cookie = "name=; Max-Age=0; path=/";
-        document.cookie = "group=; Max-Age=0; path=/";
-        userDropdown.classList.remove('active');
-
-        const currentPage = window.location.pathname;
-        if (!currentPage.includes('index.html')) {
-            window.location.href = 'index.html';
-        } else {
-            location.reload();
-        }
-    }
-});
-
-const preloader = document.getElementById('preloader');
-
-// Function to show preloader
-function showPreloader(message) {
-    document.querySelector('.preloader-text').textContent = message;
-    preloader.classList.remove('hidden');
-    preloader.style.display = 'flex';
+        updateDropdown();
+        DOM_CACHE.userDropdown.classList.toggle('active');
+    });
 }
 
-// Function to hide preloader
+// Close dropdown on outside click - optimized
+function setupOutsideClickDetection() {
+    if (!DOM_CACHE.userIcon || !DOM_CACHE.userDropdown) return;
+    
+    document.addEventListener('click', function (e) {
+        if (!DOM_CACHE.userIcon.contains(e.target) && !DOM_CACHE.userDropdown.contains(e.target)) {
+            DOM_CACHE.userDropdown.classList.remove('active');
+        }
+    });
+}
+
+// Dynamic logout delegation - optimized
+function setupLogoutHandler() {
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('#logoutButton')) {
+            e.preventDefault();
+            // Clear all cookies at once
+            const cookies = ["access", "refresh", "email", "name", "group"];
+            cookies.forEach(cookie => {
+                document.cookie = `${cookie}=; Max-Age=0; path=/`;
+            });
+            
+            if (DOM_CACHE.userDropdown) {
+                DOM_CACHE.userDropdown.classList.remove('active');
+            }
+
+            const currentPage = window.location.pathname;
+            if (!currentPage.includes('index.html')) {
+                window.location.href = 'index.html';
+            } else {
+                location.reload();
+            }
+        }
+    });
+}
+
+// Preloader functions - optimized with cache
+function showPreloader(message) {
+    if (!DOM_CACHE.preloader) DOM_CACHE.preloader = document.getElementById('preloader');
+    if (DOM_CACHE.preloader) {
+        const textEl = document.querySelector('.preloader-text');
+        if (textEl) textEl.textContent = message;
+        DOM_CACHE.preloader.classList.remove('hidden');
+        DOM_CACHE.preloader.style.display = 'flex';
+    }
+}
+
 function hidePreloader() {
-    preloader.classList.add('hidden');
-    setTimeout(() => {
-        preloader.style.display = 'none';
-    }, 500);
+    if (!DOM_CACHE.preloader) DOM_CACHE.preloader = document.getElementById('preloader');
+    if (DOM_CACHE.preloader) {
+        DOM_CACHE.preloader.classList.add('hidden');
+        setTimeout(() => {
+            if (DOM_CACHE.preloader) DOM_CACHE.preloader.style.display = 'none';
+        }, 500);
+    }
 }
 
 
@@ -328,6 +342,21 @@ function getQueryParam(param) {
     return urlParams.get(param);
 }
 
+function showErrorModal(message) {
+    const overlay = document.createElement("div");
+    overlay.className = "dialog-overlay";
+    overlay.innerHTML = `
+        <div class="dialog-box">
+            <p>${message}</p>
+            <div class="dialog-actions">
+                <button class="confirm-btn1">Okay</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    overlay.querySelector(".confirm-btn1").addEventListener("click", () => overlay.remove());
+}
+
 async function updateCartAndWatchlistCounts() {
     if (!access) return;
     try {
@@ -352,19 +381,43 @@ async function updateCartAndWatchlistCounts() {
 }
 
 
-const btn = document.getElementById("goToTopBtn");
+// Go to top button - optimized with throttle
+function setupGoToTop() {
+    if (!DOM_CACHE.goToTopBtn) DOM_CACHE.goToTopBtn = document.getElementById("goToTopBtn");
+    if (!DOM_CACHE.goToTopBtn) return;
 
-window.onscroll = function () {
-    btn.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
-};
+    let scrollTimeout;
+    window.addEventListener('scroll', function() {
+        if (!scrollTimeout) {
+            scrollTimeout = setTimeout(() => {
+                scrollTimeout = null;
+                if (DOM_CACHE.goToTopBtn) {
+                    const shouldShow = document.body.scrollTop > 200 || document.documentElement.scrollTop > 200;
+                    DOM_CACHE.goToTopBtn.style.display = shouldShow ? "block" : "none";
+                }
+            }, 100);
+        }
+    }, { passive: true });
 
-// Scroll to top when clicked
-btn.onclick = function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+    DOM_CACHE.goToTopBtn.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// Initialize all components
+function initializeApp() {
+    initDOMCache();
+    loadAuthData();
+    setupDropdownToggle();
+    setupOutsideClickDetection();
+    setupLogoutHandler();
+    updateCartAndWatchlistCounts();
+    setupGoToTop();
+    
+}
 
 // Call it after DOM loads
-document.addEventListener("DOMContentLoaded", updateCartAndWatchlistCounts);
+document.addEventListener("DOMContentLoaded", initializeApp);
 
 
 

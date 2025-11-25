@@ -6,6 +6,37 @@ if (!productId) {
     window.location.href = "404.html";
 }
 
+// =========================
+// DOM CACHE FOR PERFORMANCE
+// =========================
+const PRODUCT_DOM = {
+    mainImage: null,
+    thumbnailContainer: null,
+    wishlistBtn: null,
+    cartBtn: null,
+    qtyInput: null,
+    colorOptions: null,
+    sizeOptions: null,
+    cartBadge: null,
+    wishlistBadge: null,
+    tabs: null,
+    tabContents: null
+};
+
+function cacheProductDOM() {
+    PRODUCT_DOM.mainImage = document.getElementById('mainImage');
+    PRODUCT_DOM.thumbnailContainer = document.getElementById('thumbnailContainer');
+    PRODUCT_DOM.wishlistBtn = document.querySelector('.btn-wishlist');
+    PRODUCT_DOM.cartBtn = document.querySelector('.btn-add-cart');
+    PRODUCT_DOM.qtyInput = document.querySelector('.qty-input');
+    PRODUCT_DOM.colorOptions = document.getElementById('color-options');
+    PRODUCT_DOM.sizeOptions = document.getElementById('size-options');
+    PRODUCT_DOM.cartBadge = document.getElementById("cart-count");
+    PRODUCT_DOM.wishlistBadge = document.getElementById("watchlist-count");
+    PRODUCT_DOM.tabs = document.querySelectorAll('.tab');
+    PRODUCT_DOM.tabContents = document.querySelectorAll('.tab-content');
+}
+
 async function fetchProductDetails() {
     try {
         const response = await fetch(`${ASO_URL}/${productId}/`, {
@@ -78,7 +109,7 @@ function renderProductDetails(data) {
     renderOptions('cart-options', data.category, 'category');
 
     /**
-     * Utility function to render option buttons (color, size, etc.)
+     * Utility function to render option buttons (color, size, etc.) - OPTIMIZED
      */
     function renderOptions(containerId, options, type) {
         const container = document.getElementById(containerId);
@@ -89,18 +120,24 @@ function renderProductDetails(data) {
             return;
         }
 
+        // Use DocumentFragment for batch insertion
+        const fragment = document.createDocumentFragment();
+        
         options.forEach((item, index) => {
             const option = document.createElement('div');
             option.className = 'size-option';
             option.textContent = item.color_name || item.size_label || item.name;
             option.dataset[type] = item.color_name || item.size_label || item.name;
-            container.appendChild(option);
 
             // Select first by default
             if (index === 0) option.classList.add('active');
+            
+            fragment.appendChild(option);
         });
 
-        // Attach click events for selection
+        container.appendChild(fragment);
+
+        // Event delegation instead of individual listeners
         handleSelection(container);
     }
 
@@ -123,43 +160,54 @@ function renderProductDetails(data) {
 }
             
 
-    const mainImage = document.getElementById('mainImage');
+    if (PRODUCT_DOM.mainImage) {
+        if (data.main_image) {
+            PRODUCT_DOM.mainImage.style.backgroundImage = `url('${data.main_image}')`;
+        } else {
+            PRODUCT_DOM.mainImage.style.backgroundImage = `url("img/product_image.png")`;
+        }
 
-    if (data.main_image) {
-        mainImage.style.backgroundImage  = `url('${data.main_image}')`;
-    } else {
-        mainImage.style.backgroundImage  = `url("img/product_image.png")`;
+        PRODUCT_DOM.mainImage.style.backgroundSize = 'contain';
+        PRODUCT_DOM.mainImage.style.backgroundPosition = 'center';
+        PRODUCT_DOM.mainImage.style.backgroundRepeat = 'no-repeat';
     }
 
-    mainImage.style.backgroundSize = 'contain';
-    mainImage.style.backgroundPosition = 'center';
-    mainImage.style.backgroundRepeat = 'no-repeat';
-
-    const thumbnailContainer = document.getElementById('thumbnailContainer');
-    thumbnailContainer.innerHTML = '';
-    
-    data.images.forEach((image, index) => {
-        const thumbnail = document.createElement('div');
-        thumbnail.className = 'thumbnail';
-        thumbnail.style.backgroundImage = `url('${image.image}')`;
-        thumbnail.style.backgroundSize = 'contain';
-        thumbnail.style.backgroundPosition = 'center';
-        thumbnail.style.backgroundRepeat = 'no-repeat';
+    if (PRODUCT_DOM.thumbnailContainer) {
+        PRODUCT_DOM.thumbnailContainer.innerHTML = '';
         
-        if (index === 0) {
-            thumbnail.classList.add('active');
-        }
+        // Use DocumentFragment for batch insertion
+        const fragment = document.createDocumentFragment();
         
-        thumbnail.addEventListener('click', function() {
-            mainImage.style.backgroundImage = `url('${image.image}')`;
+        data.images.forEach((image, index) => {
+            const thumbnail = document.createElement('div');
+            thumbnail.className = 'thumbnail';
+            thumbnail.style.backgroundImage = `url('${image.image}')`;
+            thumbnail.style.backgroundSize = 'contain';
+            thumbnail.style.backgroundPosition = 'center';
+            thumbnail.style.backgroundRepeat = 'no-repeat';
+            thumbnail.dataset.imageUrl = image.image;
             
-            // Update active thumbnail
-            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
+            if (index === 0) {
+                thumbnail.classList.add('active');
+            }
+            
+            fragment.appendChild(thumbnail);
         });
         
-        thumbnailContainer.appendChild(thumbnail);
-    });
+        PRODUCT_DOM.thumbnailContainer.appendChild(fragment);
+        
+        // Event delegation for thumbnails
+        PRODUCT_DOM.thumbnailContainer.addEventListener('click', function(e) {
+            const thumbnail = e.target.closest('.thumbnail');
+            if (!thumbnail || !PRODUCT_DOM.mainImage) return;
+            
+            PRODUCT_DOM.mainImage.style.backgroundImage = `url('${thumbnail.dataset.imageUrl}')`;
+            
+            // Update active thumbnail
+            PRODUCT_DOM.thumbnailContainer.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+            thumbnail.classList.add('active');
+        });
+    }
 
     const descriptionData = data.details.find(item => item.tab === "description");
     const detailsData = data.details.filter(item => item.tab === "details");
@@ -273,7 +321,7 @@ function attachCartEvents(id) {
         
         } catch (error) {
             console.error(error);
-            alert("Error moving items to cart.");
+            showErrorModal(error.message || "Error moving items to cart.");
         } finally {
             hidePreloader();
         }
@@ -318,62 +366,57 @@ function attachWatchlistEvents(id) {
             }
             wishlistCountElement.textContent = count;
         } catch (error) {
-            alert("Failed to toggle watchlist");
+            showErrorModal(error.message || "Failed to toggle watchlist");
         } finally {
             hidePreloader();
         }
     })
 }
 
-// Thumbnail Gallery Functionality
+// Thumbnail Gallery Functionality - OPTIMIZED
 document.addEventListener('DOMContentLoaded', function() {
-    fetchProductDetails()
+    cacheProductDOM();
+    fetchProductDetails();
 
-    // Tab functionality
-    const tabs = document.querySelectorAll('.tab');
-    const tabContents = document.querySelectorAll('.tab-content');
-    
-    tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            const tabId = this.getAttribute('data-tab');
-            
-            // Remove active class from all tabs and contents
-            tabs.forEach(t => t.classList.remove('active'));
-            tabContents.forEach(c => c.classList.remove('active'));
-            
-            // Add active class to current tab and content
-            this.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
-        });
-    });
-
-
-    // Thumbnail selection
-    const thumbnails = document.querySelectorAll('.thumbnail');
-    thumbnails.forEach(thumb => {
-        thumb.addEventListener('click', function() {
-            thumbnails.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-    
-    
-    // Quantity selector
-    const minusBtn = document.querySelector('.qty-btn.minus');
-    const plusBtn = document.querySelector('.qty-btn.plus');
-    const qtyInput = document.querySelector('.qty-input');
-    
-    minusBtn.addEventListener('click', function() {
-        let value = parseInt(qtyInput.value);
-        if (value > 1) {
-            qtyInput.value = value - 1;
+    // Tab functionality with event delegation
+    const tabsContainer = document.querySelector('.tabs-container') || document.body;
+    tabsContainer.addEventListener('click', function(e) {
+        const tab = e.target.closest('.tab');
+        if (!tab) return;
+        
+        const tabId = tab.getAttribute('data-tab');
+        if (!tabId) return;
+        
+        // Remove active class from all tabs and contents
+        if (PRODUCT_DOM.tabs) {
+            PRODUCT_DOM.tabs.forEach(t => t.classList.remove('active'));
         }
+        if (PRODUCT_DOM.tabContents) {
+            PRODUCT_DOM.tabContents.forEach(c => c.classList.remove('active'));
+        }
+        
+        // Add active class to current tab and content
+        tab.classList.add('active');
+        const content = document.getElementById(tabId);
+        if (content) content.classList.add('active');
     });
     
-    plusBtn.addEventListener('click', function() {
-        let value = parseInt(qtyInput.value);
-        qtyInput.value = value + 1;
-    });
+    // Quantity selector with event delegation
+    const qtyContainer = document.querySelector('.quantity-selector');
+    if (qtyContainer && PRODUCT_DOM.qtyInput) {
+        qtyContainer.addEventListener('click', function(e) {
+            const btn = e.target.closest('.qty-btn');
+            if (!btn) return;
+            
+            let value = parseInt(PRODUCT_DOM.qtyInput.value) || 1;
+            
+            if (btn.classList.contains('minus') && value > 1) {
+                PRODUCT_DOM.qtyInput.value = value - 1;
+            } else if (btn.classList.contains('plus')) {
+                PRODUCT_DOM.qtyInput.value = value + 1;
+            }
+        });
+    }
     
     
     

@@ -14,7 +14,7 @@ async function filterProducts() {
     const searchTerm = searchInput.value.trim();
 
     if (!searchTerm){
-        alert("Please provide at least one filter option.");
+        showErrorModal("Please provide at least one filter option.");
         return;
     }
 

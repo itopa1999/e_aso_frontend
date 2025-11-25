@@ -5,7 +5,24 @@ if (!accessToken) {
 
 showPreloader("Loading your watchlist items");
 
-const wishlistCountElement = document.getElementById("watchlist-count");
+// =========================
+// DOM CACHE FOR PERFORMANCE
+// =========================
+const WATCHLIST_DOM = {
+    wishlistCountElement: null,
+    productsGrid: null,
+    cartBadge: null,
+    clearAllBtn: null,
+    moveAllBtn: null
+};
+
+function cacheWatchlistDOM() {
+    WATCHLIST_DOM.wishlistCountElement = document.getElementById("watchlist-count");
+    WATCHLIST_DOM.productsGrid = document.querySelector(".products-grid");
+    WATCHLIST_DOM.cartBadge = document.getElementById("cart-count");
+    WATCHLIST_DOM.clearAllBtn = document.querySelector('.btn-clear-all');
+    WATCHLIST_DOM.moveAllBtn = document.querySelector('.btn-move-all');
+}
 async function loadLists() {
     try {
         const res = await fetch(`${ASO_URL}/watchlist-products/`, {
@@ -30,11 +47,12 @@ async function loadLists() {
     }
 }
 
-loadLists()
+cacheWatchlistDOM();
+loadLists();
     
 function renderList(data) {
     const products = data;
-    const productsGrid = document.querySelector(".products-grid");
+    const productsGrid = WATCHLIST_DOM.productsGrid;
     
 
     if (!products || products.length === 0) {
@@ -42,6 +60,9 @@ function renderList(data) {
     }
 
     productsGrid.innerHTML = "";
+
+    // Use DocumentFragment for batch DOM insertion
+    const fragment = document.createDocumentFragment();
 
     products.forEach(product => {
         const reviewFormatted = formatReviews(product.reviews_count);
@@ -84,8 +105,6 @@ function renderList(data) {
             </div>
         `;
 
-        productsGrid.appendChild(card);
-
         const btn = card.querySelector(".add-to-cart");
         if (product.cart_added) {
             btn.textContent = "✓ Added!";
@@ -98,93 +117,98 @@ function renderList(data) {
             btn.style.cursor = "pointer";
         }
 
+        fragment.appendChild(card);
     });
 
-    attachWatchlistEvents();
+    // Single batch DOM insertion
+    productsGrid.appendChild(fragment);
 
-    const cartBadge = document.getElementById("cart-count");
-    document.querySelectorAll('.add-to-cart').forEach(btn => {
-        btn.addEventListener('click', async function () {  // ✅ Make this function async
-            const product_id = this.getAttribute('data-id');
-            try {
-                showPreloader("Adding items to cart...");
-
-                const res = await fetch(`${ASO_URL}/add-to-cart/?product_id=${product_id}`, {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${accessToken}`,
-                        "Content-Type": "application/json"
-                    }
-                });
-
-                if (!res.ok) throw new Error("Failed to move items to cart");
-
-                const data = await res.json();
-                const itemsMoved = data.data.items_added;
-                let currentCount = parseInt(cartBadge.textContent) || 0;
-                cartBadge.textContent = currentCount + itemsMoved;
-
-                // Animation
-                btn.textContent = '✓ Added!';
-                btn.style.backgroundColor = '#28a745';
-                btn.disabled = true;
-                btn.style.cursor = "not-allowed";
-
-            } catch (error) {
-                console.error(error);
-                alert("Error moving items to cart.");
-            } finally {
-                hidePreloader();
-            }
-        });
-    });
+    // Event delegation for add-to-cart buttons
+    setupCartDelegation();
+    setupWatchlistDelegation();
 }
 
-function attachWatchlistEvents() {
-    const buttons = document.querySelectorAll(".wishlist-button");
-    const wishlistCountElement = document.getElementById("watchlist-count");
+function setupCartDelegation() {
+    if (!WATCHLIST_DOM.productsGrid) return;
+    
+    WATCHLIST_DOM.productsGrid.addEventListener('click', async function(e) {
+        const btn = e.target.closest('.add-to-cart');
+        if (!btn || btn.disabled) return;
+        const product_id = btn.getAttribute('data-id');
+        try {
+            showPreloader("Adding items to cart...");
 
-    buttons.forEach(button => {
-        button.addEventListener("click", async function () {
-            
-            const productId = this.dataset.id;
-            try {
-                showPreloader("Removing watchlist items");
-                const res = await fetch(`${ASO_URL}/toggle-watchlist/${productId}/`, {
-                    method: "PUT",
-                    headers: {
-                        "Authorization": `Bearer ${accessToken}`
-                    }
-                });
-
-                if (!res.ok) throw new Error("Failed to reorder items");
-
-                this.closest(".product-card").remove();
-
-                let count = parseInt(wishlistCountElement.textContent);
-                count = Math.max(0, count - 1);
-                wishlistCountElement.textContent = count;
-
-                if (count === 0) {
-                    showEmptyWatchlist();
+            const res = await fetch(`${ASO_URL}/add-to-cart/?product_id=${product_id}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": "application/json"
                 }
-            } catch (error) {
-                console.error(error);
-                alert("Failed to remove from watchlist.");
-            } finally {
-                hidePreloader();
-            }
-        });
+            });
+
+            if (!res.ok) throw new Error("Failed to move items to cart");
+
+            const data = await res.json();
+            const itemsMoved = data.data.items_added;
+            let currentCount = parseInt(WATCHLIST_DOM.cartBadge.textContent) || 0;
+            WATCHLIST_DOM.cartBadge.textContent = currentCount + itemsMoved;
+
+            btn.textContent = '✓ Added!';
+            btn.style.backgroundColor = '#28a745';
+            btn.disabled = true;
+            btn.style.cursor = "not-allowed";
+
+        } catch (error) {
+            console.error(error);
+            showErrorModal(error.message || "Error moving items to cart.");
+        } finally {
+            hidePreloader();
+        }
     });
 }
 
+function setupWatchlistDelegation() {
+    if (!WATCHLIST_DOM.productsGrid) return;
+    
+    WATCHLIST_DOM.productsGrid.addEventListener('click', async function(e) {
+        const button = e.target.closest('.wishlist-button');
+        if (!button) return;
+            
+        const productId = button.dataset.id;
+        try {
+            showPreloader("Removing watchlist items");
+            const res = await fetch(`${ASO_URL}/toggle-watchlist/${productId}/`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
 
-const cartBadge = document.getElementById("cart-count");
+            if (!res.ok) throw new Error("Failed to reorder items");
+
+            button.closest(".product-card").remove();
+
+            let count = parseInt(WATCHLIST_DOM.wishlistCountElement.textContent);
+            count = Math.max(0, count - 1);
+            WATCHLIST_DOM.wishlistCountElement.textContent = count;
+
+            if (count === 0) {
+                showEmptyWatchlist();
+            }
+        } catch (error) {
+            console.error(error);
+            showErrorModal(error.message || "Failed to remove from watchlist.");
+        } finally {
+            hidePreloader();
+        }
+    });
+}
+
 
 // Clear all button
-const clearAllBtn = document.querySelector('.btn-clear-all');
-clearAllBtn.addEventListener('click', async function () {
-    if ((parseInt(wishlistCountElement.textContent) || 0) === 0) {
+if (WATCHLIST_DOM.clearAllBtn) {
+    WATCHLIST_DOM.clearAllBtn.addEventListener('click', async function () {
+        if ((parseInt(WATCHLIST_DOM.wishlistCountElement.textContent) || 0) === 0) {
         const overlay = document.createElement("div");
         overlay.className = "dialog-overlay";
         overlay.innerHTML = `
@@ -231,26 +255,27 @@ clearAllBtn.addEventListener('click', async function () {
             setTimeout(() => card.remove(), 300); // allow CSS animation to complete
         });
 
-        wishlistCount = 0;
-        wishlistCountElement.textContent = wishlistCount;
+        let wishlistCount = 0;
+        WATCHLIST_DOM.wishlistCountElement.textContent = wishlistCount;
         showEmptyWatchlist();
 
     } catch (error) {
         console.error(error);
-        alert("Failed to remove watchlist.");
+        showErrorModal(error.message || "Failed to remove watchlist.");
     } finally {
         hidePreloader();
     }
-});
+    });
+}
 
 
 // Add to cart functionality
 
 
 // Move all to cart button
-const moveAllBtn = document.querySelector('.btn-move-all');
-moveAllBtn.addEventListener('click', async function () {
-    if ((parseInt(wishlistCountElement.textContent) || 0) === 0) {
+if (WATCHLIST_DOM.moveAllBtn) {
+    WATCHLIST_DOM.moveAllBtn.addEventListener('click', async function () {
+        if ((parseInt(WATCHLIST_DOM.wishlistCountElement.textContent) || 0) === 0) {
         const overlay = document.createElement("div");
         overlay.className = "dialog-overlay";
         overlay.innerHTML = `
@@ -290,8 +315,8 @@ moveAllBtn.addEventListener('click', async function () {
         const data = await res.json();
         const itemsMoved = data.data.items_added;
 
-        let currentCount = parseInt(cartBadge.textContent) || 0;
-        cartBadge.textContent = currentCount + itemsMoved;
+        let currentCount = parseInt(WATCHLIST_DOM.cartBadge.textContent) || 0;
+        WATCHLIST_DOM.cartBadge.textContent = currentCount + itemsMoved;
 
         // Animate all "Add to Cart" buttons
         document.querySelectorAll('.add-to-cart').forEach(button => {
@@ -319,11 +344,12 @@ moveAllBtn.addEventListener('click', async function () {
 
     } catch (error) {
         console.error(error);
-        alert("Error moving items to cart.");
+        showErrorModal(error.message || "Error moving items to cart.");
     } finally {
         hidePreloader();
     }
-});
+    });
+}
 
 
 // Show empty watchlist state
