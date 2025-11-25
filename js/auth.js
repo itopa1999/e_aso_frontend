@@ -1,4 +1,4 @@
-AUTH_URL = "http://127.0.0.1:8000/auth/api/user";
+AUTH_URL = "https://luck1999.pythonanywhere.com/auth/api/user";
 
 // DOM CACHE
 const AUTH_DOM = {
