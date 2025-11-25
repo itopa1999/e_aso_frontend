@@ -16,8 +16,12 @@ const SEARCH_DOM = {
     clearFiltersBtn: null,
     searchSubtitle: null,
     wishlistBadge: null,
-    cartBadge: null
+    cartBadge: null,
+    smartSearchDropdown: null
 };
+
+let smartSearchTimeout = null;
+let smartSearchAbortController = null;
 
 function cacheSearchDOM() {
     SEARCH_DOM.productsGrid = document.querySelector('.products-grid');
@@ -32,6 +36,7 @@ function cacheSearchDOM() {
     SEARCH_DOM.searchSubtitle = document.querySelector('.search-subtitle');
     SEARCH_DOM.wishlistBadge = document.getElementById('watchlist-count');
     SEARCH_DOM.cartBadge = document.getElementById('cart-count');
+    SEARCH_DOM.smartSearchDropdown = document.getElementById('smartSearchDropdown');
 }
 
 let currentFilters = {
@@ -151,7 +156,6 @@ function renderList(data, append = false) {
             <a href="product-info.html?id=${product.id}">
                 <div class="product-image" style="background-image: url('${product.main_image || "img/product_image.png"}');"></div>
             </a>
-
             <div class="product-details">
                 <a href="product-info.html?id=${product.id}" style="text-decoration:none">
                     <h3 class="product-title">${product.title}</h3>
@@ -318,6 +322,121 @@ function setupSearchDelegation() {
     });
 }
 
+async function performSmartSearch(query) {
+    if (!query || query.trim().length < 2) {
+        hideSmartSearchDropdown();
+        return;
+    }
+
+    // Cancel previous request if exists
+    if (smartSearchAbortController) {
+        smartSearchAbortController.abort();
+    }
+
+    smartSearchAbortController = new AbortController();
+
+    try {
+        showSmartSearchLoading();
+
+        const response = await fetch(`${ASO_URL}/smart-search/${encodeURIComponent(query)}/`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+            signal: smartSearchAbortController.signal
+        });
+
+        if (!response.ok) {
+            hideSmartSearchDropdown();
+            return;
+        }
+
+        const result = await response.json();
+        
+        if (result.is_success && result.data && result.data.length > 0) {
+            displaySmartSearchResults(result.data);
+        } else {
+            showSmartSearchNoResults();
+        }
+    } catch (error) {
+        if (error.name === 'AbortError') {
+            // Request was cancelled, do nothing
+            return;
+        }
+        console.error('Smart search error:', error);
+        hideSmartSearchDropdown();
+    }
+}
+
+function showSmartSearchLoading() {
+    if (!SEARCH_DOM.smartSearchDropdown) return;
+    
+    SEARCH_DOM.smartSearchDropdown.innerHTML = `
+        <div class="smart-search-loading">
+            <i class="fas fa-spinner fa-spin"></i> Searching...
+        </div>
+    `;
+    SEARCH_DOM.smartSearchDropdown.classList.add('active');
+}
+
+function showSmartSearchNoResults() {
+    if (!SEARCH_DOM.smartSearchDropdown) return;
+    
+    SEARCH_DOM.smartSearchDropdown.innerHTML = `
+        <div class="smart-search-no-results">
+            No suggestions found
+        </div>
+    `;
+    SEARCH_DOM.smartSearchDropdown.classList.add('active');
+}
+
+function displaySmartSearchResults(suggestions) {
+    if (!SEARCH_DOM.smartSearchDropdown) return;
+    
+    const fragment = document.createDocumentFragment();
+    
+    suggestions.forEach(suggestion => {
+        const item = document.createElement('div');
+        item.className = 'smart-search-item';
+        item.innerHTML = `
+            <i class="fas fa-search"></i>
+            <span>${suggestion}</span>
+        `;
+        
+        item.addEventListener('click', () => {
+            selectSmartSearchItem(suggestion);
+        });
+        
+        fragment.appendChild(item);
+    });
+    
+    SEARCH_DOM.smartSearchDropdown.innerHTML = '';
+    SEARCH_DOM.smartSearchDropdown.appendChild(fragment);
+    SEARCH_DOM.smartSearchDropdown.classList.add('active');
+}
+
+function selectSmartSearchItem(text) {
+    if (SEARCH_DOM.searchInput) {
+        SEARCH_DOM.searchInput.value = text;
+        currentFilters.search = text;
+        currentFilters.page = 1;
+        loadLists();
+        
+        if (SEARCH_DOM.searchSubtitle) {
+            SEARCH_DOM.searchSubtitle.innerHTML = 'Search Result for "' + text.toUpperCase() + '"';
+        }
+    }
+    hideSmartSearchDropdown();
+}
+
+function hideSmartSearchDropdown() {
+    if (SEARCH_DOM.smartSearchDropdown) {
+        SEARCH_DOM.smartSearchDropdown.classList.remove('active');
+        SEARCH_DOM.smartSearchDropdown.innerHTML = '';
+    }
+}
+
 function setupSearchListeners() {
     if (SEARCH_DOM.searchButton) {
         SEARCH_DOM.searchButton.addEventListener('click', function () {
@@ -326,6 +445,7 @@ function setupSearchListeners() {
             currentFilters.search = searchValue;
             currentFilters.page = 1;
             loadLists();
+            hideSmartSearchDropdown();
 
             if (SEARCH_DOM.searchSubtitle) {
                 SEARCH_DOM.searchSubtitle.innerHTML = 'Search Result for "' + searchValue.toUpperCase() + '"';
@@ -334,6 +454,20 @@ function setupSearchListeners() {
     }
 
     if (SEARCH_DOM.searchInput) {
+        // Smart search on input with debouncing
+        SEARCH_DOM.searchInput.addEventListener('input', function (e) {
+            const query = e.target.value.trim();
+            
+            // Clear previous timeout
+            if (smartSearchTimeout) {
+                clearTimeout(smartSearchTimeout);
+            }
+            
+            // Debounce: wait 300ms after user stops typing
+            smartSearchTimeout = setTimeout(() => {
+                performSmartSearch(query);
+            }, 300);
+        });
 
         SEARCH_DOM.searchInput.addEventListener('keydown', function (e) {
             if (e.key === 'Enter') {
@@ -342,9 +476,19 @@ function setupSearchListeners() {
                 currentFilters.search = searchValue;
                 currentFilters.page = 1;
                 loadLists();
+                hideSmartSearchDropdown();
                 if (SEARCH_DOM.searchSubtitle) {
                     SEARCH_DOM.searchSubtitle.innerHTML = 'Search Result for "' + searchValue.toUpperCase() + '"';
                 }
+            } else if (e.key === 'Escape') {
+                hideSmartSearchDropdown();
+            }
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-box')) {
+                hideSmartSearchDropdown();
             }
         });
     }
