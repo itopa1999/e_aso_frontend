@@ -176,6 +176,9 @@ body {
     visibility: hidden;
     transform: translateY(10px);
     transition: all 0.3s ease;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .user-dropdown.active {
@@ -236,6 +239,9 @@ body {
 
 .dropdown-items {
     padding: 15px 0;
+    overflow-y: auto;
+    flex: 1;
+    max-height: calc(80vh - 120px);
 }
 
 .dropdown-item {
@@ -267,10 +273,30 @@ body {
 .logout-item:hover {
     color: #e53935;
 }
+
+/* Scrollbar styling for dropdown */
+.dropdown-items::-webkit-scrollbar {
+    width: 6px;
+}
+
+.dropdown-items::-webkit-scrollbar-track {
+    background: rgba(138, 75, 56, 0.05);
+}
+
+.dropdown-items::-webkit-scrollbar-thumb {
+    background: rgba(138, 75, 56, 0.3);
+    border-radius: 3px;
+}
+
+.dropdown-items::-webkit-scrollbar-thumb:hover {
+    background: rgba(138, 75, 56, 0.5);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .user-dropdown {
-        width: 220px;
+        width: 280px;
+        max-height: 85vh;
     }
 
     #modalTitle {
@@ -298,8 +324,10 @@ body {
 
 @media (max-width: 480px) {
     .user-dropdown {
-        width: 200px;
+        width: calc(100vw - 30px);
+        max-width: 350px;
         right: -10px;
+        max-height: 80vh;
     }
     
     .user-dropdown::before {
@@ -630,7 +658,7 @@ body {
     border: none;
     outline: none;
     cursor: pointer;
-    padding: 15px 20px;
+    padding: 8px 10px;
     border-radius: 50%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s ease;
