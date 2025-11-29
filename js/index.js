@@ -35,7 +35,23 @@ const DOM = {
     filterContainer: null,
     applyFiltersBtn: null,
     heroImage: null,
-    heroLink: null
+    heroLink: null,
+    heroSlides: null,
+    heroDots: null,
+    heroPrev: null,
+    heroNext: null,
+    specialOrderModal: null,
+    modalOverlay: null,
+    closeSpecialOrder: null,
+    remindLater: null,
+    exploreNow: null
+};
+
+// Special Order Modal Configuration
+const SPECIAL_ORDER_CONFIG = {
+    storageKey: 'specialOrderVisit',
+    resetInterval: 20 * 60 * 1000, // 20 minutes in milliseconds
+    storageResetKey: 'specialOrderReset'
 };
 
 function cacheDOMElements() {
@@ -51,8 +67,185 @@ function cacheDOMElements() {
     DOM.badgeFilter = document.getElementById("badge-filter");
     DOM.filterContainer = document.querySelector('.filter-options2');
     DOM.applyFiltersBtn = document.querySelector(".apply-filters");
-    DOM.heroImage = document.getElementById("hero-image");
-    DOM.heroLink = document.getElementById("hero-link");
+    DOM.heroSlides = document.querySelector(".hero-slides");
+    DOM.heroDots = document.getElementById("heroDots");
+    DOM.heroPrev = document.getElementById("heroPrev");
+    DOM.heroNext = document.getElementById("heroNext");
+    DOM.specialOrderModal = document.getElementById('specialOrderModal');
+    DOM.modalOverlay = document.getElementById('modalOverlay');
+    DOM.closeSpecialOrder = document.getElementById('closeSpecialOrder');
+    DOM.remindLater = document.getElementById('remindLater');
+    DOM.exploreNow = document.querySelector('.btn-explore');
+}
+
+// =========================
+// HERO CAROUSEL FUNCTIONALITY
+// =========================
+let heroCarouselState = {
+    currentSlide: 0,
+    totalSlides: 0,
+    autoplayInterval: null
+};
+
+function initHeroCarousel(banners) {
+    if (!banners || banners.length === 0) return;
+    
+    heroCarouselState.totalSlides = banners.length;
+    
+    // Render slides
+    DOM.heroSlides.innerHTML = banners.map((banner, index) => `
+        <div class="hero-slide ${index === 0 ? 'active' : ''}">
+            <a href="${banner.link || '#'}" class="hero-link">
+                <img src="${banner.image}" alt="Hero Banner ${index + 1}" class="hero-image">
+            </a>
+        </div>
+    `).join('');
+    
+    // Render dots
+    if (banners.length > 1) {
+        DOM.heroDots.innerHTML = banners.map((_, index) => `
+            <button class="hero-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></button>
+        `).join('');
+        
+        // Show navigation if multiple slides
+        DOM.heroPrev.style.display = 'flex';
+        DOM.heroNext.style.display = 'flex';
+        
+        // Add event listeners
+        DOM.heroPrev.addEventListener('click', () => goToSlide(heroCarouselState.currentSlide - 1));
+        DOM.heroNext.addEventListener('click', () => goToSlide(heroCarouselState.currentSlide + 1));
+        
+        document.querySelectorAll('.hero-dot').forEach((dot, index) => {
+            dot.addEventListener('click', () => goToSlide(index));
+        });
+        
+        // Auto-play carousel
+        startHeroAutoplay();
+    } else {
+        // Hide navigation if only one slide
+        DOM.heroPrev.style.display = 'none';
+        DOM.heroNext.style.display = 'none';
+        DOM.heroDots.style.display = 'none';
+    }
+}
+
+function goToSlide(index) {
+    const totalSlides = heroCarouselState.totalSlides;
+    if (index < 0) {
+        heroCarouselState.currentSlide = totalSlides - 1;
+    } else if (index >= totalSlides) {
+        heroCarouselState.currentSlide = 0;
+    } else {
+        heroCarouselState.currentSlide = index;
+    }
+    
+    updateHeroCarouselUI();
+}
+
+function updateHeroCarouselUI() {
+    // Update slide
+    document.querySelectorAll('.hero-slide').forEach((slide, index) => {
+        slide.classList.toggle('active', index === heroCarouselState.currentSlide);
+    });
+    
+    // Update dots
+    document.querySelectorAll('.hero-dot').forEach((dot, index) => {
+        dot.classList.toggle('active', index === heroCarouselState.currentSlide);
+    });
+}
+
+function startHeroAutoplay() {
+    // Clear existing interval if any
+    if (heroCarouselState.autoplayInterval) {
+        clearInterval(heroCarouselState.autoplayInterval);
+    }
+    
+    // Auto-advance every 5 seconds
+    heroCarouselState.autoplayInterval = setInterval(() => {
+        goToSlide(heroCarouselState.currentSlide + 1);
+    }, 5000);
+}
+
+function stopHeroAutoplay() {
+    if (heroCarouselState.autoplayInterval) {
+        clearInterval(heroCarouselState.autoplayInterval);
+        heroCarouselState.autoplayInterval = null;
+    }
+}
+
+// =========================
+// SPECIAL ORDER MODAL FUNCTIONS
+// =========================
+function initSpecialOrderModal() {
+    // Check if user has visited before
+    const hasVisited = localStorage.getItem(SPECIAL_ORDER_CONFIG.storageKey);
+    
+    if (!hasVisited) {
+        // First visit - set flag
+        localStorage.setItem(SPECIAL_ORDER_CONFIG.storageKey, 'first_visit');
+    } else if (hasVisited === 'first_visit') {
+        // Second visit - show modal
+        showSpecialOrderModal();
+        localStorage.setItem(SPECIAL_ORDER_CONFIG.storageKey, 'shown');
+    }
+    
+    // Setup reset interval for localStorage
+    setupStorageResetTimer();
+}
+
+function showSpecialOrderModal() {
+    if (DOM.specialOrderModal) {
+        DOM.specialOrderModal.classList.add('show');
+    }
+}
+
+function closeSpecialOrderModal() {
+    if (DOM.specialOrderModal) {
+        DOM.specialOrderModal.classList.remove('show');
+    }
+}
+
+function setupSpecialOrderModalEvents() {
+    if (DOM.closeSpecialOrder) {
+        DOM.closeSpecialOrder.addEventListener('click', closeSpecialOrderModal);
+    }
+    
+    if (DOM.modalOverlay) {
+        DOM.modalOverlay.addEventListener('click', closeSpecialOrderModal);
+    }
+    
+    if (DOM.remindLater) {
+        DOM.remindLater.addEventListener('click', () => {
+            closeSpecialOrderModal();
+            // Reset the visit flag so modal shows again next time
+            localStorage.setItem(SPECIAL_ORDER_CONFIG.storageKey, 'first_visit');
+        });
+    }
+    
+    if (DOM.exploreNow) {
+        DOM.exploreNow.addEventListener('click', () => {
+            closeSpecialOrderModal();
+            // Keep the 'shown' state so modal doesn't show again until reset
+        });
+    }
+}
+
+function setupStorageResetTimer() {
+    // Check if reset timer exists
+    const lastReset = localStorage.getItem(SPECIAL_ORDER_CONFIG.storageResetKey);
+    const now = Date.now();
+    
+    if (!lastReset || (now - parseInt(lastReset)) > SPECIAL_ORDER_CONFIG.resetInterval) {
+        // Reset the special order modal storage
+        localStorage.setItem(SPECIAL_ORDER_CONFIG.storageKey, 'first_visit');
+        localStorage.setItem(SPECIAL_ORDER_CONFIG.storageResetKey, now.toString());
+    }
+    
+    // Set up interval to reset every 20 minutes
+    setInterval(() => {
+        localStorage.setItem(SPECIAL_ORDER_CONFIG.storageKey, 'first_visit');
+        localStorage.setItem(SPECIAL_ORDER_CONFIG.storageResetKey, Date.now().toString());
+    }, SPECIAL_ORDER_CONFIG.resetInterval);
 }
 
 // =========================
@@ -370,15 +563,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Cache all DOM elements first
     cacheDOMElements();
     setupEventDelegation();
-
+    setupSpecialOrderModalEvents();
+    initSpecialOrderModal();
 
     try {
         const res = await fetch(`${ADMIN_URL}/banners/hero/`);
         const json = await res.json();
         if (json.is_success && json.data && json.data.length > 0) {
-            const banner = json.data[0];
-            if (DOM.heroImage) DOM.heroImage.src = banner.image;
-            if (DOM.heroLink) DOM.heroLink.href = banner.link || "#";
+            initHeroCarousel(json.data);
         } else {
             console.warn("No hero banner found");
         }

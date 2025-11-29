@@ -652,20 +652,23 @@ body {
     bottom: 100px;
     right: 30px;
     z-index: 99;
-    font-size: 18px;
+    font-size: 16px;
     background-color: var(--primary-color);
-    color: var(--light-color);
+    color: white;
     border: none;
     outline: none;
     cursor: pointer;
-    padding: 8px 10px;
-    border-radius: 50%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease;
+    padding: 12px 14px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    display: none;
 }
 
 #goToTopBtn:hover {
-    background-color: var(--accent-color);
+    background-color: var(--dark-color);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
 .success .modal-icon {
@@ -784,4 +787,20 @@ body {
 .breadcrumb-nav .separator {
     margin: 0 8px;
     color: #999;
+}
+
+/* Image Protection - Disable Right-Click and Drag */
+img {
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none;
+    -webkit-touch-callout: none;
+}
+
+/* Prevent context menu on all images */
+img::-webkit-context-menu-marker {
+    display: none;
 }

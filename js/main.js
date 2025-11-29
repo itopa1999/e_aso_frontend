@@ -300,9 +300,9 @@ document.addEventListener('keydown', (e) => {
 
 });
 
-ADMIN_URL = "http://127.0.0.1:8000/admins/api/admin"
-AUTH_URL = "http://127.0.0.1:8000/auth/api/user" 
-ASO_URL = "http://127.0.0.1:8000/aso/api/product"
+ADMIN_URL = "http://192.168.0.199:8000/admins/api/admin"
+AUTH_URL = "http://192.168.0.199:8000/auth/api/user" 
+ASO_URL = "http://192.168.0.199:8000/aso/api/product"
 
 
 function getStarHTML(rating) {
@@ -412,7 +412,74 @@ function initializeApp() {
     setupLogoutHandler();
     updateCartAndWatchlistCounts();
     setupGoToTop();
+    setupImageProtection();
     
+}
+
+// =========================
+// IMAGE PROTECTION - PREVENT DOWNLOADS
+// =========================
+function setupImageProtection() {
+    // Disable right-click on images
+    document.addEventListener('contextmenu', function(e) {
+        if (e.target.tagName === 'IMG' || e.target.closest('img')) {
+            e.preventDefault();
+            return false;
+        }
+    }, true);
+    
+    // Disable drag and drop of images
+    document.addEventListener('dragstart', function(e) {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+            return false;
+        }
+    }, true);
+    
+    // Disable image copy
+    document.addEventListener('copy', function(e) {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+            return false;
+        }
+    }, true);
+    
+    // Make all images non-draggable
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+        img.setAttribute('draggable', 'false');
+        img.ondragstart = function() { return false; };
+        img.oncontextmenu = function() { return false; };
+    });
+    
+    // For images added dynamically, observe and apply protection
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length) {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.tagName === 'IMG') {
+                        node.setAttribute('draggable', 'false');
+                        node.ondragstart = function() { return false; };
+                        node.oncontextmenu = function() { return false; };
+                    }
+                    // Check for images inside added elements
+                    if (node.querySelectorAll) {
+                        node.querySelectorAll('img').forEach(img => {
+                            img.setAttribute('draggable', 'false');
+                            img.ondragstart = function() { return false; };
+                            img.oncontextmenu = function() { return false; };
+                        });
+                    }
+                });
+            }
+        });
+    });
+    
+    // Start observing the document for changes
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 }
 
 // Call it after DOM loads

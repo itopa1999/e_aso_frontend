@@ -21,6 +21,35 @@ function cacheOrdersDOM() {
     ORDERS_DOM.trackingModal = document.getElementById('trackingModal');
 }
 
+// ================== ARROW SCROLL FUNCTIONALITY ==================
+function setupArrowScroll() {
+    const filterOptions2 = document.querySelector('.filter-options2');
+    const leftArrow = document.querySelector('.arrow-btn.left-arrow');
+    const rightArrow = document.querySelector('.arrow-btn.right-arrow');
+
+    if (!filterOptions2 || !leftArrow || !rightArrow) return;
+
+    const scrollAmount = 200; // pixels to scroll
+
+    leftArrow.addEventListener('click', () => {
+        filterOptions2.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    });
+
+    rightArrow.addEventListener('click', () => {
+        filterOptions2.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    });
+
+    // Update arrow visibility based on scroll position
+    function updateArrowVisibility() {
+        leftArrow.disabled = filterOptions2.scrollLeft === 0;
+        rightArrow.disabled = filterOptions2.scrollLeft + filterOptions2.clientWidth >= filterOptions2.scrollWidth;
+    }
+
+    filterOptions2.addEventListener('scroll', updateArrowVisibility);
+    window.addEventListener('resize', updateArrowVisibility);
+    updateArrowVisibility(); // Initial check
+}
+
 let allOrders = [];
 
 // ================== INIT ==================
@@ -28,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cacheOrdersDOM();
     loadOrders();
     setupFilterButtons();
+    setupArrowScroll();
 });
 
 // ================== LOAD ORDERS ==================

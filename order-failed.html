@@ -209,7 +209,7 @@
                 retryBtn.textContent = "Processing...";
 
                 // Call your backend endpoint
-                const response = await fetch(`http://127.0.0.1:8000/aso/api/product/paystack-confirm-subscription/${reference}/`, {
+                const response = await fetch(`http://192.168.0.199:8000/aso/api/product/paystack-confirm-subscription/${reference}/`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
