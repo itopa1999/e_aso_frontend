@@ -99,7 +99,6 @@ function updateDropdown() {
             '<a href="profile.html" class="dropdown-item"><i class="fas fa-user-circle"></i><span>My Profile</span></a>',
             '<a href="ordered-lists.html" class="dropdown-item"><i class="fas fa-shopping-bag"></i><span>My Orders</span></a>',
             '<a href="watchlist.html" class="dropdown-item"><i class="fas fa-heart"></i><span>My Wishlist</span></a>',
-            '<a href="feedback-page.html" class="dropdown-item"><i class="fas fa-comment"></i><span>Share Feedback</span></a>'
         ];
         
         if (authData.groups.includes("rider")) {

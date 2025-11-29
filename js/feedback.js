@@ -1,6 +1,33 @@
-// Feedback Page Script - Initialize when DOM is ready
+
+const accessToken = getCookie("access");
+if (!accessToken) {
+    window.location.href = "auth.html";
+}
+
+async function checkReferralFeature() {
+    const featureFlagName = "Feedback";
+    try {
+        const res = await fetch(`${ASO_URL}/feature-flag/${encodeURIComponent(featureFlagName)}/`, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+        const result = await res.json();
+
+        
+        if (result?.data === true) {
+            console.log("Feature flag response:");
+        } else {
+            window.location.href = "404.html";
+        }
+    } catch (err) {
+        console.error("Feature flag check failed:", err);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    
+    checkReferralFeature();
     // Get all form elements
     const feedbackForm = document.getElementById('feedbackForm');
     const successMessage = document.getElementById('successMessage');
@@ -9,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const userRatingInput = document.getElementById('userRating');
     const submitBtn = document.getElementById('submitFeedback');
     const userName = document.getElementById('FeedbackUserName');
-    const userEmail = document.getElementById('feedbackEmail');
     const userFeedback = document.getElementById('userFeedback');
     const starRatingContainer = document.querySelector('.star-rating');
 
@@ -38,16 +64,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Form validation
     function validateForm() {
-        if (!userName || !userEmail || !userFeedback || !submitBtn) {
+        if (!userName || !userFeedback || !submitBtn) {
             return;
         }
 
         const valUserName = userName.value.trim();
-        const valUserEmail = userEmail.value.trim();
         const valUserFeedback = userFeedback.value.trim();
         const userRating = userRatingInput.value;
 
-        const isValid = valUserName && valUserEmail && valUserFeedback && userRating !== '0';
+        const isValid = valUserName && valUserFeedback && userRating !== '0';
         submitBtn.disabled = !isValid;
     }
 
@@ -84,12 +109,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    if (userEmail) {
-        userEmail.addEventListener('input', function() {
-            validateForm();
-        });
-    }
-    
     if (userFeedback) {
         userFeedback.addEventListener('input', function() {
             validateForm();
@@ -101,24 +120,24 @@ document.addEventListener('DOMContentLoaded', function() {
         feedbackForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
+
             const valUserName = userName.value.trim();
-            const valUserEmail = userEmail.value.trim();
             const valUserFeedback = userFeedback.value.trim();
             const userRating = userRatingInput.value;
 
             try {
                 showPreloader("Submitting feedback...");
 
-                const response = await fetch(`${ASO_URL}/contact-us/`, {
+                const response = await fetch(`${ADMIN_URL}/create/feedback/`, {
                     method: 'POST',
                     headers: {
+                        "Authorization": `Bearer ${accessToken}`,
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({
-                        name: valUserName,
-                        email: valUserEmail,
-                        message: valUserFeedback,
+                        user: valUserName,
+                        feedback: valUserFeedback,
                         rating: userRating
                     })
                 });
@@ -145,4 +164,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    hidePreloader();
 });

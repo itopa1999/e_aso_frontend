@@ -253,7 +253,7 @@ async function loadTopProducts(queryParams) {
     
     // Shorten product names for display
     const shortenedNames = response.map(item => {
-        const name = item.items__product__title;
+        const name = item.items__product__title || 'Unknown Product';
         return name.length > 20 ? name.substring(0, 20) + '...' : name;
     });
     
@@ -454,7 +454,7 @@ async function loadProductViews(queryParams) {
     
     // Shorten product names for display
     const shortenedNames = response.map(item => {
-        const name = item.title;
+        const name = item.title || 'Unknown Product';
         return name.length > 20 ? name.substring(0, 20) + '...' : name;
     });
     
