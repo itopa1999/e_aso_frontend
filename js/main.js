@@ -485,14 +485,3 @@ function setupImageProtection() {
 // Call it after DOM loads
 document.addEventListener("DOMContentLoaded", initializeApp);
 
-
-
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/6502cdf70f2b18434fd87797/1ha9f95o4';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
