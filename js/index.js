@@ -119,6 +119,34 @@ function initHeroCarousel(banners) {
             dot.addEventListener('click', () => goToSlide(index));
         });
         
+        // Add touch/swipe functionality for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        DOM.heroSlides.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+        
+        DOM.heroSlides.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+        
+        function handleSwipe() {
+            const swipeThreshold = 50; // Minimum distance for a swipe
+            const difference = touchStartX - touchEndX;
+            
+            if (Math.abs(difference) > swipeThreshold) {
+                if (difference > 0) {
+                    // Swiped left - go to next slide
+                    goToSlide(heroCarouselState.currentSlide + 1);
+                } else {
+                    // Swiped right - go to previous slide
+                    goToSlide(heroCarouselState.currentSlide - 1);
+                }
+            }
+        }
+        
         // Auto-play carousel
         startHeroAutoplay();
     } else {

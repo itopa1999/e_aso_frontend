@@ -389,12 +389,11 @@
 @media (max-width: 768px) {
     .hero-slides {
         padding-bottom: 50%; /* Adjust aspect ratio for mobile */
+        touch-action: pan-y;
     }
     
     .hero-arrow {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
+        display: none !important;
     }
     
     .hero-prev {
@@ -455,12 +454,12 @@
 
 .wishlist-button {
     position: absolute;
-    top: 15px;
+    top: 8px;
     right: 15px;
     background: rgba(255, 255, 255, 0.8);
     border-radius: 50%;
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -468,11 +467,12 @@
     transition: all 0.3s ease;
     z-index: 10;
     border: none;
+    font-size: 20px;
 }
 
 .wishlist-button:hover {
     background: white;
-    transform: scale(1.1);
+    transform: scale(1.15);
 }
 
 .wishlist-button.active i {
@@ -538,7 +538,25 @@
     font-weight: bold;
 }
 
-.add-to-cart {
+@media (min-width: 769px) {
+    .current-price {
+        font-size: 1rem;
+    }
+    
+    .original-price {
+        font-size: 0.8rem;
+    }
+    
+    .discount {
+        padding: 2px 6px;
+        font-size: 0.7rem;
+        margin-left: 6px;
+    }
+    
+    .price {
+        margin-bottom: 10px;
+    }
+}.add-to-cart {
     background: var(--primary-color);
     color: white;
     border: none;

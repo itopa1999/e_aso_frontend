@@ -1,4 +1,4 @@
-ASO_URL = "http://192.168.0.199:8000/aso/api/product";
+ASO_URL = "http://192.168.0.198:8000/aso/api/product";
 
 // DOM CACHE
 const LIMITED_DOM = {

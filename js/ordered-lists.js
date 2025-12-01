@@ -51,6 +51,8 @@ function setupArrowScroll() {
 }
 
 let allOrders = [];
+let currentStatusFilter = 'all'; // Track current status filter
+let currentSearchQuery = ''; // Track current search query
 
 // ================== INIT ==================
 document.addEventListener('DOMContentLoaded', () => {
@@ -58,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadOrders();
     setupFilterButtons();
     setupArrowScroll();
+    setupSearchAndFilter();
 });
 
 // ================== LOAD ORDERS ==================
@@ -216,10 +219,10 @@ function setupOrdersDelegation() {
 
             const steps = document.querySelectorAll('.timeline-step');
             const headerTitle = document.getElementById('header-title');
-            const progressBar = document.querySelector('.timeline-progress-bar');
+            const progressBar = document.querySelector('.progress-bar');
 
             // Example: you can fetch tracking details dynamically
-            const orderId = btn.dataset.id;
+            const orderId = trackBtn.dataset.id;
             try {
                 showPreloader("Loading tracking details");
                 const response = await fetch(`${ASO_URL}/track-order/${orderId}/`, {
@@ -234,12 +237,20 @@ function setupOrdersDelegation() {
                 }
 
                 const data = await response.json();
+                console.log("Tracking data received:", data); // Debug log
 
-                headerTitle.textContent = `Tracking Information for Order ${data.data.order_number}`;
+                if (!data.data) {
+                    throw new Error("Invalid tracking data structure");
+                }
+
+                headerTitle.textContent = `Tracking Information for Order ${data.data.order_number || orderId}`;
 
                 const trackingList = data.data.tracking || [];
+                console.log("Tracking list:", trackingList); // Debug log
                 if (trackingList.length === 0) {
                     console.warn("No tracking info available for order:", orderId);
+                    // Show message to user
+                    showErrorModal("Tracking information is not yet available for this order. Please check back later.");
                     return;
                 }
 
@@ -255,6 +266,11 @@ function setupOrdersDelegation() {
                 const stepDate = step.querySelector('.step-date');
                 const stepDesc = step.querySelector('.step-description');
 
+                if (!stepTitle || !stepDate || !stepDesc) {
+                    console.error(`Step ${index} missing text elements`);
+                    return;
+                }
+
                 step.classList.remove('step-completed', 'step-active');
 
                 if (index < currentStepIndex) {
@@ -264,10 +280,17 @@ function setupOrdersDelegation() {
                 }
 
                 if (matchingTrack) {
-                    const date = new Date(matchingTrack.date).toLocaleString();
-                    stepTitle.textContent = capitalizeWords(matchingTrack.status.replace(/_/g, " "));
-                    stepDate.textContent = date;
-                    stepDesc.textContent = matchingTrack.description || "Updated";
+                    try {
+                        const date = new Date(matchingTrack.date).toLocaleString();
+                        stepTitle.textContent = capitalizeWords(matchingTrack.status.replace(/_/g, " "));
+                        stepDate.textContent = date;
+                        stepDesc.textContent = matchingTrack.description || "Updated";
+                    } catch (e) {
+                        console.error("Error processing tracking data:", e);
+                        stepTitle.textContent = capitalizeWords(statusOrder[index].replace(/_/g, " "));
+                        stepDate.textContent = "";
+                        stepDesc.textContent = "";
+                    }
                 } else {
                     stepTitle.textContent = capitalizeWords(statusOrder[index].replace(/_/g, " "));
                     stepDate.textContent = "";
@@ -351,32 +374,74 @@ async function reorderItems(btn) {
 function setupFilterButtons() {
     if (!ORDERS_DOM.filterBtns || !ORDERS_DOM.filterBtns.length) return;
     
-    showPreloader("Loading your ordered items");
     ORDERS_DOM.filterBtns.forEach(btn => {
         btn.addEventListener('click', function () {
             ORDERS_DOM.filterBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
 
-            const filter = this.textContent.trim().toLowerCase();
-            const cards = document.querySelectorAll('.order-card');
-
-            let visibleCount = 0;
-            cards.forEach(card => {
-                const status = card.dataset.status.replace(/_/g, ' ').toLowerCase();
-                if (filter === 'all orders' || status === filter) {
-                    card.style.display = 'block';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            // Show or hide the "No orders" message
-            if (ORDERS_DOM.noOrdersMsg) {
-                ORDERS_DOM.noOrdersMsg.style.display = visibleCount === 0 ? 'block' : 'none';
-            }
-
-            hidePreloader();
+            // Get status from data attribute
+            currentStatusFilter = this.dataset.status || 'all';
+            applyFiltersAndSearch();
         });
     });
+}
+
+// ================== SEARCH AND FILTER SETUP ==================
+function setupSearchAndFilter() {
+    const searchInput = document.getElementById('orderSearchInput');
+    const clearBtn = document.getElementById('orderClearBtn');
+
+    if (!searchInput || !clearBtn) return;
+
+    // Search input listener
+    searchInput.addEventListener('input', function () {
+        currentSearchQuery = this.value.trim();
+        
+        // Show/hide clear button
+        if (currentSearchQuery) {
+            clearBtn.classList.add('show');
+        } else {
+            clearBtn.classList.remove('show');
+        }
+
+        applyFiltersAndSearch();
+    });
+
+    // Clear button listener
+    clearBtn.addEventListener('click', function () {
+        searchInput.value = '';
+        currentSearchQuery = '';
+        clearBtn.classList.remove('show');
+        applyFiltersAndSearch();
+    });
+}
+
+// ================== APPLY FILTERS AND SEARCH ==================
+function applyFiltersAndSearch() {
+    const cards = document.querySelectorAll('.order-card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+        const orderNumber = card.querySelector('.order-id')?.textContent?.replace('Order ', '').trim() || '';
+        const status = card.dataset.status || '';
+
+        // Check status filter
+        const statusMatches = currentStatusFilter === 'all' || status === currentStatusFilter;
+
+        // Check search query
+        const searchMatches = currentSearchQuery === '' || orderNumber.toLowerCase().includes(currentSearchQuery.toLowerCase());
+
+        // Show card if both filters match
+        if (statusMatches && searchMatches) {
+            card.style.display = 'block';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    // Show or hide the "No orders" message
+    if (ORDERS_DOM.noOrdersMsg) {
+        ORDERS_DOM.noOrdersMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
 }

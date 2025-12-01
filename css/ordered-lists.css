@@ -24,6 +24,60 @@
     background: var(--primary-color);
 }
 
+/* Order Search Section */
+.order-search-section {
+    position: relative;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.order-search-input {
+    flex: 1;
+    max-width: 400px;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.order-search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+.order-search-input::placeholder {
+    color: #999;
+}
+
+.order-clear-btn {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: #f0f0f0;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 18px;
+}
+
+.order-clear-btn:hover {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.order-clear-btn.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Filter Wrapper for horizontal scroll */
 .filter-wrapper {
     position: relative;

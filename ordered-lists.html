@@ -66,15 +66,20 @@
     <div class="order-history-header">
         <h1 class="order-history-title">Your Orders</h1>
         
+        <div class="order-search-section">
+            <input type="text" id="orderSearchInput" class="order-search-input" placeholder="Search by Order ID...">
+            <button id="orderClearBtn" class="order-clear-btn"><i class="fas fa-times"></i></button>
+        </div>
+        
         <div class="filter-wrapper">
             <button class="arrow-btn left-arrow">&#10094;</button>
             <div class="filter-options2">
-                <button class="filter-btn">All Orders</button>
-                <button class="filter-btn">Processing</button>
-                <button class="filter-btn">Shipped</button>
-                <button class="filter-btn">In Transit</button>
-                <button class="filter-btn">Delivered</button>
-                <button class="filter-btn">Cancelled</button>
+                <button class="filter-btn active" data-status="all">All Orders</button>
+                <button class="filter-btn" data-status="processing">Processing</button>
+                <button class="filter-btn" data-status="shipped">Shipped</button>
+                <button class="filter-btn" data-status="in_transit">In Transit</button>
+                <button class="filter-btn" data-status="delivered">Delivered</button>
+                <button class="filter-btn" data-status="cancelled">Cancelled</button>
             </div>
             <button class="arrow-btn right-arrow">&#10095;</button>
         </div>
@@ -128,9 +133,9 @@
                         <div class="timeline-step step-completed">
                             <div class="step-icon"><i class="fas fa-shopping-cart"></i></div>
                             <div class="step-content">
-                                <div class="step-title">Null</div>
-                                <div class="step-date">Null</div>
-                                <div class="step-description">Null</div>
+                                <div class="step-title">Order Placed</div>
+                                <div class="step-date">-</div>
+                                <div class="step-description">-</div>
                             </div>
                         </div>
 
@@ -139,9 +144,9 @@
                                 <i class="fas fa-cog"></i>
                             </div>
                             <div class="step-content">
-                                <div class="step-title">Null</div>
-                                <div class="step-date">Null</div>
-                                <div class="step-description">Null</div>
+                                <div class="step-title">Processing</div>
+                                <div class="step-date">-</div>
+                                <div class="step-description">-</div>
                             </div>
                         </div>
 
@@ -150,9 +155,9 @@
                                 <i class="fas fa-shipping-fast"></i>
                             </div>
                             <div class="step-content">
-                                <div class="step-title">Null</div>
-                                <div class="step-date">Null</div>
-                                <div class="step-description">Null</div>
+                                <div class="step-title">Shipped</div>
+                                <div class="step-date">-</div>
+                                <div class="step-description">-</div>
                             </div>
                         </div>
                         
@@ -161,9 +166,9 @@
                                 <i class="fas fa-truck"></i>
                             </div>
                             <div class="step-content">
-                                <div class="step-title">Null</div>
-                                <div class="step-date">Null</div>
-                                <div class="step-description">Null</div>
+                                <div class="step-title">In Transit</div>
+                                <div class="step-date">-</div>
+                                <div class="step-description">-</div>
                             </div>
                         </div>
                         
@@ -173,8 +178,8 @@
                             </div>
                             <div class="step-content">
                                 <div class="step-title">Delivered</div>
-                                <div class="step-date">Null</div>
-                                <div class="step-description">Null</div>
+                                <div class="step-date">-</div>
+                                <div class="step-description">-</div>
                             </div>
                         </div>
 

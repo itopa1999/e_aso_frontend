@@ -67,8 +67,11 @@ async function fetchOrderDetails() {
         if (!response.ok) throw new Error("Failed to fetch order");
 
         const data = await response.json();
+        console.log(data);
         renderOrderDetails(data.data);
+        
     } catch (error) {
+        console.error(error);
         showErrorModal(error.message || "Failed to load order");
     }
     finally{
