@@ -85,14 +85,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const descText = item.desc 
             ? `<div class="desc-container">
                 <span><strong>Desc:</strong> Color: ${item.desc.color || 'N/A'}, Size: ${item.desc.size || 'N/A'}</span>
-                <button class="edit-desc-btn" data-item-id="${item.id}" style="background:none;border:none;cursor:pointer;">
-                    <i class="fas fa-edit" style="color:#007bff;margin-left:8px;"></i>
+                <button class="edit-desc-btn" data-item-id="${item.id}" style="background:none;border:none;cursor:pointer;padding:6px 10px;display:inline-flex;align-items:center;">
+                    <i class="fas fa-edit" style="color:#007bff;margin-left:8px;font-size:18px;"></i>
                 </button>
             </div>`
             : `<div class="desc-container">
                     <span><strong>Desc:</strong> Color: N/A, Size: N/A</span>
-                    <button class="edit-desc-btn" data-item-id="${item.id}" style="background:none;border:none;cursor:pointer;">
-                    <i class="fas fa-edit" style="color:#007bff;margin-left:8px;"></i>
+                    <button class="edit-desc-btn" data-item-id="${item.id}" style="background:none;border:none;cursor:pointer;padding:6px 10px;display:inline-flex;align-items:center;">
+                    <i class="fas fa-edit" style="color:#007bff;margin-left:8px;font-size:18px;"></i>
                 </button>
             </div>`;
 
@@ -134,63 +134,62 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!editBtn) return;
             
             editingItemId = editBtn.dataset.itemId;
-            btn.addEventListener('click', (e) => {
-                editingItemId = e.target.closest('button').dataset.itemId;
 
-                const itemData = data.items.find(item => item.id == editingItemId);
-                if (itemData) {
-                    // Dynamically update modal title
-                    document.querySelector('#editModal .modal-content h3').innerText =
-                        `Edit Description for ${itemData.product_title}`;
+            const itemData = data.items.find(item => item.id == editingItemId);
+            if (itemData) {
+                // Dynamically update modal title
+                document.querySelector('#editModal .modal-content h3').innerText =
+                    `Edit Description for ${itemData.product_title}`;
 
-                    // Get dropdown elements
-                    const colorSelect = document.getElementById('editColor');
-                    const sizeSelect = document.getElementById('editSize');
+                // Get dropdown elements
+                const colorSelect = document.getElementById('editColor');
+                const sizeSelect = document.getElementById('editSize');
 
-                    // Clear old options
-                    colorSelect.innerHTML = '';
-                    sizeSelect.innerHTML = '';
+                // Clear old options
+                colorSelect.innerHTML = '';
+                sizeSelect.innerHTML = '';
 
-                    // Populate colors
-                    if (itemData.product_colors && itemData.product_colors.length > 0) {
-                        itemData.product_colors.forEach(color => {
-                            const option = document.createElement('option');
-                            option.value = color.name;
-                            option.textContent = color.name;
-                            if (itemData.desc && itemData.desc.color === color.name) {
-                                option.selected = true; // default selected color
-                            }
-                            colorSelect.appendChild(option);
-                        });
-                    } else {
+                // Add default "None" option for colors
+                const noneColorOption = document.createElement('option');
+                noneColorOption.value = '';
+                noneColorOption.textContent = '-- Select Color --';
+                colorSelect.appendChild(noneColorOption);
+
+                // Populate colors
+                if (itemData.product_colors && itemData.product_colors.length > 0) {
+                    itemData.product_colors.forEach(color => {
                         const option = document.createElement('option');
-                        option.value = '';
-                        option.textContent = 'No colors available';
+                        option.value = color.name;
+                        option.textContent = color.name;
+                        if (itemData.desc && itemData.desc.color === color.name) {
+                            option.selected = true; // default selected color
+                        }
                         colorSelect.appendChild(option);
-                    }
-
-                    // Populate sizes
-                    if (itemData.product_sizes && itemData.product_sizes.length > 0) {
-                        itemData.product_sizes.forEach(size => {
-                            const option = document.createElement('option');
-                            option.value = size;
-                            option.textContent = size;
-                            if (itemData.desc && itemData.desc.size === size) {
-                                option.selected = true; // default selected size
-                            }
-                            sizeSelect.appendChild(option);
-                        });
-                    } else {
-                        const option = document.createElement('option');
-                        option.value = '';
-                        option.textContent = 'No sizes available';
-                        sizeSelect.appendChild(option);
-                    }
+                    });
                 }
 
-                // Show modal
-                document.getElementById('editModal').classList.remove('hidden');
-            });
+                // Add default "None" option for sizes
+                const noneSizeOption = document.createElement('option');
+                noneSizeOption.value = '';
+                noneSizeOption.textContent = '-- Select Size --';
+                sizeSelect.appendChild(noneSizeOption);
+
+                // Populate sizes
+                if (itemData.product_sizes && itemData.product_sizes.length > 0) {
+                    itemData.product_sizes.forEach(size => {
+                        const option = document.createElement('option');
+                        option.value = size;
+                        option.textContent = size;
+                        if (itemData.desc && itemData.desc.size === size) {
+                            option.selected = true; // default selected size
+                        }
+                        sizeSelect.appendChild(option);
+                    });
+                }
+            }
+
+            // Show modal
+            document.getElementById('editModal').classList.remove('hidden');
         });
 
         document.getElementById('closeModal').addEventListener('click', () => {
@@ -572,8 +571,11 @@ document.querySelector('.place-order-btn').addEventListener('click', async funct
 
     const total = parseFloat(document.querySelector('.summary-total').textContent.replace(/[^\d.]/g, ''));
 
+    // Get selected payment gateway
+    const paymentGateway = document.querySelector('input[name="paymentGateway"]:checked')?.value || 'paystack';
+
     // Validation
-    if (!firstName || !lastName || !address || !city || !state || !phone) {
+if (!firstName || !lastName || !address || !city || !state || !phone || !paymentGateway || !altPhone || !otherInfo) {
         const overlay = document.createElement("div");
         overlay.className = "dialog-overlay";
         overlay.innerHTML = `
@@ -635,8 +637,9 @@ document.querySelector('.place-order-btn').addEventListener('click', async funct
             phone: phone,
             alt_phone: altPhone,
             total: total,
-            otherInfo: otherInfo
-        }
+            otherInfo: otherInfo,
+            payment_type: paymentGateway
+        },
     };
 
     showPreloader("placing your order");

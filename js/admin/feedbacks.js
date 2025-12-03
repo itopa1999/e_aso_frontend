@@ -2,6 +2,7 @@ const accessToken = getCookie("access");
 if (!accessToken) {
     window.location.href = "/404.html";
 }
+
 showPreloader("Loading Feedback data");
 
 const applyFiltersBtn = document.getElementById('apply-filters');

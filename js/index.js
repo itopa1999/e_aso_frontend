@@ -35,7 +35,23 @@ const DOM = {
     filterContainer: null,
     applyFiltersBtn: null,
     heroImage: null,
-    heroLink: null
+    heroLink: null,
+    heroSlides: null,
+    heroDots: null,
+    heroPrev: null,
+    heroNext: null,
+    specialOrderModal: null,
+    modalOverlay: null,
+    closeSpecialOrder: null,
+    remindLater: null,
+    exploreNow: null
+};
+
+// Special Order Modal Configuration
+const SPECIAL_ORDER_CONFIG = {
+    storageKey: 'specialOrderVisit',
+    resetInterval: 20 * 60 * 1000, // 20 minutes in milliseconds
+    storageResetKey: 'specialOrderReset'
 };
 
 function cacheDOMElements() {
@@ -51,8 +67,213 @@ function cacheDOMElements() {
     DOM.badgeFilter = document.getElementById("badge-filter");
     DOM.filterContainer = document.querySelector('.filter-options2');
     DOM.applyFiltersBtn = document.querySelector(".apply-filters");
-    DOM.heroImage = document.getElementById("hero-image");
-    DOM.heroLink = document.getElementById("hero-link");
+    DOM.heroSlides = document.querySelector(".hero-slides");
+    DOM.heroDots = document.getElementById("heroDots");
+    DOM.heroPrev = document.getElementById("heroPrev");
+    DOM.heroNext = document.getElementById("heroNext");
+    DOM.specialOrderModal = document.getElementById('specialOrderModal');
+    DOM.modalOverlay = document.getElementById('modalOverlay');
+    DOM.closeSpecialOrder = document.getElementById('closeSpecialOrder');
+    DOM.remindLater = document.getElementById('remindLater');
+    DOM.exploreNow = document.querySelector('.btn-explore');
+}
+
+// =========================
+// HERO CAROUSEL FUNCTIONALITY
+// =========================
+let heroCarouselState = {
+    currentSlide: 0,
+    totalSlides: 0,
+    autoplayInterval: null
+};
+
+function initHeroCarousel(banners) {
+    if (!banners || banners.length === 0) return;
+    
+    heroCarouselState.totalSlides = banners.length;
+    
+    // Render slides
+    DOM.heroSlides.innerHTML = banners.map((banner, index) => `
+        <div class="hero-slide ${index === 0 ? 'active' : ''}">
+            <a href="${banner.link || '#'}" class="hero-link">
+                <img src="${banner.image}" alt="Hero Banner ${index + 1}" class="hero-image">
+            </a>
+        </div>
+    `).join('');
+    
+    // Render dots
+    if (banners.length > 1) {
+        DOM.heroDots.innerHTML = banners.map((_, index) => `
+            <button class="hero-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></button>
+        `).join('');
+        
+        // Show navigation if multiple slides
+        DOM.heroPrev.style.display = 'flex';
+        DOM.heroNext.style.display = 'flex';
+        
+        // Add event listeners
+        DOM.heroPrev.addEventListener('click', () => goToSlide(heroCarouselState.currentSlide - 1));
+        DOM.heroNext.addEventListener('click', () => goToSlide(heroCarouselState.currentSlide + 1));
+        
+        document.querySelectorAll('.hero-dot').forEach((dot, index) => {
+            dot.addEventListener('click', () => goToSlide(index));
+        });
+        
+        // Add touch/swipe functionality for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        DOM.heroSlides.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+        
+        DOM.heroSlides.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+        
+        function handleSwipe() {
+            const swipeThreshold = 50; // Minimum distance for a swipe
+            const difference = touchStartX - touchEndX;
+            
+            if (Math.abs(difference) > swipeThreshold) {
+                if (difference > 0) {
+                    // Swiped left - go to next slide
+                    goToSlide(heroCarouselState.currentSlide + 1);
+                } else {
+                    // Swiped right - go to previous slide
+                    goToSlide(heroCarouselState.currentSlide - 1);
+                }
+            }
+        }
+        
+        // Auto-play carousel
+        startHeroAutoplay();
+    } else {
+        // Hide navigation if only one slide
+        DOM.heroPrev.style.display = 'none';
+        DOM.heroNext.style.display = 'none';
+        DOM.heroDots.style.display = 'none';
+    }
+}
+
+function goToSlide(index) {
+    const totalSlides = heroCarouselState.totalSlides;
+    if (index < 0) {
+        heroCarouselState.currentSlide = totalSlides - 1;
+    } else if (index >= totalSlides) {
+        heroCarouselState.currentSlide = 0;
+    } else {
+        heroCarouselState.currentSlide = index;
+    }
+    
+    updateHeroCarouselUI();
+}
+
+function updateHeroCarouselUI() {
+    // Update slide
+    document.querySelectorAll('.hero-slide').forEach((slide, index) => {
+        slide.classList.toggle('active', index === heroCarouselState.currentSlide);
+    });
+    
+    // Update dots
+    document.querySelectorAll('.hero-dot').forEach((dot, index) => {
+        dot.classList.toggle('active', index === heroCarouselState.currentSlide);
+    });
+}
+
+function startHeroAutoplay() {
+    // Clear existing interval if any
+    if (heroCarouselState.autoplayInterval) {
+        clearInterval(heroCarouselState.autoplayInterval);
+    }
+    
+    // Auto-advance every 5 seconds
+    heroCarouselState.autoplayInterval = setInterval(() => {
+        goToSlide(heroCarouselState.currentSlide + 1);
+    }, 5000);
+}
+
+function stopHeroAutoplay() {
+    if (heroCarouselState.autoplayInterval) {
+        clearInterval(heroCarouselState.autoplayInterval);
+        heroCarouselState.autoplayInterval = null;
+    }
+}
+
+// =========================
+// SPECIAL ORDER MODAL FUNCTIONS
+// =========================
+function initSpecialOrderModal() {
+    // Check if user has visited before
+    const hasVisited = localStorage.getItem(SPECIAL_ORDER_CONFIG.storageKey);
+    
+    if (!hasVisited) {
+        // First visit - set flag
+        localStorage.setItem(SPECIAL_ORDER_CONFIG.storageKey, 'first_visit');
+    } else if (hasVisited === 'first_visit') {
+        // Second visit - show modal
+        showSpecialOrderModal();
+        localStorage.setItem(SPECIAL_ORDER_CONFIG.storageKey, 'shown');
+    }
+    
+    // Setup reset interval for localStorage
+    setupStorageResetTimer();
+}
+
+function showSpecialOrderModal() {
+    if (DOM.specialOrderModal) {
+        DOM.specialOrderModal.classList.add('show');
+    }
+}
+
+function closeSpecialOrderModal() {
+    if (DOM.specialOrderModal) {
+        DOM.specialOrderModal.classList.remove('show');
+    }
+}
+
+function setupSpecialOrderModalEvents() {
+    if (DOM.closeSpecialOrder) {
+        DOM.closeSpecialOrder.addEventListener('click', closeSpecialOrderModal);
+    }
+    
+    if (DOM.modalOverlay) {
+        DOM.modalOverlay.addEventListener('click', closeSpecialOrderModal);
+    }
+    
+    if (DOM.remindLater) {
+        DOM.remindLater.addEventListener('click', () => {
+            closeSpecialOrderModal();
+            // Reset the visit flag so modal shows again next time
+            localStorage.setItem(SPECIAL_ORDER_CONFIG.storageKey, 'first_visit');
+        });
+    }
+    
+    if (DOM.exploreNow) {
+        DOM.exploreNow.addEventListener('click', () => {
+            closeSpecialOrderModal();
+            // Keep the 'shown' state so modal doesn't show again until reset
+        });
+    }
+}
+
+function setupStorageResetTimer() {
+    // Check if reset timer exists
+    const lastReset = localStorage.getItem(SPECIAL_ORDER_CONFIG.storageResetKey);
+    const now = Date.now();
+    
+    if (!lastReset || (now - parseInt(lastReset)) > SPECIAL_ORDER_CONFIG.resetInterval) {
+        // Reset the special order modal storage
+        localStorage.setItem(SPECIAL_ORDER_CONFIG.storageKey, 'first_visit');
+        localStorage.setItem(SPECIAL_ORDER_CONFIG.storageResetKey, now.toString());
+    }
+    
+    // Set up interval to reset every 20 minutes
+    setInterval(() => {
+        localStorage.setItem(SPECIAL_ORDER_CONFIG.storageKey, 'first_visit');
+        localStorage.setItem(SPECIAL_ORDER_CONFIG.storageResetKey, Date.now().toString());
+    }, SPECIAL_ORDER_CONFIG.resetInterval);
 }
 
 // =========================
@@ -370,165 +591,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Cache all DOM elements first
     cacheDOMElements();
     setupEventDelegation();
-
-//     const feedbackModal = document.getElementById('feedbackModal');
-//     const closeModalBtn = document.getElementById('closeModal');
-//     const closeSuccessBtn = document.getElementById('closeSuccess');
-//     const feedbackForm = document.getElementById('feedbackForm');
-//     const successMessage = document.getElementById('successMessage');
-//     const stars = document.querySelectorAll('.star');
-//     const ratingValue = document.getElementById('ratingValue');
-//     const userRatingInput = document.getElementById('userRating');
-//     const submitBtn = document.getElementById('submitFeedback');
-//     const userName = document.getElementById('FeedbackUserName');
-//     const userFeedback = document.getElementById('userFeedback');
-
-//     // Check if user has visited before using localStorage
-//     const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
-    
-//     // Show modal if user has visited before (not first time)
-//     // For demo purposes, we'll show it after a delay
-//     // In production, you would check: if (hasVisitedBefore) { showModal(); }
-//     setTimeout(() => {
-//         if (!hasVisitedBefore) {
-//             // First visit - set the flag for next time
-//             localStorage.setItem('hasVisitedBefore', 'true');
-//         } else {
-//             // Returning visitor - show the modal after 2 seconds
-//             setTimeout(showModal, 2000);
-//         }
-//     }, 1000);
-    
-//     // Show modal function
-//     function showModal() {
-//         feedbackModal.classList.add('active');
-//         document.body.style.overflow = 'hidden'; // Prevent scrolling
-//     }
-    
-//     // Hide modal function
-//     function hideModal() {
-//         feedbackModal.classList.remove('active');
-//         document.body.style.overflow = ''; // Re-enable scrolling
-//     }
-    
-//     // Close modal events
-//     closeModalBtn.addEventListener('click', hideModal);
-//     closeSuccessBtn.addEventListener('click', hideModal);
-    
-//     // Close modal when clicking outside
-//     feedbackModal.addEventListener('click', function(e) {
-//         if (e.target === feedbackModal) {
-//             hideModal();
-//         }
-//     });
-
-//     stars.forEach(star => {
-//     star.style.pointerEvents = 'auto'; // ensure clickable
-//     star.addEventListener('click', (e) => {
-//         e.stopPropagation(); // prevent modal click event
-//         const rating = parseInt(e.currentTarget.getAttribute('data-rating'));
-//         console.log("⭐ Star clicked:", rating);
-//         setRating(rating);
-//     });
-
-//     star.addEventListener('mouseover', (e) => {
-//         const rating = parseInt(e.currentTarget.getAttribute('data-rating'));
-//         highlightStars(rating);
-//     });
-// });
-
-            
-//     // Reset stars when mouse leaves the rating container
-//     document.querySelector('.star-rating').addEventListener('mouseleave', function() {
-//         const currentRating = parseInt(userRatingInput.value);
-//         highlightStars(currentRating);
-//     });
-    
-//     // Set rating function
-//     function setRating(rating) {
-//         userRatingInput.value = rating;
-//         ratingValue.textContent = rating;
-//         highlightStars(rating);
-        
-//         // Enable submit button if all fields are filled
-//         validateForm();
-//     }
-    
-//     // Highlight stars based on rating
-//     function highlightStars(rating) {
-//         stars.forEach(star => {
-//             const starRating = parseInt(star.getAttribute('data-rating'));
-//             if (starRating <= rating) {
-//                 star.innerHTML = '<i class="fas fa-star"></i>';
-//                 star.classList.add('active');
-//             } else {
-//                 star.innerHTML = '<i class="far fa-star"></i>';
-//                 star.classList.remove('active');
-//             }
-//         });
-//     }
-    
-//     // Form validation
-//     function validateForm() {
-//         console.log("userRatingInput value:", userRatingInput.value);
-//         console.log("ValUserName value:", userName.value);
-//         console.log("ValUserFeedback value:", userFeedback.value);
-//         const ValUserName = userName.value.trim();
-//         const ValUserFeedback = userFeedback.value.trim();
-//         const userRating = userRatingInput.value;
-        
-//         if (ValUserName && ValUserFeedback && userRating !== '0') {
-//             submitBtn.disabled = false;
-//         } else {
-//             submitBtn.disabled = true;
-//         }
-//     }
-    
-//     // Add input event listeners for form validation
-//     userName.addEventListener('input', validateForm);
-//     userFeedback.addEventListener('input', validateForm);
-    
-//     // Form submission
-//     feedbackForm.addEventListener('submit', function(e) {
-//         e.preventDefault();
-        
-//         // Get form values
-//         const ValUserName = userName.value.trim();
-//         const ValUserFeedback = userFeedback.value.trim();
-//         const userRating = userRatingInput.value;
-        
-//         // In a real application, you would send this data to your server
-//         console.log('Feedback submitted:', {
-//             user: ValUserName,
-//             feedback: ValUserFeedback,
-//             rating: userRating
-//         });
-        
-//         // Show success message
-//         feedbackForm.style.display = 'none';
-//         successMessage.style.display = 'block';
-        
-//         // In a real application, you would:
-//         // 1. Send data to your API endpoint
-//         // 2. Handle success/error responses
-//         // 3. Possibly store in localStorage that feedback was submitted to avoid showing again
-//     });
-
-    
-//     // Demo: Show modal after 3 seconds (for testing)
-//     // Remove this in production
-//     // setTimeout(showModal, 3000);
-//     // showModal();
-
-
+    setupSpecialOrderModalEvents();
+    initSpecialOrderModal();
 
     try {
         const res = await fetch(`${ADMIN_URL}/banners/hero/`);
         const json = await res.json();
         if (json.is_success && json.data && json.data.length > 0) {
-            const banner = json.data[0];
-            if (DOM.heroImage) DOM.heroImage.src = banner.image;
-            if (DOM.heroLink) DOM.heroLink.href = banner.link || "#";
+            initHeroCarousel(json.data);
         } else {
             console.warn("No hero banner found");
         }

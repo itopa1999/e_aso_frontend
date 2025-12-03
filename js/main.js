@@ -98,7 +98,7 @@ function updateDropdown() {
         const links = [
             '<a href="profile.html" class="dropdown-item"><i class="fas fa-user-circle"></i><span>My Profile</span></a>',
             '<a href="ordered-lists.html" class="dropdown-item"><i class="fas fa-shopping-bag"></i><span>My Orders</span></a>',
-            '<a href="watchlist.html" class="dropdown-item"><i class="fas fa-heart"></i><span>My Wishlist</span></a>'
+            '<a href="watchlist.html" class="dropdown-item"><i class="fas fa-heart"></i><span>My Wishlist</span></a>',
         ];
         
         if (authData.groups.includes("rider")) {
@@ -413,20 +413,76 @@ function initializeApp() {
     setupLogoutHandler();
     updateCartAndWatchlistCounts();
     setupGoToTop();
+    setupImageProtection();
     
+}
+
+// =========================
+// IMAGE PROTECTION - PREVENT DOWNLOADS
+// =========================
+function setupImageProtection() {
+    // Disable right-click on images
+    document.addEventListener('contextmenu', function(e) {
+        if (e.target.tagName === 'IMG' || e.target.closest('img')) {
+            e.preventDefault();
+            return false;
+        }
+    }, true);
+    
+    // Disable drag and drop of images
+    document.addEventListener('dragstart', function(e) {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+            return false;
+        }
+    }, true);
+    
+    // Disable image copy
+    document.addEventListener('copy', function(e) {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+            return false;
+        }
+    }, true);
+    
+    // Make all images non-draggable
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+        img.setAttribute('draggable', 'false');
+        img.ondragstart = function() { return false; };
+        img.oncontextmenu = function() { return false; };
+    });
+    
+    // For images added dynamically, observe and apply protection
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length) {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.tagName === 'IMG') {
+                        node.setAttribute('draggable', 'false');
+                        node.ondragstart = function() { return false; };
+                        node.oncontextmenu = function() { return false; };
+                    }
+                    // Check for images inside added elements
+                    if (node.querySelectorAll) {
+                        node.querySelectorAll('img').forEach(img => {
+                            img.setAttribute('draggable', 'false');
+                            img.ondragstart = function() { return false; };
+                            img.oncontextmenu = function() { return false; };
+                        });
+                    }
+                });
+            }
+        });
+    });
+    
+    // Start observing the document for changes
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 }
 
 // Call it after DOM loads
 document.addEventListener("DOMContentLoaded", initializeApp);
 
-
-
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/6502cdf70f2b18434fd87797/1ha9f95o4';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
