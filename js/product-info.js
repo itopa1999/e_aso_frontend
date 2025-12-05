@@ -248,11 +248,11 @@ function renderProductDetails(data) {
         const productItem = document.createElement('div');
         productItem.className = 'product-card';
         productItem.innerHTML = `
-            <a href="product-info.html?id=${product.id}">
+            <a href="${generateProductUrl(product.id, product.title)}">
                 <div class="product-card-image" style="background-image: url('${product.product_image || "img/product_image.png"}');"></div>
             </a>
             <div class="product-card-details">
-                <a style='text-decoration:none'; href="product-info.html?id=${product.id}">
+                <a style='text-decoration:none'; href="${generateProductUrl(product.id, product.title)}">
                     <h3 class="product-card-title">${product.title}</h3>
                 </a>
                 <div class="product-card-price">₦${formatNumber(product.current_price)}</div>

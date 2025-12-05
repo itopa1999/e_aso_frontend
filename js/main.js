@@ -1,4 +1,28 @@
 // =========================
+// SEO-FRIENDLY URL GENERATION
+// =========================
+/**
+ * Generate SEO-friendly product URL with title slug
+ * @param {number} id - Product ID
+ * @param {string} title - Product title
+ * @returns {string} SEO-friendly URL (e.g., product-info.html?id=58&slug=premium-nigerian-fabric)
+ */
+function generateProductUrl(id, title) {
+    if (!id) return 'product-info.html';
+    
+    // Convert title to URL slug: remove special chars, convert spaces to hyphens, lowercase
+    const slug = title
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '') // Remove special characters
+        .replace(/\s+/g, '-') // Replace spaces with hyphens
+        .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+        .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+    
+    return `product-info.html?id=${id}&slug=${slug}`;
+}
+
+// =========================
 // DOM CACHE FOR PERFORMANCE
 // =========================
 const DOM_CACHE = {

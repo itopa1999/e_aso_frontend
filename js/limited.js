@@ -145,13 +145,13 @@ function renderProducts() {
         
         offerCard.innerHTML = `
             <div class="offer-badge">${product.badge}</div>
-            <a href="product-info.html?id=${product.id}">
+            <a href="${generateProductUrl(product.id, product.title)}">
                 <div class="offer-image">
                     <img src="${product.main_image || 'img/product_image.png'}" alt="${product.title}">
                 </div>
             </a>
             <div class="offer-content">
-            <a style="text-decoration:none;" href="product-info.html?id=${product.id}">
+            <a style="text-decoration:none;" href="${generateProductUrl(product.id, product.title)}">
                 <h3 class="offer-title">${product.title}</h3>
             </a>
                 <p class="offer-description">${product.short_description}</p>

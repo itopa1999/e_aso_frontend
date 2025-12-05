@@ -122,14 +122,14 @@ function renderOrders(orders) {
 
         const itemHtml = order.order_items.map(item => `
             <div class="order-item">
-                <a href="product-info.html?id=${item.product_id}">
+                <a href="${generateProductUrl(item.product_id, item.product_name)}">
                     <div class="order-item-image" 
                         style="background-image: url('${item.product_image || "img/product_image.png"}');">
                     </div>
                 </a>
 
                 <div class="order-item-details">
-                    <a href="product-info.html?id=${item.product_id}" style="text-decoration:none">
+                    <a href="${generateProductUrl(item.product_id, item.product_name)}" style="text-decoration:none">
                         <div class="order-item-name">${item.product_name}</div>
                     </a>
                     <div class="order-item-price">₦${formatNumber(item.price)}</div>

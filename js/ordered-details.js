@@ -133,14 +133,14 @@ function renderOrderDetails(order) {
             const itemDiv = document.createElement('div');
             itemDiv.className = 'order-item';
             itemDiv.innerHTML = `
-                <a href="product-info.html?id=${item.product_id}">
+                <a href="${generateProductUrl(item.product_id, item.product_name)}">
                     <div class="order-item-image" 
                         style="background-image: url('${item.product_image || "img/product_image.png"}');">
                     </div>
                 </a>
                 
                 <div class="order-item-details">
-                    <a style="text-decoration:none" href="product-info.html?id=${item.product_id}">
+                    <a style="text-decoration:none" href="${generateProductUrl(item.product_id, item.product_name)}">
                         <div class="order-item-name">${item.product_name}</div>
                     </a>
                     ${descText ? `<div class="cart-item-desc">${descText}</div>` : ""}
