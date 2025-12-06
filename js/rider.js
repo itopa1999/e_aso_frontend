@@ -246,13 +246,13 @@ function openDetails(orderNumber) {
 
             itemsContainer.innerHTML += `
                 <div class="order-item">
-                    <a href="product-info.html?id=${item.product_id}">
+                    <a href="${generateProductUrl(item.product_id, item.product)}">
                         <div class="item-image" 
                             style="background-image: url('${item.image || "/img/product_image.png"}');">
                         </div>
                     </a>
                     <div class="item-details">
-                        <a style="text-decoration:none" href="product-info.html?id=${item.product_id}">
+                        <a style="text-decoration:none" href="${generateProductUrl(item.product_id, item.product)}">
                             <div class="item-name">${item.product}</div>
                         </a>
                         ${descText ? `<div class="cart-item-desc">${descText}</div>` : ""}
@@ -517,13 +517,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>`;
                 itemsContainer.innerHTML += `
                     <div class="order-item">
-                        <a href="product-info.html?id=${item.product_id}">
+                        <a href="${generateProductUrl(item.product_id, item.product)}">
                             <div class="item-image" 
                                 style="background-image: url('${item.image || "/img/product_image.png"}');">
                             </div>
                         </a>
                         <div class="item-details">
-                            <a style="text-decoration:none" href="product-info.html?id=${item.product_id}">
+                            <a style="text-decoration:none" href="${generateProductUrl(item.product_id, item.product)}">
                                 <div class="item-name">${item.product}</div>
                             </a>
                             ${descText ? `<div class="cart-item-desc">${descText}</div>` : ""}

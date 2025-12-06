@@ -100,12 +100,12 @@ document.addEventListener('DOMContentLoaded', function() {
             cartItem.className = "cart-item";
             cartItem.setAttribute("data-item-id", item.id);
             cartItem.innerHTML = `
-                <a href="product-info.html?id=${item.product_id}">
+                <a href="${generateProductUrl(item.product_id, item.product_title)}">
                     <div class="cart-item-image" style="background-image: url('${item.product_image || "img/product_image.png"}');"></div>
                 </a>
                 </div>
                 <div class="cart-item-details">
-                    <a href="product-info.html?id=${item.product_id}" style="text-decoration:none">
+                    <a href="${generateProductUrl(item.product_id, item.product_title)}" style="text-decoration:none">
                         <div class="cart-item-title">${item.product_title}</div>
                     </a>
                     ${descText ? `<div class="cart-item-desc">${descText}</div>` : ""}
@@ -308,11 +308,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const totalPrice = parseFloat(item.product_price) * item.quantity;
             cartItem.innerHTML = `
             <div class="order-item-info">
-                <a href="product-info.html?id=${item.product_id}">
+                <a href="${generateProductUrl(item.product_id, item.product_title)}">
                     <div class="order-item-image" style="background-image: url('${item.product_image || "img/product_image.png"}');"></div>
                 </a>
                 <div class="order-item-details">
-                    <a href="product-info.html?id=${item.product_id}" style="text-decoration:none">
+                    <a href="${generateProductUrl(item.product_id, item.product_title)}" style="text-decoration:none">
                         <div class="order-item-name">${item.product_title}</div>
                     </a>
                     <div class="order-item-price">₦${formatNumber(item.product_price)} × ${item.quantity}</div>

@@ -76,11 +76,11 @@ function renderList(data) {
             <button class="wishlist-button active" data-id="${product.id}">
                 <i class="fas fa-heart"></i>
             </button>
-            <a href="product-info.html?id=${product.id}">
+            <a href="${generateProductUrl(product.id, product.title)}">
                 <div class="product-image" style="background-image: url('${product.main_image || "img/product_image.png"}');"></div>
             </a>
             <div class="product-details">
-                <a href="product-info.html?id=${product.id}" style="text-decoration:none">
+                <a href="${generateProductUrl(product.id, product.title)}" style="text-decoration:none">
                     <h3 class="product-title">${product.title}</h3>
                 </a>
                 <p class="product-features">${product.short_description}</p>
@@ -362,7 +362,7 @@ function showEmptyWatchlist() {
             </div>
             <h2 class="empty-title">Your Watchlist is Empty</h2>
             <p class="empty-text">
-                You haven't added any items to your watchlist yet. Start exploring our beautiful collection of Aso Oke and Aso Ofi fabrics and save your favorites!
+                You haven't added any items to your watchlist yet. Start exploring our beautiful collection of premium fabrics from Esther\'s Fabrics and save your favorites!
             </p>
             <a href="index.html">
                 <button class="btn-shop">

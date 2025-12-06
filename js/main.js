@@ -1,4 +1,40 @@
 // =========================
+// SEO-FRIENDLY URL GENERATION
+// =========================
+/**
+ * Generate SEO-friendly product URL with title slug
+ * @param {number} id - Product ID
+ * @param {string} title - Product title
+ * @returns {string} SEO-friendly URL (e.g., product-info.html?id=58&slug=premium-nigerian-fabric)
+ */
+function generateProductUrl(id, title) {
+    if (!id) return 'product-info.html';
+    
+    // Convert title to URL slug: remove special chars, convert spaces to hyphens, lowercase
+    const slug = title
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '') // Remove special characters
+        .replace(/\s+/g, '-') // Replace spaces with hyphens
+        .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+        .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+    
+    return `product-info.html?id=${id}&slug=${slug}`;
+}
+
+/**
+ * Generate SEO-friendly order URL with order number slug
+ * @param {number} id - Order ID
+ * @returns {string} SEO-friendly URL (e.g., ordered-details.html?id=48&slug=order-ao-48)
+ */
+function generateOrderUrl(id) {
+    if (!id) return 'ordered-details.html';
+    
+    const slug = `order-ao-${id}`;
+    return `ordered-details.html?id=${id}&slug=${slug}`;
+}
+
+// =========================
 // DOM CACHE FOR PERFORMANCE
 // =========================
 const DOM_CACHE = {
@@ -112,6 +148,7 @@ function updateDropdown() {
         links.push(
             '<a href="about.html" class="dropdown-item"><i class="fas fa-info-circle"></i><span>About Us</span></a>',
             '<a href="contact.html" class="dropdown-item"><i class="fas fa-envelope"></i><span>Contact Us</span></a>',
+            '<a href="#" class="dropdown-item restart-tour-item" id="restartTourDropdown"><i class="fas fa-redo"></i><span>Restart Tour</span></a>',
             '<a href="#" class="dropdown-item logout-item" id="logoutButton"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>'
         );
         
@@ -123,6 +160,7 @@ function updateDropdown() {
             <a href="about.html" class="dropdown-item"><i class="fas fa-info-circle"></i><span>About Us</span></a>
             <a href="contact.html" class="dropdown-item"><i class="fas fa-envelope"></i><span>Contact Us</span></a>
             <a href="auth.html" class="dropdown-item"><i class="fas fa-sign-in-alt"></i><span>Sign In</span></a>
+            <a href="#" class="dropdown-item restart-tour-item" id="restartTourDropdown"><i class="fas fa-redo"></i><span>Restart Tour</span></a>
         `;
     }
 }
@@ -169,6 +207,23 @@ function setupLogoutHandler() {
                 window.location.href = 'index.html';
             } else {
                 location.reload();
+            }
+        }
+    });
+}
+
+// Setup restart tour handler - delegation
+function setupRestartTourHandler() {
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('#restartTourDropdown')) {
+            e.preventDefault();
+            // Close dropdown
+            if (DOM_CACHE.userDropdown) {
+                DOM_CACHE.userDropdown.classList.remove('active');
+            }
+            // Restart tour if tour guide exists
+            if (window.tourGuide) {
+                window.tourGuide.restartTour();
             }
         }
     });
@@ -411,6 +466,7 @@ function initializeApp() {
     setupDropdownToggle();
     setupOutsideClickDetection();
     setupLogoutHandler();
+    setupRestartTourHandler();
     updateCartAndWatchlistCounts();
     setupGoToTop();
     setupImageProtection();

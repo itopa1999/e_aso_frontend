@@ -342,13 +342,13 @@ function renderList(data, append = false) {
             <button class="wishlist-button ${isActive}" data-id="${product.id}">
                 <i class="fas fa-heart"></i>
             </button>
-            <a href="product-info.html?id=${product.id}">
+            <a href="${generateProductUrl(product.id, product.title)}">
                 <div class="product-image" 
                     style="background-image: url('${product.main_image || "img/product_image.png"}');">
                 </div>
             </a>
             <div class="product-details">
-                <a href="product-info.html?id=${product.id}" style="text-decoration:none">
+                <a href="${generateProductUrl(product.id, product.title)}" style="text-decoration:none">
                     <h3 class="product-title">${product.title}</h3>
                 </a>
                 <p class="product-features">${product.short_description}</p>
