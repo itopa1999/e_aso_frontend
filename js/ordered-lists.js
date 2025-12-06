@@ -208,7 +208,7 @@ function setupOrdersDelegation() {
         }
         
         if (viewBtn) {
-            window.location.href = `ordered-details.html?id=${viewBtn.dataset.id}`;
+            window.location.href = generateOrderUrl(viewBtn.dataset.id);
             return;
         }
         

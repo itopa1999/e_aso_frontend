@@ -22,6 +22,18 @@ function generateProductUrl(id, title) {
     return `product-info.html?id=${id}&slug=${slug}`;
 }
 
+/**
+ * Generate SEO-friendly order URL with order number slug
+ * @param {number} id - Order ID
+ * @returns {string} SEO-friendly URL (e.g., ordered-details.html?id=48&slug=order-ao-48)
+ */
+function generateOrderUrl(id) {
+    if (!id) return 'ordered-details.html';
+    
+    const slug = `order-ao-${id}`;
+    return `ordered-details.html?id=${id}&slug=${slug}`;
+}
+
 // =========================
 // DOM CACHE FOR PERFORMANCE
 // =========================

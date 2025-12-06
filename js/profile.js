@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         orderItem.innerHTML = `
             <div class="order-info">
-                <a href="ordered-details.html?id=${order.id}" class="order-image">AO-${order.id}</a>
+                <a href="${generateOrderUrl(order.id)}" class="order-image">AO-${order.id}</a>
                 <div class="order-details">
                     <div class="order-id">${order.order_number}</div>
                     <div class="order-date">Created: ${formatDateToHuman(order.created_at)}</div>
