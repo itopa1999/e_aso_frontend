@@ -9,7 +9,7 @@ class TourGuide {
         this.steps = [];
         this.isActive = false;
         this.tourStarted = false;
-        this.storageKey = 'e-sell-tour-completed';
+        this.storageKey = 'esthers-fabrics-tour-completed';
         this.initTour();
     }
 
@@ -32,7 +32,7 @@ class TourGuide {
         if (currentPage === 'index.html' || currentPage === '') {
             this.steps = [
                 {
-                    title: 'Welcome to E-Sell! 👋',
+                    title: 'Welcome to Esther\'s Fabrics! 👋',
                     description: 'Let us show you around and help you get started with shopping for premium Nigerian fabrics.',
                     element: '.logo',
                     position: 'bottom',
@@ -179,7 +179,7 @@ class TourGuide {
         modal.innerHTML = `
             <div class="tour-welcome-content">
                 <div class="tour-welcome-icon">🎉</div>
-                <h2>Welcome to E-Sell!</h2>
+                <h2>Welcome to Esther\'s Fabrics!</h2>
                 <p>We'd love to show you around and help you get the most out of our platform.</p>
                 <div class="tour-welcome-actions">
                     <button class="tour-btn tour-btn-primary" id="start-tour-btn">

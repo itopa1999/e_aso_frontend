@@ -362,7 +362,7 @@ function showEmptyWatchlist() {
             </div>
             <h2 class="empty-title">Your Watchlist is Empty</h2>
             <p class="empty-text">
-                You haven't added any items to your watchlist yet. Start exploring our beautiful collection of Aso Oke and Aso Ofi fabrics and save your favorites!
+                You haven't added any items to your watchlist yet. Start exploring our beautiful collection of premium fabrics from Esther\'s Fabrics and save your favorites!
             </p>
             <a href="index.html">
                 <button class="btn-shop">

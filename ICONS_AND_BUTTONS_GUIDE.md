@@ -1,10 +1,10 @@
-# E-Sell UI Guide - Icons & Buttons Explained
+# Esther\'s Fabrics UI Guide - Icons & Buttons Explained
 
 ## 🎯 Header Icons (Top Navigation)
 
 ### 1. **Logo** 🏠
 - **Location**: Top Left
-- **Icon**: E-Sell Brand Logo
+- **Icon**: Esther\'s Fabrics Brand Logo
 - **Function**: Click to return to Home page from anywhere
 - **Usage**: Navigation anchor point
 

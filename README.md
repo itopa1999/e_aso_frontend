@@ -1,6 +1,6 @@
-# E-Sell Frontend
+# Esther\'s Fabrics Frontend
 
-A modern, responsive e-commerce web application built with vanilla JavaScript, HTML5, and CSS3. E-Sell provides a complete shopping experience with product browsing, cart management, order tracking, and an admin dashboard.
+A modern, responsive e-commerce web application built with vanilla JavaScript, HTML5, and CSS3. Esther\'s Fabrics provides a complete shopping experience with product browsing, cart management, order tracking, and an admin dashboard.
 
 ## 🚀 Features
 
@@ -300,7 +300,7 @@ Track and analyze:
 [Add your license here]
 
 ## 👨‍💻 Author
-E-Sell Development Team
+Esther\'s Fabrics Development Team
 
 ## 📞 Support
 For issues or questions, please contact the development team.
