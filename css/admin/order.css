@@ -290,9 +290,11 @@
     height: 60px;
     border-radius: 4px;
     overflow: hidden;
+    background: white;
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
+    border: 1px solid #f0f0f0;
 }
 
 .item-image img {

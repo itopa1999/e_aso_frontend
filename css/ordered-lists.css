@@ -274,16 +274,17 @@
     height: 80px;
     border-radius: 10px;
     overflow: hidden;
-    background: linear-gradient(45deg, var(--primary-color), var(--dark-color));
+    background: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: #999;
     font-weight: bold;
     flex-shrink: 0;
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
+    border: 1px solid #f0f0f0;
 }
 
 .order-item-details {
