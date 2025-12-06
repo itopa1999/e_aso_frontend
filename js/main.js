@@ -148,6 +148,7 @@ function updateDropdown() {
         links.push(
             '<a href="about.html" class="dropdown-item"><i class="fas fa-info-circle"></i><span>About Us</span></a>',
             '<a href="contact.html" class="dropdown-item"><i class="fas fa-envelope"></i><span>Contact Us</span></a>',
+            '<a href="#" class="dropdown-item restart-tour-item" id="restartTourDropdown"><i class="fas fa-redo"></i><span>Restart Tour</span></a>',
             '<a href="#" class="dropdown-item logout-item" id="logoutButton"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>'
         );
         
@@ -159,6 +160,7 @@ function updateDropdown() {
             <a href="about.html" class="dropdown-item"><i class="fas fa-info-circle"></i><span>About Us</span></a>
             <a href="contact.html" class="dropdown-item"><i class="fas fa-envelope"></i><span>Contact Us</span></a>
             <a href="auth.html" class="dropdown-item"><i class="fas fa-sign-in-alt"></i><span>Sign In</span></a>
+            <a href="#" class="dropdown-item restart-tour-item" id="restartTourDropdown"><i class="fas fa-redo"></i><span>Restart Tour</span></a>
         `;
     }
 }
@@ -205,6 +207,23 @@ function setupLogoutHandler() {
                 window.location.href = 'index.html';
             } else {
                 location.reload();
+            }
+        }
+    });
+}
+
+// Setup restart tour handler - delegation
+function setupRestartTourHandler() {
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('#restartTourDropdown')) {
+            e.preventDefault();
+            // Close dropdown
+            if (DOM_CACHE.userDropdown) {
+                DOM_CACHE.userDropdown.classList.remove('active');
+            }
+            // Restart tour if tour guide exists
+            if (window.tourGuide) {
+                window.tourGuide.restartTour();
             }
         }
     });
@@ -446,6 +465,7 @@ function initializeApp() {
     setupDropdownToggle();
     setupOutsideClickDetection();
     setupLogoutHandler();
+    setupRestartTourHandler();
     updateCartAndWatchlistCounts();
     setupGoToTop();
     setupImageProtection();
