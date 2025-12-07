@@ -365,18 +365,18 @@ function renderList(data, append = false) {
                            <span class="discount">-${product.discount_percent}%</span>`
                         : ''}
                 </div>
-                <button class="add-to-cart" data-id="${product.id}">Add to Cart</button>
+                <button class="add-to-cart" data-id="${product.id}">Add to cart</button>
             </div>
         `;
 
         const btn = card.querySelector(".add-to-cart");
         if (product.cart_added) {
-            btn.textContent = "✓ Added!";
+            btn.textContent = "✓ Added to cart!";
             btn.style.backgroundColor = "#28a745";
             btn.disabled = true;
             btn.style.cursor = "not-allowed";
         } else {
-            btn.textContent = "Add to Cart";
+            btn.textContent = "Add to cart";
             btn.disabled = false;
             btn.style.cursor = "pointer";
         }
@@ -511,7 +511,7 @@ function setupEventDelegation() {
                 const data = await res.json();
                 DOM.cartBadge.textContent = (parseInt(DOM.cartBadge.textContent) || 0) + data.data.items_added;
 
-                cartBtn.textContent = '✓ Added!';
+                cartBtn.textContent = '✓ Added to cart!';
                 cartBtn.style.backgroundColor = '#28a745';
                 cartBtn.disabled = true;
                 cartBtn.style.cursor = "not-allowed";

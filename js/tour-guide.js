@@ -22,8 +22,70 @@ class TourGuide {
         // Create tour steps based on page
         this.createPageSteps();
         
-        // Show welcome popup on first visit
-        this.showWelcomePopup();
+        // Wait for preloader to finish and page to load before showing tour
+        this.waitForPageLoadAndShowTour();
+    }
+
+    waitForPageLoadAndShowTour() {
+        // Use window.load event to ensure all resources are loaded
+        if (document.readyState === 'loading') {
+            window.addEventListener('load', () => {
+                this.showTourAfterLoad();
+            });
+        } else {
+            // Page is already loaded
+            this.showTourAfterLoad();
+        }
+    }
+
+    showTourAfterLoad() {
+        // Wait for preloader to hide (max 3 seconds)
+        let checkCount = 0;
+        const checkInterval = setInterval(() => {
+            const preloader = document.getElementById('preloader');
+            const isHidden = !preloader || 
+                            preloader.classList.contains('hidden') || 
+                            preloader.style.display === 'none';
+            
+            checkCount++;
+            
+            if (isHidden || checkCount > 30) {
+                clearInterval(checkInterval);
+                // Hide any open modals
+                this.hideOtherModals();
+                // Show welcome popup after a small delay
+                setTimeout(() => {
+                    this.showWelcomePopup();
+                }, 500);
+            }
+        }, 100);
+    }
+
+    hideOtherModals() {
+        // Hide all visible modals and overlays
+        const modalsToHide = [
+            '.modal-overlay',
+            '.dialog-overlay',
+            '.notification-modal',
+            '#editModal',
+            '.tour-welcome-modal',
+            '.modal',
+            '[role="dialog"]'
+        ];
+
+        modalsToHide.forEach(selector => {
+            try {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    if (el.id !== 'tour-overlay') { // Don't hide tour overlay
+                        el.style.display = 'none';
+                        el.classList.remove('active');
+                    }
+                });
+            } catch (e) {
+                // Selector might be invalid, continue
+            }
+        });
     }
 
     createPageSteps() {
@@ -129,7 +191,7 @@ class TourGuide {
                     action: 'click_next'
                 },
                 {
-                    title: 'Add to Cart',
+                    title: 'Add to cart',
                     description: 'Select your preferred options and quantity, then add the item to your cart.',
                     element: '.action-buttons',
                     position: 'top',

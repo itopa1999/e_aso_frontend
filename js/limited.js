@@ -1,4 +1,4 @@
-ASO_URL = "http://127.0.0.1:8000/aso/api/product";
+ASO_URL = "http://192.168.0.198:8000/aso/api/product";
 
 // DOM CACHE
 const LIMITED_DOM = {
@@ -171,7 +171,7 @@ function renderProducts() {
                 </div>
                 
                 <button data-id="${product.id}" class="action-button">
-                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                    <i class="fas fa-shopping-cart"></i> Add to cart
                 </button>
             </div>
         `;
@@ -180,7 +180,7 @@ function renderProducts() {
 
         const btn = offerCard.querySelector(".action-button");
         if (product.cart_added) {
-            btn.textContent = "✓ Added!";
+            btn.textContent = "✓ Added to cart!";
             btn.style.background  = "#28a745";
             btn.disabled = true;
             btn.style.cursor = "not-allowed";
@@ -218,7 +218,7 @@ function setupLimitedDelegation() {
                 if (!res.ok) throw new Error("Failed to move items to cart");
 
                 const data = await res.json();
-                btn.textContent = '✓ Added!';
+                btn.textContent = '✓ Added to cart!';
                 btn.style.background = '#28a745';
                 btn.disabled = true;
                 btn.style.cursor = "not-allowed";

@@ -166,7 +166,7 @@ Hover → Show Price & Rating
    - **Function**: Scroll through categories
    - **Responsive**: Auto-hide if all fit
 
-3. **Add to Cart** (On Product Card)
+3. **Add to cart** (On Product Card)
    - **Not on Home Page**: Requires going to product detail
    - **Color**: Brown gradient
    - **Hover**: Lifts up with shadow

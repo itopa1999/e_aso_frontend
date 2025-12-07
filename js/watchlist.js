@@ -101,18 +101,18 @@ function renderList(data) {
                         : ''
                     }
                 </div>
-                <button class="add-to-cart" data-id="${product.id}">Add to Cart</button>
+                <button class="add-to-cart" data-id="${product.id}">Add to cart</button>
             </div>
         `;
 
         const btn = card.querySelector(".add-to-cart");
         if (product.cart_added) {
-            btn.textContent = "✓ Added!";
+            btn.textContent = "✓ Added to cart!";
             btn.style.backgroundColor = "#28a745";
             btn.disabled = true;
             btn.style.cursor = "not-allowed";
         } else {
-            btn.textContent = "Add to Cart";
+            btn.textContent = "Add to cart";
             btn.disabled = false;
             btn.style.cursor = "pointer";
         }
@@ -153,7 +153,7 @@ function setupCartDelegation() {
             let currentCount = parseInt(WATCHLIST_DOM.cartBadge.textContent) || 0;
             WATCHLIST_DOM.cartBadge.textContent = currentCount + itemsMoved;
 
-            btn.textContent = '✓ Added!';
+            btn.textContent = '✓ Added to cart!';
             btn.style.backgroundColor = '#28a745';
             btn.disabled = true;
             btn.style.cursor = "not-allowed";
@@ -318,13 +318,13 @@ if (WATCHLIST_DOM.moveAllBtn) {
         let currentCount = parseInt(WATCHLIST_DOM.cartBadge.textContent) || 0;
         WATCHLIST_DOM.cartBadge.textContent = currentCount + itemsMoved;
 
-        // Animate all "Add to Cart" buttons
+        // Animate all "Add to cart" buttons
         document.querySelectorAll('.add-to-cart').forEach(button => {
-            button.textContent = '✓ Added!';
+            button.textContent = '✓ Added to cart!';
             button.style.backgroundColor = '#28a745';
 
             setTimeout(() => {
-                button.textContent = 'Add to Cart';
+                button.textContent = 'Add to cart';
                 button.style.backgroundColor = '';
             }, 2000);
         });

@@ -97,7 +97,7 @@ function renderProductDetails(data) {
 
     const AddToCartbtn2 = document.querySelector(".btn-add-cart");
     if (data.cart_added) {
-        AddToCartbtn2.textContent = "✓ Added!";
+        AddToCartbtn2.textContent = "✓ Added to cart!";
         AddToCartbtn2.style.background  = "#28a745";
         AddToCartbtn2.disabled = true;
         AddToCartbtn2.style.cursor = "not-allowed";
@@ -314,7 +314,7 @@ function attachCartEvents(id) {
             cartBadge.textContent = currentCount + itemsMoved;
 
             // Animation
-            addToCartBtn.innerHTML = '✓ Added!';
+            addToCartBtn.innerHTML = '✓ Added to cart!';
             addToCartBtn.style.background = '#28a745';
             addToCartBtn.disabled = true;
             addToCartBtn.style.cursor = "not-allowed";
