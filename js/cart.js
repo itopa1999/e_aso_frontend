@@ -574,6 +574,26 @@ document.querySelector('.place-order-btn').addEventListener('click', async funct
     // Get selected payment gateway
     const paymentGateway = document.querySelector('input[name="paymentGateway"]:checked')?.value || 'paystack';
 
+    // Check if Monnify is selected (not available)
+    if (paymentGateway === 'monnify') {
+        const overlay = document.createElement("div");
+        overlay.className = "dialog-overlay";
+        overlay.innerHTML = `
+            <div class="dialog-box">
+                <p><strong>Payment Gateway Not Available</strong></p>
+                <p>Monnify payment gateway is currently not available. Please select another payment method to continue.</p>
+                <div class="dialog-actions">
+                    <button class="confirm-btn1">Okay</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+            overlay.remove();
+        });
+        return;
+    }
+
     // Validation
 if (!firstName || !lastName || !address || !city || !state || !phone || !paymentGateway || !altPhone || !otherInfo) {
         const overlay = document.createElement("div");
@@ -601,6 +621,47 @@ if (!firstName || !lastName || !address || !city || !state || !phone || !payment
 
     }
 
+    // Validate phone numbers
+    const phoneRegex = /^(\+234|0)[0-9]{10}$/; // Nigerian phone format
+    
+    if (!phoneRegex.test(phone)) {
+        const overlay = document.createElement("div");
+        overlay.className = "dialog-overlay";
+        overlay.innerHTML = `
+            <div class="dialog-box">
+                <p><strong>Invalid Phone Number</strong></p>
+                <p>Please enter a valid phone number. Format: +234XXXXXXXXXX or 0XXXXXXXXXX</p>
+                <div class="dialog-actions">
+                    <button class="confirm-btn1">Okay</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+            overlay.remove();
+        });
+        return;
+    }
+
+    if (!phoneRegex.test(altPhone)) {
+        const overlay = document.createElement("div");
+        overlay.className = "dialog-overlay";
+        overlay.innerHTML = `
+            <div class="dialog-box">
+                <p><strong>Invalid Alternate Phone Number</strong></p>
+                <p>Please enter a valid alternate phone number. Format: +234XXXXXXXXXX or 0XXXXXXXXXX</p>
+                <div class="dialog-actions">
+                    <button class="confirm-btn1">Okay</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+            overlay.remove();
+        });
+        return;
+    }
+
     if (parseInt(total) <= 0) {
         const overlay = document.createElement("div");
         overlay.className = "dialog-overlay";
@@ -626,6 +687,52 @@ if (!firstName || !lastName || !address || !city || !state || !phone || !payment
         return;
     }
 
+    // Show order confirmation modal with important warnings
+    const confirmModal = document.createElement("div");
+    confirmModal.className = "dialog-overlay";
+    confirmModal.innerHTML = `
+        <div class="dialog-box" style="max-width: 550px; max-height: 90vh; overflow-y: auto;">
+            <h3 style="color: #8a4b38; margin-bottom: 15px; font-size: 18px;">
+                <i class="fas fa-exclamation-triangle" style="color: #ff9800; margin-right: 8px;"></i>
+                Order Confirmation
+            </h3>
+            <div style="background-color: #fff3cd; border-left: 4px solid #ff9800; padding: 15px; border-radius: 4px; margin-bottom: 15px; font-size: 14px;">
+                <p style="margin: 8px 0;"><strong>⚠️ Important Notice:</strong></p>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li style="margin: 6px 0;"><strong>Order Location:</strong> Once your order is placed, the delivery location <strong>cannot be changed</strong>.</li>
+                    <li style="margin: 6px 0;"><strong>Phone Availability:</strong> Make sure your shipping phone number is <strong>active and reachable</strong> during delivery.</li>
+                    <li style="margin: 6px 0;"><strong>Delivery Address:</strong> The address you provided will be used as the <strong>exact delivery location</strong>.</li>
+                    <li style="margin: 6px 0;"><strong>Verification:</strong> Please verify all shipping details are correct before proceeding.</li>
+                </ul>
+            </div>
+            <div style="background-color: #f5f5f5; padding: 12px; border-radius: 4px; margin-bottom: 20px; font-size: 13px;">
+                <p style="margin: 8px 0;"><strong>Delivery Details:</strong></p>
+                <p style="margin: 6px 0;">📍 <strong>Address:</strong> ${address}, ${city}, ${state}</p>
+                <p style="margin: 6px 0;">📞 <strong>Phone:</strong> ${phone}</p>
+                <p style="margin: 6px 0;">📞 <strong>Alternate Phone:</strong> ${altPhone}</p>
+            </div>
+            <div class="dialog-actions" style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="cancel-btn" style="flex: 1; padding: 12px;">Edit Details</button>
+                <button class="confirm-btn1" style="flex: 1; padding: 12px; background-color: #28a745;">Proceed with Order</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(confirmModal);
+
+    // Handle cancel - go back to edit
+    confirmModal.querySelector(".cancel-btn").addEventListener("click", () => {
+        confirmModal.remove();
+    });
+
+    // Handle confirm - proceed with order
+    confirmModal.querySelector(".confirm-btn1").addEventListener("click", async () => {
+        confirmModal.remove();
+        await submitOrder(firstName, lastName, address, city, state, phone, altPhone, otherInfo, total, paymentGateway);
+    });
+});
+
+// Separate function to handle actual order submission
+async function submitOrder(firstName, lastName, address, city, state, phone, altPhone, otherInfo, total, paymentGateway) {
     // Prepare data
     const orderData = {
         shipping_info: {
@@ -662,7 +769,7 @@ if (!firstName || !lastName || !address || !city || !state || !phone || !payment
             overlay.className = "dialog-overlay";
             overlay.innerHTML = `
                 <div class="dialog-box">
-                    <p>Order failed: ' + (${result.message} || 'Please try again.</p>
+                    <p>Order failed: ${result.message || 'Please try again.'}</p>
                     <div class="dialog-actions">
                         <button class="cancel-btn">Cancel</button>
                         <button class="confirm-btn1">Okay</button>
@@ -686,7 +793,7 @@ if (!firstName || !lastName || !address || !city || !state || !phone || !payment
     } finally {
         hidePreloader();
     }
-});
+}
 
 
 async function loadStates() {

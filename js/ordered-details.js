@@ -91,8 +91,7 @@ function renderOrderDetails(order) {
     if (ORDER_DETAILS_DOM.statusBadge && ORDER_DETAILS_DOM.statusText) {
         ORDER_DETAILS_DOM.statusBadge.textContent = ORDER_DETAILS_DOM.statusText.textContent;
         ORDER_DETAILS_DOM.statusBadge.className = `order-status status-${ORDER_DETAILS_DOM.statusText.textContent.toLowerCase()}`;
-    }
-    
+    }    
     const deliveryDate = order.estimated_delivery_date
         ? formatDateToHuman(order.estimated_delivery_date)
         : null;

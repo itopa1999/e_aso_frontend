@@ -102,7 +102,7 @@ function renderOrders(orders) {
     ORDERS_DOM.ordersContainer.innerHTML = "";
 
     if (!orders.length) {
-        ordersContainer.innerHTML = `
+        ORDERS_DOM.ordersContainer.innerHTML = `
             <div class="empty-cart-message">
                 <i class="fas fa-shopping-bag"></i>
                 <p>Your Order is empty</p>

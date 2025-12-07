@@ -341,4 +341,69 @@ document.addEventListener('DOMContentLoaded', async function() {
             closeEditModal();
         }
     });
+
+    // ================== TELEGRAM NOTIFICATIONS ==================
+    const telegramProfileBtn = document.getElementById('enableTelegramProfileBtn');
+    if (telegramProfileBtn) {
+        telegramProfileBtn.addEventListener('click', function() {
+            const userEmail = authData.email || 'user';
+            
+            // Create confirmation dialog
+            const overlay = document.createElement("div");
+            overlay.className = "dialog-overlay";
+            overlay.innerHTML = `
+                <div class="dialog-box">
+                    <p><strong>Enable Telegram Updates</strong></p>
+                    <p>You will be directed to our Telegram bot to subscribe for all your order notifications.</p>
+                    <p style="font-size: 13px; color: #666; margin-top: 10px;">
+                        You'll receive real-time notifications about all your order statuses, shipping, and deliveries via Telegram.
+                    </p>
+                    <div class="dialog-actions">
+                        <button class="cancel-btn">Cancel</button>
+                        <button class="confirm-btn1" style="background-color: #0088cc;">Continue to Telegram</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            overlay.querySelector(".cancel-btn").addEventListener("click", () => {
+                overlay.remove();
+            });
+
+            overlay.querySelector(".confirm-btn1").addEventListener("click", () => {
+                overlay.remove();
+                // Open Telegram bot with activate command and user email
+                const telegramBotUsername = 'aso123456789_bot'; // Your actual bot username
+                const startParam = `activate_${encodeURIComponent(userEmail)}`;
+                const telegramUrl = `https://t.me/${telegramBotUsername}?start=init`;
+                window.open(telegramUrl, '_blank');
+            });
+        });
+    }
 });
+
+// Transaction History Collapse Functionality
+const transactionHistoryHeader = document.getElementById('transactionHistoryHeader');
+const collapseTransactionBtn = document.getElementById('collapseTransactionBtn');
+const transactionsList = document.getElementById('transactionsList');
+
+if (transactionHistoryHeader && collapseTransactionBtn && transactionsList) {
+    // Set collapsed state on load
+    transactionsList.classList.add('collapsed');
+    collapseTransactionBtn.classList.add('collapsed');
+    
+    transactionHistoryHeader.addEventListener('click', function(e) {
+        // Prevent collapse if clicking on the button itself (to avoid double toggle)
+        if (e.target.closest('.collapse-btn')) return;
+        
+        transactionsList.classList.toggle('collapsed');
+        collapseTransactionBtn.classList.toggle('collapsed');
+    });
+    
+    // Also handle direct button clicks
+    collapseTransactionBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        transactionsList.classList.toggle('collapsed');
+        collapseTransactionBtn.classList.toggle('collapsed');
+    });
+}

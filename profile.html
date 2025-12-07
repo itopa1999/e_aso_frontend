@@ -173,12 +173,14 @@
                 </div>
 
                 <div class="profile-section">
-                    <div class="section-header">
+                    <div class="section-header collapsible-header" id="transactionHistoryHeader">
                         <h2 class="section-title">
                             <i class="fas fa-history"></i> Transaction History
                         </h2>
+                        <button class="collapse-btn" id="collapseTransactionBtn">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
                     </div>
-
                     <!-- <div class="filter-container">
                         <div class="filter-item">
                         <label for="fromDate">From:</label>
@@ -191,8 +193,28 @@
                         <button id="filterBtn">Filter</button>
                     </div> -->
                     
-                    <div class="transactions-list">
+                    <div class="transactions-list" id="transactionsList">
                         
+                    </div>
+                </div>
+
+                <!-- Telegram Notifications Setup -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fab fa-telegram"></i> Telegram Notifications
+                        </h2>
+                    </div>
+                    <div style="background-color: #e8f4f8; padding: 20px; border-radius: 8px; border-left: 4px solid #0088cc;">
+                        <p style="margin: 0 0 15px 0; color: #333; font-size: 14px; line-height: 1.6;">
+                            Get real-time order updates directly on Telegram! Enable notifications to receive instant updates about your order status, shipping, and delivery.
+                        </p>
+                        <button id="enableTelegramProfileBtn" class="btn-telegram" style="background-color: #0088cc; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; font-size: 14px;">
+                            <i class="fab fa-telegram"></i> Connect Telegram
+                        </button>
+                        <p style="margin: 15px 0 0 0; font-size: 12px; color: #666;">
+                            You'll be redirected to our Telegram bot to enable notifications for your orders.
+                        </p>
                     </div>
                 </div>
 
