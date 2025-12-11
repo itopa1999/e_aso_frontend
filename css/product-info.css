@@ -435,3 +435,31 @@
     font-weight: bold;
     color: var(--primary-color);
 }
+
+/* Mannequin Button and Modal */
+.btn-mannequin {
+    flex: 1;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #8a4b38, #a85c47);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.btn-mannequin:hover {
+    background: linear-gradient(135deg, #6f3a2a, #8a4b38);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(138, 75, 56, 0.3);
+}
+
+.btn-mannequin:active {
+    transform: translateY(0);
+}

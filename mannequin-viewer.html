@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mannequin Viewer | Esther's Fabrics Marketplace</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/logo.jpeg">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/mannequin-viewer.css">
+    <style>
+        
+    </style>
+</head>
+<body>
+    <div class="preloader" id="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Loading.....</div>
+        <div class="preloader-dots">
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo"></a>
+            <div class="header-icons">
+                <a href="#" class="icon" id="user-icon">
+                    <i class="fas fa-user"></i>
+                </a>
+                <a href="cart-item.html" class="icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="icon-badge" id="cart-count">0</span>
+                </a>
+            </div>
+            <div class="user-dropdown" id="userDropdown">
+                <div class="user-header">
+                    <div class="user-avatar d-lg-none" id="main-profile-pic">AO</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName"></div>
+                        <div class="user-email" id="userEmail"></div>
+                    </div>
+                </div>
+                
+                <div class="dropdown-items">
+                    
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-section">
+        <div class="breadcrumb-nav">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <span class="separator">/</span>
+            <a href="#" id="productLink"><i class="fas fa-box"></i> <span id="productName">Product</span></a>
+            <span class="separator">/</span>
+            <span>Mannequin View</span>
+        </div>
+    </div>
+
+    <!-- Mannequin Viewer Section -->
+    <section class="mannequin-viewer-section">
+        <div class="viewer-container">
+            <!-- Product Info Card -->
+            <div class="product-info-card">
+                <div class="product-number">
+                    <span class="label">Product ID:</span>
+                    <span class="value" id="productNumber">AO-0000</span>
+                </div>
+                <div class="product-title">
+                    <span class="label">Product:</span>
+                    <span class="value" id="productTitle">Product Name</span>
+                </div>
+
+                <!-- Product Categories -->
+                <div class="product-categories">
+                    <span class="label">Categories:</span>
+                    <div class="categories-list" id="categoriesList"></div>
+                </div>
+
+                <!-- Mannequin Options -->
+                <div class="mannequin-options">
+                    <span class="label">View Options:</span>
+                    <div class="options-grid" id="mannequinOptions"></div>
+                </div>
+
+                <a href="#" id="backToProduct" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to Product
+                </a>
+            </div>
+
+            <!-- Main Viewer -->
+            <div class="viewer-main">
+                <div class="mannequins-grid" id="mannequinsGrid">
+                    <!-- Mannequins will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom Navbar -->
+    <nav class="bottom-navbar">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Home</span>
+        </a>
+        <a href="search-result.html" class="nav-item">
+            <i class="fas fa-search nav-icon"></i>
+            <span>Search</span>
+        </a>
+        <a href="watchlist.html" class="nav-item">
+            <i class="fas fa-heart nav-icon"></i>
+            <span>Wishlist</span>
+            <span class="nav-badge" id="watchlist-count">0</span>
+        </a>
+        <a href="ordered-lists.html" class="nav-item">
+            <i class="fas fa-shopping-bag nav-icon"></i>
+            <span>Orders</span>
+        </a>
+    </nav>
+
+    <button id="goToTopBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/mannequin-viewer.js"></script>
+    <script>
+        
+    </script>
+</body>
+</html>

@@ -372,11 +372,44 @@ function attachWatchlistEvents(id) {
         }
     })
 }
-
 // Thumbnail Gallery Functionality - OPTIMIZED
 document.addEventListener('DOMContentLoaded', function() {
     cacheProductDOM();
     fetchProductDetails();
+
+    // ================== MANNEQUIN VIEWER LINK ==================
+    const mannequinBtn = document.getElementById('viewMannequinBtn');
+    if (mannequinBtn) {
+        mannequinBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Get product info from page
+            const productId = new URLSearchParams(window.location.search).get('id');
+            const productName = document.querySelector('.product-title')?.textContent || document.title;
+            
+            if (productId) {
+                // Store product images in localStorage for mannequin viewer
+                const mainImage = PRODUCT_DOM.mainImage?.style.backgroundImage?.match(/url\(['"]?([^'")]+)['"]?\)/)?.[1] || '';
+                const productImages = Array.from(PRODUCT_DOM.thumbnailContainer?.querySelectorAll('.thumbnail') || [])
+                    .map(thumb => thumb.dataset.imageUrl || thumb.style.backgroundImage?.match(/url\(['"]?([^'")]+)['"]?\)/)?.[1])
+                    .filter(Boolean);
+                
+                // Store in localStorage
+                const mannequinData = {
+                    productId: productId,
+                    productName: productName,
+                    mainImage: mainImage,
+                    images: productImages,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('mannequinProductData', JSON.stringify(mannequinData));
+                
+                const encodedName = encodeURIComponent(productName);
+                window.location.href = `mannequin-viewer.html?id=${productId}&name=${encodedName}`;
+            } else {
+                console.error('Product ID not found');
+            }
+        });
+    }
 
     // Tab functionality with event delegation
     const tabsContainer = document.querySelector('.tabs-container') || document.body;

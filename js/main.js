@@ -355,9 +355,9 @@ document.addEventListener('keydown', (e) => {
 
 });
 
-ADMIN_URL = "http://192.168.0.198:8000/admins/api/admin"
-AUTH_URL = "http://192.168.0.198:8000/auth/api/user" 
-ASO_URL = "http://192.168.0.198:8000/aso/api/product"
+ADMIN_URL = "http://192.168.0.199:8000/admins/api/admin"
+AUTH_URL = "http://192.168.0.199:8000/auth/api/user" 
+ASO_URL = "http://192.168.0.199:8000/aso/api/product"
 
 
 function getStarHTML(rating) {

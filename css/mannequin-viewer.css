@@ -1,0 +1,532 @@
+/* Mannequin Viewer Page Styles */
+
+.mannequin-viewer-section {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 20px;
+    min-height: calc(100vh - 200px);
+}
+
+.viewer-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+/* Product Info Card */
+.product-info-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+}
+
+.product-info-card > div {
+    margin-bottom: 25px;
+}
+
+.product-info-card > div:last-child {
+    margin-bottom: 0;
+}
+
+.product-number,
+.product-title {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.product-number .label,
+.product-title .label {
+    font-weight: 600;
+    color: #777;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.product-number .value,
+.product-title .value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    word-break: break-word;
+}
+
+/* Product Categories */
+.product-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 15px;
+    background: #fafafa;
+    border-radius: 10px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.product-categories .label {
+    font-weight: 600;
+    color: #777;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.categories-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.category-badge {
+    display: inline-block;
+    background: var(--primary-color);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.category-badge:hover {
+    background: #6f3a2a;
+    transform: scale(1.05);
+}
+
+/* Mannequin Options */
+.mannequin-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mannequin-options .label {
+    font-weight: 600;
+    color: #777;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.mannequin-option-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #555;
+    position: relative;
+    overflow: hidden;
+}
+
+.mannequin-option-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--primary-color);
+    opacity: 0.1;
+    transition: left 0.3s ease;
+    z-index: -1;
+}
+
+.mannequin-option-btn:hover {
+    border-color: var(--primary-color);
+    background: #fff9f5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(138, 75, 56, 0.15);
+}
+
+.mannequin-option-btn:hover::before {
+    left: 0;
+}
+
+.mannequin-option-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 6px 16px rgba(138, 75, 56, 0.25);
+}
+
+.mannequin-option-icon {
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.btn-back:hover {
+    background: #6f3a2a;
+    transform: translateX(-5px);
+}
+
+.btn-back i {
+    font-size: 0.9rem;
+}
+
+/* Main Viewer */
+.viewer-main {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.mannequins-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    width: 100%;
+}
+
+.mannequin-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.mannequin-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.mannequin-viewer-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+    border-radius: 0;
+    padding: 20px;
+    overflow: hidden;
+    flex-grow: 1;
+}
+
+.mannequin-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+    cursor: grab;
+    transition: transform 0.2s ease;
+    user-select: none;
+    transform-origin: center;
+}
+
+.mannequin-image:active {
+    cursor: grabbing;
+}
+
+.mannequin-image:hover {
+    box-shadow: 0 0 20px rgba(138, 75, 56, 0.2);
+}
+
+.mannequin-info {
+    padding: 15px;
+    border-top: 1px solid #f0f0f0;
+    text-align: center;
+}
+
+.mannequin-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 12px;
+}
+
+.mannequin-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.mannequin-action-btn:hover {
+    background: #6f3a2a;
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(138, 75, 56, 0.3);
+}
+
+.mannequin-action-btn:active {
+    transform: scale(0.98);
+}
+
+.mannequin-action-btn.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.mannequin-action-btn i {
+    font-size: 1rem;
+}
+
+/* Zoom Tutorial */
+.zoom-tutorial {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(138, 75, 56, 0.95);
+    color: white;
+    padding: 14px 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.9rem;
+    max-width: 280px;
+    z-index: 100;
+    animation: slideDown 0.4s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.zoom-tutorial.hide {
+    animation: slideUp 0.3s ease forwards;
+}
+
+.zoom-tutorial-close {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+}
+
+.zoom-tutorial-content {
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.zoom-tutorial-icon {
+    font-size: 1.3rem;
+    margin-right: 8px;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Zoom Controls */
+.zoom-controls {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px 16px;
+    border-radius: 50px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    z-index: 101;
+    align-items: center;
+}
+
+.zoom-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.zoom-btn:hover {
+    background: #6f3a2a;
+    transform: scale(1.1);
+}
+
+.zoom-btn:active {
+    transform: scale(0.95);
+}
+
+.zoom-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.zoom-level {
+    font-weight: 600;
+    color: var(--dark-color);
+    min-width: 60px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .viewer-container {
+        grid-template-columns: 250px 1fr;
+        gap: 30px;
+    }
+
+    .product-info-card {
+        padding: 20px;
+    }
+
+    .mannequins-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .mannequin-viewer-section {
+        margin: 20px auto;
+        padding: 0 15px;
+    }
+
+    .viewer-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .product-info-card {
+        position: static;
+        top: auto;
+    }
+
+    .mannequins-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .mannequin-viewer-content {
+        aspect-ratio: 3/4;
+    }
+
+    .product-categories {
+        padding: 12px;
+    }
+
+    .options-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .mannequin-viewer-section {
+        margin: 15px auto;
+        padding: 0 10px;
+    }
+
+    .product-number .value,
+    .product-title .value {
+        font-size: 1rem;
+    }
+
+    .mannequins-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .mannequin-viewer-content {
+        aspect-ratio: 3/4;
+        min-height: 300px;
+    }
+
+    .product-info-card > div {
+        margin-bottom: 15px;
+    }
+
+    .options-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .mannequin-option-btn {
+        padding: 12px;
+        font-size: 0.8rem;
+    }
+
+    .mannequin-option-icon {
+        font-size: 1.2rem;
+        margin-bottom: 4px;
+    }
+
+    .categories-list {
+        gap: 6px;
+    }
+
+    .category-badge {
+        padding: 4px 10px;
+        font-size: 0.75rem;
+    }
+
+    .mannequin-label {
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+
+    .mannequin-action-btn {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+}
