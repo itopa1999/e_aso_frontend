@@ -179,6 +179,6 @@ toggle.addEventListener('click', () => {
 }
 
 
-ANALYTICS_URL = "http://127.0.0.1:8000/admins/api/analytics"
-ADMIN_URL = "http://127.0.0.1:8000/admins/api/admin"
-ASO_URL = "http://127.0.0.1:8000/aso/api/product"
+ANALYTICS_URL = "http://192.168.0.200:8000/admins/api/analytics"
+ADMIN_URL = "http://192.168.0.200:8000/admins/api/admin"
+ASO_URL = "http://192.168.0.200:8000/aso/api/product"
