@@ -221,9 +221,22 @@ function setupRestartTourHandler() {
             if (DOM_CACHE.userDropdown) {
                 DOM_CACHE.userDropdown.classList.remove('active');
             }
-            // Restart tour if tour guide exists
-            if (window.tourGuide) {
-                window.tourGuide.restartTour();
+            
+            // Clear tour completion flag to allow restart
+            localStorage.removeItem('esthers-fabrics-tour-completed');
+            
+            // Get current page
+            const currentPage = window.location.pathname;
+            const isIndexPage = currentPage.includes('index.html') || currentPage.endsWith('/');
+            
+            // If not on index page, go to index
+            if (!isIndexPage) {
+                window.location.href = 'index.html';
+            } else {
+                // If already on index, restart tour if it exists
+                if (window.tourGuide) {
+                    window.tourGuide.restartTour();
+                }
             }
         }
     });
@@ -355,9 +368,9 @@ document.addEventListener('keydown', (e) => {
 
 });
 
-ADMIN_URL = "http://192.168.0.199:8000/admins/api/admin"
-AUTH_URL = "http://192.168.0.199:8000/auth/api/user" 
-ASO_URL = "http://192.168.0.199:8000/aso/api/product"
+ADMIN_URL = "http://192.168.0.200:8000/admins/api/admin"
+AUTH_URL = "http://192.168.0.200:8000/auth/api/user" 
+ASO_URL = "http://192.168.0.200:8000/aso/api/product"
 
 
 function getStarHTML(rating) {

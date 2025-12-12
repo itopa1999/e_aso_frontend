@@ -53,6 +53,11 @@ function setupArrowScroll() {
 let allOrders = [];
 let currentStatusFilter = 'all'; // Track current status filter
 let currentSearchQuery = ''; // Track current search query
+let displayedOrders = [];
+let currentPage = 1;
+const ORDERS_PER_PAGE = 20;
+let isLoadingMore = false;
+let hasMoreOrders = true;
 
 // ================== INIT ==================
 document.addEventListener('DOMContentLoaded', () => {
@@ -61,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupFilterButtons();
     setupArrowScroll();
     setupSearchAndFilter();
+    setupInfiniteScroll();
 });
 
 // ================== LOAD ORDERS ==================
@@ -75,6 +81,7 @@ async function loadOrders() {
                 "Accept": "application/json"
             }
         });
+        
 
         if (res.status === 401) {
             window.location.href = "auth.html";
@@ -82,8 +89,15 @@ async function loadOrders() {
         }
 
         const data = await res.json();
+
+        console.log("Orders data received:", data); // Debug log
         allOrders = data.data || [];
-        renderOrders(allOrders);
+        displayedOrders = [];
+        currentPage = 1;
+        hasMoreOrders = true;
+        
+        // Load first page
+        loadMoreOrders();
 
     } catch (error) {
         console.error("Error loading orders:", error);
@@ -94,6 +108,74 @@ async function loadOrders() {
     } finally {
         hidePreloader();
     }
+}
+
+// ================== LOAD MORE ORDERS (PAGINATION) ==================
+function loadMoreOrders() {
+    if (isLoadingMore || !hasMoreOrders) return;
+
+    const filteredOrders = getFilteredOrders();
+    const startIndex = displayedOrders.length;
+    const endIndex = startIndex + ORDERS_PER_PAGE;
+    const newOrders = filteredOrders.slice(startIndex, endIndex);
+
+    if (newOrders.length === 0) {
+        hasMoreOrders = false;
+        showNoMoreOrdersMessage();
+        return;
+    }
+
+    isLoadingMore = true;
+    showPreloader("Loading more orders");
+
+    // Simulate a small delay to show preloader
+    setTimeout(() => {
+        displayedOrders = displayedOrders.concat(newOrders);
+        renderOrdersAppend(newOrders);
+        hidePreloader();
+        isLoadingMore = false;
+
+        // Check if there are more orders to load
+        if (displayedOrders.length >= filteredOrders.length) {
+            hasMoreOrders = false;
+        }
+    }, 300);
+}
+
+// ================== GET FILTERED ORDERS ==================
+function getFilteredOrders() {
+    return allOrders.filter(order => {
+        const status = order.order_status || '';
+        const statusMatches = currentStatusFilter === 'all' || status === currentStatusFilter;
+
+        const orderNumber = order.order_number?.toString() || '';
+        const searchMatches = currentSearchQuery === '' || orderNumber.toLowerCase().includes(currentSearchQuery.toLowerCase());
+
+        return statusMatches && searchMatches;
+    });
+}
+
+// ================== SHOW NO MORE ORDERS MESSAGE ==================
+function showNoMoreOrdersMessage() {
+    const existingMessage = document.getElementById('noMoreOrdersMessage');
+    if (existingMessage) existingMessage.remove();
+
+    const messageDiv = document.createElement('div');
+    messageDiv.id = 'noMoreOrdersMessage';
+    messageDiv.style.cssText = `
+        text-align: center;
+        padding: 40px 20px;
+        color: #999;
+        font-size: 16px;
+        margin-top: 20px;
+    `;
+    messageDiv.innerHTML = `
+        <i class="fas fa-inbox" style="font-size: 40px; margin-bottom: 10px; display: block; color: #ddd;"></i>
+        <p style="margin: 10px 0; font-weight: 500;">No more orders to load</p>
+        <small style="color: #bbb;">You've reached the end of your order history</small>
+    `;
+
+    ORDERS_DOM.ordersContainer.appendChild(messageDiv);
 }
 
 // ================== RENDER ORDERS ==================
@@ -114,6 +196,17 @@ function renderOrders(orders) {
         `;
         return;
     }
+
+    renderOrdersAppend(orders);
+}
+
+// ================== RENDER ORDERS (APPEND) ==================
+function renderOrdersAppend(orders) {
+    if (!ORDERS_DOM.ordersContainer) return;
+
+    // Remove "no more orders" message if it exists
+    const existingMessage = document.getElementById('noMoreOrdersMessage');
+    if (existingMessage) existingMessage.remove();
 
     const fragment = document.createDocumentFragment();
 
@@ -444,4 +537,20 @@ function applyFiltersAndSearch() {
     if (ORDERS_DOM.noOrdersMsg) {
         ORDERS_DOM.noOrdersMsg.style.display = visibleCount === 0 ? 'block' : 'none';
     }
+
+    // Reset displayed orders and reload with filtered results
+    displayedOrders = [];
+    currentStatusFilter = currentStatusFilter; // Maintain filter
+    hasMoreOrders = true;
+    loadMoreOrders();
+}
+
+// ================== INFINITE SCROLL SETUP ==================
+function setupInfiniteScroll() {
+    window.addEventListener('scroll', () => {
+        // Check if user has scrolled to the bottom (within 500px)
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+            loadMoreOrders();
+        }
+    });
 }
