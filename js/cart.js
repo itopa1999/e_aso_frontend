@@ -45,83 +45,10 @@ document.addEventListener('DOMContentLoaded', function() {
             renderSummary(data.data)
 
         } catch (error) {
-            // Show default cart items when server is unreachable
-            showDefaultCartItems();
+            showErrorModal(error.message || "Failed to load cart items.");
         } finally {
             hidePreloader();
         }
-    }
-
-    // Show default cart items when server is unreachable
-    function showDefaultCartItems() {
-        const defaultCartData = {
-            items: [
-                {
-                    id: "cart-default-1",
-                    product: {
-                        id: "default-prod-1",
-                        title: "Sample Product",
-                        main_image: "img/product_image.png",
-                        current_price: 25000
-                    },
-                    quantity: 1,
-                    total_price: 25000
-                }
-            ],
-            subtotal: 25000,
-            delivery_fee: 2000,
-            total: 27000
-        };
-
-        // Show server unreachable message for cart
-        showCartServerUnreachableMessage();
-
-        // Render default cart items
-        renderCartItems(defaultCartData);
-        updateSummary(defaultCartData);
-        renderSummary(defaultCartData);
-    }
-
-    // Show server unreachable message for cart
-    function showCartServerUnreachableMessage() {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'cart-server-unreachable-message';
-        messageDiv.innerHTML = `
-            <div class="cart-server-message-content">
-                <i class="fas fa-wifi-slash"></i>
-                <h4>Cart Service Temporarily Unavailable</h4>
-                <p>Showing sample items while we reconnect to our servers.</p>
-                <button onclick="location.reload()" class="cart-retry-btn">Refresh Cart</button>
-            </div>
-        `;
-
-        // Insert at the top of the cart section
-        const cartSection = document.querySelector('.cart-section') || document.querySelector('.container');
-        if (cartSection) {
-            cartSection.insertBefore(messageDiv, cartSection.firstChild);
-        }
-
-        // Auto-hide after 10 seconds
-        setTimeout(() => {
-            if (messageDiv.parentNode) {
-                messageDiv.remove();
-            }
-        }, 10000);
-    }
-
-    function renderCartItems(data) {
-        CART_DOM.cartContainer.innerHTML = "";
-        if (!data.items || data.items.length === 0) {
-            CART_DOM.cartContainer.innerHTML = `
-                <div class="empty-cart-message">
-                    <i class="fas fa-shopping-cart"></i>
-                    <p>Your cart is empty</p>
-                    <small>Looks like you haven’t added anything yet.</small>
-                    <a href="index.html" class="start-shopping-btn">
-                        <i class="fas fa-store"></i> Start Shopping
-                    </a>
-                </div>
-            `;
             return;
         }
 

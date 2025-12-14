@@ -66,7 +66,7 @@ async function FetchLimitedProducts() {
     try {
         const res = await fetch(`${ASO_URL}/limited-products/`, {
             method: "GET",
-            headers: { 
+            headers: {
                 "Authorization": `Bearer ${access}`,
                 "Accept": "application/json" }
         });
@@ -77,19 +77,6 @@ async function FetchLimitedProducts() {
     } catch (err) {
         showErrorModal("Failed to load limited products. Please refresh the page.");
     }
-}
-
-// Initialize the page
-document.addEventListener('DOMContentLoaded', function() {
-    cacheLimitedDOM();
-    createBubbles();
-    FetchLimitedProducts();
-    checkReferralFeature();
-});
-
-// Create floating bubbles
-function createBubbles() {
-    if (!LIMITED_DOM.bubblesContainer) return;
     const bubblesContainer = LIMITED_DOM.bubblesContainer;
     const bubbleCount = 15;
     

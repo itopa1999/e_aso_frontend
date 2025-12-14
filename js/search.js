@@ -64,98 +64,10 @@ async function loadLists() {
         const data = await res.json();
         renderList(data);
     } catch (error) {
-        // Show default products when server is unreachable
-        showDefaultSearchProducts();
+        showErrorModal("Failed to load search results. Please try again.");
     } finally {
         hidePreloader();
     }
-}
-
-// Show default products when server is unreachable on search page
-function showDefaultSearchProducts() {
-    const defaultProducts = [
-        {
-            id: "search-default-1",
-            title: "Wireless Bluetooth Earbuds",
-            short_description: "Premium sound quality with active noise cancellation",
-            current_price: 35000,
-            original_price: 45000,
-            discount_percent: 22,
-            rating: 4.4,
-            reviews_count: 95,
-            main_image: "img/product_image.png",
-            badge: "Trending",
-            cart_added: false,
-            watchlisted: false
-        },
-        {
-            id: "search-default-2",
-            title: "Smart Home Security Camera",
-            short_description: "4K HD camera with night vision and motion detection",
-            current_price: 55000,
-            original_price: 70000,
-            discount_percent: 21,
-            rating: 4.6,
-            reviews_count: 142,
-            main_image: "img/product_image.png",
-            badge: "Security",
-            cart_added: false,
-            watchlisted: false
-        },
-        {
-            id: "search-default-3",
-            title: "Portable Power Bank 20000mAh",
-            short_description: "Fast charging power bank with multiple USB ports",
-            current_price: 18000,
-            original_price: 25000,
-            discount_percent: 28,
-            rating: 4.2,
-            reviews_count: 78,
-            main_image: "img/product_image.png",
-            badge: "Portable",
-            cart_added: false,
-            watchlisted: false
-        }
-    ];
-
-    // Create a mock response object
-    const mockData = {
-        results: defaultProducts,
-        next: null
-    };
-
-    // Show server unreachable message
-    showSearchServerUnreachableMessage();
-
-    // Render default products
-    renderList(mockData);
-}
-
-// Show server unreachable message for search page
-function showSearchServerUnreachableMessage() {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'search-server-unreachable-message';
-    messageDiv.innerHTML = `
-        <div class="search-server-message-content">
-            <i class="fas fa-wifi-slash"></i>
-            <h4>Search Service Temporarily Unavailable</h4>
-            <p>Showing featured products while we reconnect. Your search will be available shortly.</p>
-            <button onclick="location.reload()" class="search-retry-btn">Refresh Search</button>
-        </div>
-    `;
-
-    // Insert before the product grid
-    const productGrid = document.querySelector('.product-grid') || document.querySelector('.products-container');
-    if (productGrid) {
-        productGrid.parentNode.insertBefore(messageDiv, productGrid);
-    }
-
-    // Auto-hide after 8 seconds
-    setTimeout(() => {
-        if (messageDiv.parentNode) {
-            messageDiv.remove();
-        }
-    }, 8000);
 }
 
 function buildQueryParams() {

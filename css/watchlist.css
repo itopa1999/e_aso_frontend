@@ -330,13 +330,14 @@
     .products-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .watchlist-actions {
         flex-direction: column;
     }
-    
+
     .action-btn {
         width: 100%;
         justify-content: center;
     }
 }
+
