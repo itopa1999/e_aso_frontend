@@ -266,7 +266,9 @@ function loadAllFeedback() {
                         this.style.color = 'white';
                         this.setAttribute('data-done', 'true');
                     })
-                    .catch(err => console.error('Error marking done:', err))
+                    .catch(err => {
+                        // Silently fail for marking done
+                    })
                     .finally(() => {
                         hidePreloader();
                     });
@@ -275,7 +277,6 @@ function loadAllFeedback() {
         });
     })
     .catch(error => {
-        console.error('Error loading feedback data:', error);
         feedbackLoader.style.display = 'none';
     })
     .finally(() => {

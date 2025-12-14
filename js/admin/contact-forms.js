@@ -31,13 +31,12 @@ async function fetchContactForms() {
 
         const data = await response.json();
         contactForms = data.data || [];
-        console.log("Fetched contact forms:", contactForms);
 
         // Render AFTER fetching
         renderContactForms(contactForms);
 
     } catch (error) {
-        console.error("Error fetching contact forms:", error);
+        showErrorModal("Failed to load contact forms. Please refresh the page.");
     } finally {
         hidePreloader();
     }

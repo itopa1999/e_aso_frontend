@@ -37,19 +37,76 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             if (response.status === 401) return;
-            
+
 
             const data = await response.json();
             renderCartItems(data.data);
             updateSummary(data.data);
             renderSummary(data.data)
-            
+
         } catch (error) {
-            console.error('Error fetching cart items:', error);
-            showErrorModal(error.message || "Failed to load cart items.");
+            // Show default cart items when server is unreachable
+            showDefaultCartItems();
         } finally {
             hidePreloader();
         }
+    }
+
+    // Show default cart items when server is unreachable
+    function showDefaultCartItems() {
+        const defaultCartData = {
+            items: [
+                {
+                    id: "cart-default-1",
+                    product: {
+                        id: "default-prod-1",
+                        title: "Sample Product",
+                        main_image: "img/product_image.png",
+                        current_price: 25000
+                    },
+                    quantity: 1,
+                    total_price: 25000
+                }
+            ],
+            subtotal: 25000,
+            delivery_fee: 2000,
+            total: 27000
+        };
+
+        // Show server unreachable message for cart
+        showCartServerUnreachableMessage();
+
+        // Render default cart items
+        renderCartItems(defaultCartData);
+        updateSummary(defaultCartData);
+        renderSummary(defaultCartData);
+    }
+
+    // Show server unreachable message for cart
+    function showCartServerUnreachableMessage() {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'cart-server-unreachable-message';
+        messageDiv.innerHTML = `
+            <div class="cart-server-message-content">
+                <i class="fas fa-wifi-slash"></i>
+                <h4>Cart Service Temporarily Unavailable</h4>
+                <p>Showing sample items while we reconnect to our servers.</p>
+                <button onclick="location.reload()" class="cart-retry-btn">Refresh Cart</button>
+            </div>
+        `;
+
+        // Insert at the top of the cart section
+        const cartSection = document.querySelector('.cart-section') || document.querySelector('.container');
+        if (cartSection) {
+            cartSection.insertBefore(messageDiv, cartSection.firstChild);
+        }
+
+        // Auto-hide after 10 seconds
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.remove();
+            }
+        }, 10000);
     }
 
     function renderCartItems(data) {
@@ -237,14 +294,19 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(data => {
-                if (data.is_success)
+                if (data.is_success) {
                     badge.textContent = 0;
                     renderCartItems({ items: [] });
+                } else {
+                    showErrorModal('Failed to clear cart. Please try again.');
+                }
             })
-            .catch(error => console.error('Error:', error))
+            .catch(error => {
+                showErrorModal('Failed to clear cart. Please try again.');
+            })
             .finally(() => {
                 hidePreloader();
-            });;
+            });
         });
     }
 
@@ -270,15 +332,22 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify(descData)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update description');
+            }
+            return response.json();
+        })
         .then(data => {
             fetchCartItems();
             document.getElementById('editModal').classList.add('hidden');
         })
-        .catch(error => console.error('Error:', error))
+        .catch(error => {
+            showErrorModal('Failed to update description. Please try again.');
+        })
         .finally(() => {
             hidePreloader();
-        });;
+        });
     });
 
 
@@ -352,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fetchCartItems();
         })
         .catch((error) => {
-            showErrorModal(error.message || "Error updating quantity.");
+            showErrorModal('Failed to update cart. Please try again.');
         })
         .finally(() => {
             hidePreloader();
@@ -385,7 +454,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fetchCartItems();
         })
         .catch((error) => {
-            showErrorModal(error.message || "Error removing item.");
+            showErrorModal('Failed to remove item. Please try again.');
         })
         .finally(() => {
             hidePreloader();
@@ -439,7 +508,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 referralSection.style.display = "none";
             }
         } catch (err) {
-            console.error("Feature flag check failed:", err);
             document.querySelector(".referral-code-section").style.display = "none";
         }
     }
@@ -503,7 +571,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             fetchCartItems()
         } catch (error) {
-            console.error('Error updating state:', error);
+            // Error updating state - silently fail
         } finally {
             hidePreloader();
         }
@@ -547,7 +615,6 @@ applyReferralBtn.addEventListener("click", async () => {
             referralFeedback.style.color = "red";
         }
     } catch (err) {
-        console.error("Referral validation failed:", err);
         referralFeedback.textContent = "⚠️ Could not verify code. Try again.";
         referralFeedback.style.color = "red";
     }
@@ -788,7 +855,6 @@ async function submitOrder(firstName, lastName, address, city, state, phone, alt
             });
         }
     } catch (err) {
-        console.error('Order error:', err);
         showErrorModal(err.message || 'An error occurred. Please try again.');
     } finally {
         hidePreloader();
@@ -797,18 +863,34 @@ async function submitOrder(firstName, lastName, address, city, state, phone, alt
 
 
 async function loadStates() {
-    const res = await fetch(`${ASO_URL}/delivery-fees/`);
-    const data = await res.json();
-
-    const select = document.getElementById("stateSelect");
-    data.delivery_fees.forEach(item => {
-      const option = document.createElement("option");
-      option.value = item.state;
-      option.setAttribute("data-fee", item.fee);
-      option.textContent = item.state;
-      select.appendChild(option);
-    });
-  }
+    try {
+        const res = await fetch(`${ASO_URL}/delivery-fees/`);
+        if (!res.ok) {
+            throw new Error('Failed to load delivery fees');
+        }
+        const data = await res.json();
+        if (!data || !data.delivery_fees || !Array.isArray(data.delivery_fees)) {
+            throw new Error('Invalid delivery fees data format');
+        }
+        const select = document.getElementById("stateSelect");
+        if (!select) {
+            throw new Error('State select element not found');
+        }
+        data.delivery_fees.forEach(item => {
+            if (!item.state || item.fee === undefined) {
+                // skip invalid
+                return;
+            }
+            const option = document.createElement("option");
+            option.value = item.state;
+            option.setAttribute("data-fee", item.fee);
+            option.textContent = item.state;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        showErrorModal('Failed to load delivery locations. Please refresh the page.');
+    }
+}
 
   function showShippingFee() {
     const select = document.getElementById("stateSelect");

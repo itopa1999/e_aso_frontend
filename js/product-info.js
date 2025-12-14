@@ -52,7 +52,7 @@ async function fetchProductDetails() {
         const data = await response.json();
         renderProductDetails(data);
     } catch (error) {
-        console.log("Failed to load product details items.", error);
+        showErrorModal("Failed to load product details. Please refresh the page.");
     } finally {
         hidePreloader();
     }
@@ -320,7 +320,6 @@ function attachCartEvents(id) {
             addToCartBtn.style.cursor = "not-allowed";
         
         } catch (error) {
-            console.error(error);
             showErrorModal(error.message || "Error moving items to cart.");
         } finally {
             hidePreloader();

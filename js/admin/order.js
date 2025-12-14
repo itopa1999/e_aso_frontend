@@ -46,7 +46,7 @@ async function filterProducts() {
         const data = await response.json();
         renderOrders(data.results);
     } catch (error) {
-        console.error("Error fetching orders:", error);
+        showErrorModal("Failed to load orders. Please refresh the page.");
     } finally{
         hidePreloader()
     }
@@ -249,7 +249,6 @@ function showOrderDetail(order) {
             }
         } catch (error) {
             showErrorModal(error.message || 'Error connecting to the server.');
-            console.error(error);
         } finally {
             hidePreloader()
         }

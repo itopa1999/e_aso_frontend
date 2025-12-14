@@ -450,6 +450,9 @@ function renderBadgeButtons(data) {
 // =========================
 // API CALLS
 // =========================
+// =========================
+// API CALLS
+// =========================
 async function loadLists() {
     showPreloader("Loading shopping items");
     try {
@@ -463,10 +466,138 @@ async function loadLists() {
         const data = await res.json();
         renderList(data);
     } catch (error) {
-        console.error("Error loading products:", error);
+        // Show default products when server is unreachable
+        showDefaultProducts();
     } finally {
         hidePreloader();
     }
+}
+
+// Show default products when server is unreachable
+function showDefaultProducts() {
+    const defaultProducts = [
+        {
+            id: "default-1",
+            title: "Premium Wireless Headphones",
+            short_description: "High-quality wireless headphones with noise cancellation",
+            current_price: 45000,
+            original_price: 55000,
+            discount_percent: 18,
+            rating: 4.5,
+            reviews_count: 128,
+            main_image: "img/product_image.png",
+            badge: "New",
+            cart_added: false,
+            watchlisted: false
+        },
+        {
+            id: "default-2",
+            title: "Smart Fitness Watch",
+            short_description: "Track your fitness goals with advanced health monitoring",
+            current_price: 75000,
+            original_price: 95000,
+            discount_percent: 21,
+            rating: 4.2,
+            reviews_count: 89,
+            main_image: "img/product_image.png",
+            badge: "Popular",
+            cart_added: false,
+            watchlisted: false
+        },
+        {
+            id: "default-3",
+            title: "Professional Camera Lens",
+            short_description: "85mm f/1.4 portrait lens for professional photography",
+            current_price: 120000,
+            original_price: 150000,
+            discount_percent: 20,
+            rating: 4.8,
+            reviews_count: 67,
+            main_image: "img/product_image.png",
+            badge: "Pro",
+            cart_added: false,
+            watchlisted: false
+        },
+        {
+            id: "default-4",
+            title: "Gaming Mechanical Keyboard",
+            short_description: "RGB backlit mechanical keyboard with blue switches",
+            current_price: 35000,
+            original_price: 45000,
+            discount_percent: 22,
+            rating: 4.3,
+            reviews_count: 156,
+            main_image: "img/product_image.png",
+            badge: "Gaming",
+            cart_added: false,
+            watchlisted: false
+        },
+        {
+            id: "default-5",
+            title: "Wireless Charging Pad",
+            short_description: "Fast wireless charging for all Qi-enabled devices",
+            current_price: 12000,
+            original_price: 15000,
+            discount_percent: 20,
+            rating: 4.0,
+            reviews_count: 203,
+            main_image: "img/product_image.png",
+            badge: null,
+            cart_added: false,
+            watchlisted: false
+        },
+        {
+            id: "default-6",
+            title: "Bluetooth Speaker",
+            short_description: "Portable waterproof speaker with 360° sound",
+            current_price: 25000,
+            original_price: 35000,
+            discount_percent: 29,
+            rating: 4.1,
+            reviews_count: 94,
+            main_image: "img/product_image.png",
+            badge: "Waterproof",
+            cart_added: false,
+            watchlisted: false
+        }
+    ];
+
+    // Create a mock response object
+    const mockData = {
+        results: defaultProducts,
+        next: null
+    };
+
+    // Show server unreachable message
+    showServerUnreachableMessage();
+
+    // Render default products
+    renderList(mockData);
+}
+
+// Show server unreachable message
+function showServerUnreachableMessage() {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'server-unreachable-message';
+    messageDiv.innerHTML = `
+        <div class="server-message-content">
+            <i class="fas fa-wifi-slash"></i>
+            <h4>Server Temporarily Unavailable</h4>
+            <p>We're showing you some featured products while we reconnect to our servers.</p>
+            <button onclick="location.reload()" class="retry-btn">Try Again</button>
+        </div>
+    `;
+
+    // Insert at the top of the page content
+    const mainContent = document.querySelector('.container') || document.body;
+    mainContent.insertBefore(messageDiv, mainContent.firstChild);
+
+    // Auto-hide after 10 seconds
+    setTimeout(() => {
+        if (messageDiv.parentNode) {
+            messageDiv.remove();
+        }
+    }, 10000);
 }
 
 async function loadCats() {
@@ -476,7 +607,7 @@ async function loadCats() {
         renderCatButtons(data);
         renderBadgeButtons(data)
     } catch (error) {
-        console.error("Error loading categories:", error);
+        showErrorModal("Failed to load categories. Please refresh the page.");
     }
 }
 
@@ -516,7 +647,6 @@ function setupEventDelegation() {
                 cartBtn.disabled = true;
                 cartBtn.style.cursor = "not-allowed";
             } catch (error) {
-                console.error(error);
                 showErrorModal(error.message || "Error moving items to cart.");
             } finally {
                 hidePreloader();
@@ -558,7 +688,6 @@ function setupEventDelegation() {
                 }
                 DOM.wishlistBadge.textContent = count;
             } catch (error) {
-                console.error(error);
                 showErrorModal(error.message || "Failed to update wishlist.");
             } finally {
                 hidePreloader();
@@ -603,7 +732,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             console.warn("No hero banner found");
         }
     } catch (err) {
-        console.error("Error loading hero banner:", err);
+        showErrorModal("Failed to load hero banner. Some features may not work properly.");
     }
 
     loadLists();
@@ -696,7 +825,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     const data = await res.json();
                     renderList(data, true);
                 } catch (err) {
-                    console.error("Error loading more products:", err);
+                    showErrorModal("Failed to load more products. Please try again.");
                 } finally {
                     isLoadingMore = false;
                     hidePreloader();

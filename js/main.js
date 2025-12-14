@@ -368,9 +368,9 @@ document.addEventListener('keydown', (e) => {
 
 });
 
-ADMIN_URL = "http://192.168.0.200:8000/admins/api/admin"
-AUTH_URL = "http://192.168.0.200:8000/auth/api/user" 
-ASO_URL = "http://192.168.0.200:8000/aso/api/product"
+ADMIN_URL = "http://127.0.0.1:8000/admins/api/admin"
+AUTH_URL = "http://127.0.0.1:8000/auth/api/user" 
+ASO_URL = "http://127.0.0.1:8000/aso/api/product"
 
 
 function getStarHTML(rating) {
@@ -443,7 +443,7 @@ async function updateCartAndWatchlistCounts() {
         document.getElementById("cart-count").textContent = data.item_count;
         document.getElementById("watchlist-count").textContent = data.watchlist_count;
     } catch (error) {
-        console.error("Error fetching cart/watchlist counts:", error);
+        // Silently fail for cart/watchlist counts
     }
 }
 

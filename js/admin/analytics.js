@@ -10,7 +10,7 @@ async function loadCats() {
         const data = await res.json();
         renderCatButtons(data);
     } catch (error) {
-        console.error("Error loading categories:", error);
+        showErrorModal("Failed to load categories. Please refresh the page.");
     }
 }
 
@@ -613,7 +613,6 @@ async function loadOrderFulfillment(queryParams) {
         }
         
     } catch (error) {
-        console.error('Error loading order fulfillment:', error);
         document.getElementById('fulfillment-loader').style.display = 'none';
         document.getElementById('fulfillment-content').innerHTML = 
             '<div style="text-align: center; padding: 50px; color: #dc3545;">Error loading fulfillment data</div>';

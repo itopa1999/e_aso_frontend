@@ -136,7 +136,6 @@ const emptyState = document.getElementById('empty-state');
                     processTransactionsResponse(data);
                 })
                 .catch(error => {
-                    console.error('Error loading transactions:', error);
                     transactionsLoader.style.display = 'none';
                     emptyState.innerHTML = `
                         <i class="fas fa-exclamation-triangle"></i>
@@ -153,8 +152,6 @@ const emptyState = document.getElementById('empty-state');
             // Hide loader
             transactionsLoader.style.display = 'none';
 
-            console.log('Transactions response:', response.results.data);
-            
             // Extract transactions data
             const transactions = response.results.data;
             const totalCount = response.count;

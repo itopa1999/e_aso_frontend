@@ -36,7 +36,6 @@ async function fetchDashboardInfo() {
             showErrorModal(data.error || "Unable to fetch data: Unknown error");
         }
     } catch (error) {
-        console.error("Fetch error:", error);
         showErrorModal(error.message || "Failed to fetch data.");
     } finally {
         hidePreloader();

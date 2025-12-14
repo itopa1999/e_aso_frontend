@@ -90,17 +90,20 @@ async function loadOrders() {
 
         const data = await res.json();
 
-        console.log("Orders data received:", data); // Debug log
-        allOrders = data.data || [];
+        // allOrders = data.data || [];
+        if (!data || !Array.isArray(data.data)) {
+            showErrorModal('Failed to load your orders. Please refresh the page.');
+            allOrders = [];
+        } else {
+            allOrders = data.data;
+        }
         displayedOrders = [];
         currentPage = 1;
         hasMoreOrders = true;
-        
         // Load first page
         loadMoreOrders();
 
     } catch (error) {
-        console.error("Error loading orders:", error);
         if (ORDERS_DOM.ordersContainer) {
             ORDERS_DOM.ordersContainer.innerHTML = "<p>Failed to load orders. Please try again.</p>";
         }
@@ -330,19 +333,16 @@ function setupOrdersDelegation() {
                 }
 
                 const data = await response.json();
-                console.log("Tracking data received:", data); // Debug log
 
                 if (!data.data) {
-                    throw new Error("Invalid tracking data structure");
+                    showErrorModal("Tracking information is not available for this order. Please try again later.");
+                    return;
                 }
 
                 headerTitle.textContent = `Tracking Information for Order ${data.data.order_number || orderId}`;
 
                 const trackingList = data.data.tracking || [];
-                console.log("Tracking list:", trackingList); // Debug log
                 if (trackingList.length === 0) {
-                    console.warn("No tracking info available for order:", orderId);
-                    // Show message to user
                     showErrorModal("Tracking information is not yet available for this order. Please check back later.");
                     return;
                 }
@@ -360,7 +360,7 @@ function setupOrdersDelegation() {
                 const stepDesc = step.querySelector('.step-description');
 
                 if (!stepTitle || !stepDate || !stepDesc) {
-                    console.error(`Step ${index} missing text elements`);
+                    // skip if structure is wrong
                     return;
                 }
 
@@ -379,7 +379,6 @@ function setupOrdersDelegation() {
                         stepDate.textContent = date;
                         stepDesc.textContent = matchingTrack.description || "Updated";
                     } catch (e) {
-                        console.error("Error processing tracking data:", e);
                         stepTitle.textContent = capitalizeWords(statusOrder[index].replace(/_/g, " "));
                         stepDate.textContent = "";
                         stepDesc.textContent = "";
@@ -396,7 +395,7 @@ function setupOrdersDelegation() {
             progressBar.style.height = `${percent}%`;
 
             } catch (error) {
-                console.error(error);
+                showErrorModal("Failed to load tracking information. Please try again later.");
             } finally {
                 hidePreloader();
             }

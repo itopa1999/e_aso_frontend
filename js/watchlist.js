@@ -41,7 +41,7 @@ async function loadLists() {
         const data = await res.json();
         renderList(data.data);
     } catch (error) {
-        console.error("Error loading watchlists:", error);
+        showErrorModal("Failed to load watchlist. Please refresh the page.");
     } finally {
         hidePreloader();
     }
@@ -159,7 +159,6 @@ function setupCartDelegation() {
             btn.style.cursor = "not-allowed";
 
         } catch (error) {
-            console.error(error);
             showErrorModal(error.message || "Error moving items to cart.");
         } finally {
             hidePreloader();
@@ -196,7 +195,6 @@ function setupWatchlistDelegation() {
                 showEmptyWatchlist();
             }
         } catch (error) {
-            console.error(error);
             showErrorModal(error.message || "Failed to remove from watchlist.");
         } finally {
             hidePreloader();
@@ -260,7 +258,6 @@ if (WATCHLIST_DOM.clearAllBtn) {
         showEmptyWatchlist();
 
     } catch (error) {
-        console.error(error);
         showErrorModal(error.message || "Failed to remove watchlist.");
     } finally {
         hidePreloader();
@@ -343,7 +340,6 @@ if (WATCHLIST_DOM.moveAllBtn) {
         }, 3000);
 
     } catch (error) {
-        console.error(error);
         showErrorModal(error.message || "Error moving items to cart.");
     } finally {
         hidePreloader();

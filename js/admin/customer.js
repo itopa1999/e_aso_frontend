@@ -46,7 +46,7 @@ async function filterProducts() {
         const data = await response.json();
         renderCustomers(data.results);
     } catch (error) {
-        console.error("Error fetching customers:", error);
+        showErrorModal("Failed to load customers. Please refresh the page.");
     } finally{
         hidePreloader()
     }

@@ -114,7 +114,6 @@ async function loadAnalysisData(email = null) {
             showError("Failed to load analysis data");
         }
     } catch (error) {
-        console.error('Error loading analysis:', error);
         showError("Unable to load analysis data. Please try again.");
     } finally {
         hidePreloader();

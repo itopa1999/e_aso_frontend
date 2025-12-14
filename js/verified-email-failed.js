@@ -1,4 +1,4 @@
-AUTH_URL = "http://192.168.0.200:8000/auth/api/user"
+AUTH_URL = "http://127.0.0.1:8000/auth/api/user"
 document.addEventListener('DOMContentLoaded', function() {
     // Simulate a slight delay for verification
     setTimeout(() => {
@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             } catch (err) {
                 showNotification('error', 'Network Error', 'Unable to reach the server. Please try again later.');
-                console.error(err);
             } finally {
                 setTimeout(() => {
                     this.innerHTML = '<i class="fas fa-paper-plane"></i> Resend Verification Email';

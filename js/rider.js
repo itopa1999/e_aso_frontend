@@ -3,7 +3,7 @@ if (!accessToken) {
     window.location.href = "404.html";
 }
 
-RIDER_URL = "http://192.168.0.200:8000/rider/api";
+RIDER_URL = "http://127.0.0.1:8000/rider/api";
 
 // DOM CACHE FOR PERFORMANCE
 const RIDER_DOM = {
@@ -72,7 +72,6 @@ async function fetchRiderInfo(url = `${RIDER_URL}/rider/`, append = false, searc
             showErrorModal(data.error || "Unable to fetch profile: Unknown error");
         }
     } catch (error) {
-        console.error("Fetch error:", error);
         showErrorModal(error.message || "Failed to fetch user profile.");
     } finally {
         hidePreloader();
@@ -271,7 +270,6 @@ function openDetails(orderNumber) {
         }
     })
     .catch(error => {
-        console.error("unable to connect to server", error);
         showErrorModal(error.message || "Network error. Unable to connect to server.");
     })
     .finally(() => {
@@ -427,7 +425,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('Error sending OTP:', error);
             orderError.innerHTML = `<i class="fas fa-exclamation-circle"></i> Something went wrong. Please try again.`;
             orderError.style.display = 'block';
         })
@@ -555,7 +552,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('Error verifying OTP:', error);
             otpError.style.display = 'block';
         })
         .finally(() => {
@@ -634,7 +630,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('Error marking delivery complete:', error);
             showErrorModal(error.message || "An error occurred while marking delivery complete");
         })
         .finally(() => {

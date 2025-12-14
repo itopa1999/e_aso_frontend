@@ -1,4 +1,4 @@
-ASO_URL = "http://192.168.0.200:8000/aso/api/product";
+ASO_URL = "http://127.0.0.1:8000/aso/api/product";
 
 // DOM CACHE
 const LIMITED_DOM = {
@@ -53,12 +53,12 @@ async function checkReferralFeature() {
 
         
         if (result?.data === true) {
-            console.log("Feature flag response:");
+            // Feature flag enabled
         } else {
             window.location.href = "404.html";
         }
     } catch (err) {
-        console.error("Feature flag check failed:", err);
+        showErrorModal("This page is currently unavailable.");
     }
 }
 
@@ -75,7 +75,7 @@ async function FetchLimitedProducts() {
         startCountdown();
 
     } catch (err) {
-        console.error("fetch limited products failed", err);
+        showErrorModal("Failed to load limited products. Please refresh the page.");
     }
 }
 
@@ -223,7 +223,6 @@ function setupLimitedDelegation() {
                 btn.disabled = true;
                 btn.style.cursor = "not-allowed";
             } catch (error) {
-                console.error(error);
                 showErrorModal(error.message || "Error moving items to cart.");
             }
     });

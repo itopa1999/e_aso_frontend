@@ -67,11 +67,9 @@ async function fetchOrderDetails() {
         if (!response.ok) throw new Error("Failed to fetch order");
 
         const data = await response.json();
-        console.log(data);
         renderOrderDetails(data.data);
         
     } catch (error) {
-        console.error(error);
         showErrorModal(error.message || "Failed to load order");
     }
     finally{
@@ -298,7 +296,6 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.background = '#28a745';
 
             } catch (error) {
-                console.error(error);
                 showErrorModal(error.message || "Failed to reorder items");
                 this.innerHTML = '<i class="fas fa-exclamation-circle"></i> Try Again';
                 this.style.background = '#dc3545';

@@ -50,8 +50,7 @@ async function checkReferralFeature() {
             referralSection.style.display = "none";
         }
     } catch (err) {
-        console.error("Feature flag check failed:", err);
-        document.querySelector(".referral-section").style.display = "none";
+        showErrorModal("Referral feature is currently unavailable.");
     }
 }
 
@@ -99,7 +98,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             showErrorModal(data.error || "Unable to fetch profile: Unknown error");
         }
     } catch (error) {
-        console.error("Fetch error:", error);
         showErrorModal(error.message || "Failed to fetch user profile.");
     } finally {
         hidePreloader();
@@ -328,7 +326,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
 
         } catch (err) {
-            console.error("Update error:", err);
             showErrorModal(err.message || "Something went wrong while updating profile.");
         } finally {
             loadingIndicator.remove();

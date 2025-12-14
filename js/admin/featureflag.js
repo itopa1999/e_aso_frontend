@@ -75,8 +75,6 @@ function toggleFlagStatus(flagId, currentStatus) {
     const toggleElement = document.querySelector(`[data-toggle-id="${flagId}"]`);
 
     toggleElement.checked = newStatus;
-
-    console.log(`Toggling flag ${flagId} to ${newStatus}`);
 }
 
 // Load feature flags from API
@@ -102,7 +100,6 @@ function loadFeatureFlags() {
         processFlagsResponse(data);
     })
     .catch(error => {
-        console.error('Error loading feature flags:', error);
         flagsLoader.style.display = 'none';
         emptyState.innerHTML = `
             <i class="fas fa-exclamation-triangle"></i>

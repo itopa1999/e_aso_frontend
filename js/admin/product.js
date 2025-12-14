@@ -39,7 +39,7 @@ async function loadCats() {
         populateCategoryFilter(filteredCategories);
         populateBadgeFilter(filteredBadges);
     } catch (error) {
-        console.error("Error loading categories:", error);
+        showErrorModal("Failed to load categories. Please refresh the page.");
     }
 }
 
@@ -169,7 +169,7 @@ async function filterProducts() {
         // Update your UI with the filtered products
         renderProducts(data.results);
     } catch (error) {
-        console.error("Error fetching products:", error);
+        showErrorModal("Failed to load products. Please refresh the page.");
     } finally{
         hidePreloader()
     }

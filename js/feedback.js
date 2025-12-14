@@ -17,12 +17,12 @@ async function checkReferralFeature() {
 
         
         if (result?.data === true) {
-            console.log("Feature flag response:");
+            // Feature flag enabled
         } else {
             window.location.href = "404.html";
         }
     } catch (err) {
-        console.error("Feature flag check failed:", err);
+        showErrorModal("This page is currently unavailable.");
     }
 }
 
