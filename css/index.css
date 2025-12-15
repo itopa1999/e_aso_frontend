@@ -972,3 +972,446 @@
   border-radius: 12px;
 }
 
+/* Featured Products Status Widget */
+.featured-products-section {
+    margin: 30px 0;
+}
+
+.whatsapp-product-status {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+}
+
+/* Main container */
+.status-widget {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin: 20px auto;
+   
+}
+
+/* Header */
+.status-header {
+    background-color: #f9f5f0;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e8d0b3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+}
+
+.header-subtitle {
+    font-size: 13px;
+    color: #8696a0;
+    margin-top: 2px;
+}
+
+.view-all {
+    color: var(--accent-color);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.view-all:hover {
+    color: #06cf9f;
+    text-decoration: underline;
+}
+
+/* Status circles container */
+.status-circles-container {
+    padding: 20px;
+    display: flex;
+    overflow-x: auto;
+    gap: 24px;
+    background-color: #faf8f5;
+    scrollbar-width: thin;
+    scrollbar-color: #d4a373 #faf8f5;
+}
+
+.status-circles-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.status-circles-container::-webkit-scrollbar-track {
+    background: #faf8f5;
+    border-radius: 3px;
+}
+
+.status-circles-container::-webkit-scrollbar-thumb {
+    background-color: #d4a373;
+    border-radius: 3px;
+}
+
+/* Individual status circle */
+.status-circle-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.status-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 3px solid var(--accent-color);
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-color: #f9f5f0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.status-circle:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 15px rgba(0, 168, 132, 0.5);
+}
+
+/* Discount banner */
+.discount-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: linear-gradient(135deg, #ff3b30 0%, #ff9500 100%);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 10px;
+    z-index: 2;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Status name */
+.status-name {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 13px;
+    color: #8696a0;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.status-price {
+    font-size: 12px;
+    color: var(--accent-color);
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+/* Modal overlay */
+.status-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Modal content */
+.status-modal {
+    background-color: #ffffff;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(74, 44, 42, 0.2);
+    animation: slideUp 0.4s ease;
+    position: relative;
+}
+
+/* Modal header */
+.modal-header {
+    padding: 18px 20px;
+    background-color: #f9f5f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e8d0b3;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #4a2c2a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: #8696a0;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.close-modal:hover {
+    color: #8a4b38;
+}
+
+/* Image carousel */
+.image-carousel {
+    width: 100%;
+    height: 320px;
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease;
+    height: 100%;
+}
+
+.carousel-slide {
+    min-width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-color: #f9f5f0;
+}
+
+/* Carousel controls */
+.carousel-controls {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    pointer-events: none;
+}
+
+.carousel-btn {
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: all;
+    transition: background-color 0.3s;
+    font-size: 18px;
+}
+
+.carousel-btn:hover {
+    background-color: rgba(138, 75, 56, 0.1);
+}
+
+/* Image indicators */
+.carousel-indicators {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.indicator.active {
+    background-color: var(--accent-color);
+    transform: scale(1.2);
+}
+
+/* Product info */
+.product-info {
+    padding: 20px;
+}
+
+.product-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: #4a2c2a;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.product-price {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.current-price {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.original-price {
+    font-size: 16px;
+    color: #666;
+    text-decoration: line-through;
+}
+
+.product-description {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+/* Action buttons */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #06cf9f;
+}
+
+.btn-secondary {
+    background-color: #2a3942;
+    color: white;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #3a4952;
+}
+
+/* Swipe hint */
+.swipe-hint {
+    text-align: center;
+    color: #8696a0;
+    font-size: 13px;
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-top: 1px solid #2a3942;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .status-circle {
+        width: 65px;
+        height: 65px;
+    }
+
+    .status-name {
+        font-size: 12px;
+        max-width: 70px;
+    }
+
+    .image-carousel {
+        height: 280px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .btn {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 400px) {
+    .status-circle {
+        width: 60px;
+        height: 60px;
+    }
+
+    .status-circles-container {
+        gap: 18px;
+    }
+
+    .image-carousel {
+        height: 250px;
+    }
+}
+

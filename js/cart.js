@@ -49,6 +49,19 @@ document.addEventListener('DOMContentLoaded', function() {
         } finally {
             hidePreloader();
         }
+    }
+
+    function renderCartItems(data) {
+        if (!data || !data.items || data.items.length === 0) {
+            CART_DOM.cartContainer.innerHTML = `
+                <div class="empty-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h3>Your cart is empty</h3>
+                    <p>Add some products to get started!</p>
+                    <a href="index.html" class="btn btn-primary">Continue Shopping</a>
+                </div>
+            `;
+            hidePreloader();
             return;
         }
 

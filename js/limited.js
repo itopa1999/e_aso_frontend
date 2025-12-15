@@ -77,26 +77,27 @@ async function FetchLimitedProducts() {
     } catch (err) {
         showErrorModal("Failed to load limited products. Please refresh the page.");
     }
+
     const bubblesContainer = LIMITED_DOM.bubblesContainer;
     const bubbleCount = 15;
-    
+
     for (let i = 0; i < bubbleCount; i++) {
         const bubble = document.createElement('div');
         bubble.classList.add('bubble');
-        
+
         // Random size and position
         const size = Math.random() * 100 + 50;
         const left = Math.random() * 100;
         const top = Math.random() * 100;
         const delay = Math.random() * 15;
-        
+
         bubble.style.width = `${size}px`;
         bubble.style.height = `${size}px`;
         bubble.style.left = `${left}%`;
         bubble.style.top = `${top}%`;
         bubble.style.animationDelay = `${delay}s`;
         bubble.style.opacity = Math.random() * 0.3 + 0.1;
-        
+
         bubblesContainer.appendChild(bubble);
     }
 }
@@ -168,7 +169,7 @@ function renderProducts() {
         const btn = offerCard.querySelector(".action-button");
         if (product.cart_added) {
             btn.textContent = "✓ Added!";
-            btn.style.background  = "#28a745";
+            btn.style.background = "#28a745";
             btn.disabled = true;
             btn.style.cursor = "not-allowed";
         } else {
@@ -258,3 +259,10 @@ function startCountdown() {
     updateCountdown();
     setInterval(updateCountdown, 1000);
 }
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    cacheLimitedDOM();
+    checkReferralFeature();
+    FetchLimitedProducts();
+});

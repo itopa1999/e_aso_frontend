@@ -72,6 +72,36 @@
             </div>
         </section>
 
+        <!-- Featured Products Status Widget -->
+        <section class="featured-products-section">
+            <div class="whatsapp-product-status">
+                <div class="status-widget">
+                    <div class="status-header">
+                        <div class="header-left">
+                            <div class="status-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div>
+                                <div class="header-title">Featured Aso Oke</div>
+                                <div class="header-subtitle">Premium Nigerian fabrics • Swipe to see more</div>
+                            </div>
+                        </div>
+                        <a href="limited-products.html" class="view-all">View All</a>
+                    </div>
+                    
+                    <div class="status-circles-container" id="statusCircles">
+                        <!-- Status circles will be inserted here by JavaScript -->
+                    </div>
+                    
+                    <div class="swipe-hint">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Swipe to see more fabrics</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <div class="filter-wrapper">
     <button class="arrow-btn left-arrow">&#10094;</button>
 
@@ -97,6 +127,63 @@
         -------- End of products --------
         </span>
     </main>
+
+    <!-- Product Status Modal -->
+    <div class="status-modal-overlay" id="statusModal">
+        <div class="status-modal">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-tag"></i>
+                    <span>Fabric Details</span>
+                </div>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            
+            <div class="image-carousel">
+                <div class="carousel-track" id="carouselTrack">
+                    <!-- Carousel slides will be inserted here by JavaScript -->
+                </div>
+                
+                <div class="carousel-controls">
+                    <button class="carousel-btn" id="prevBtn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="carousel-btn" id="nextBtn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="carousel-indicators" id="carouselIndicators">
+                    <!-- Indicators will be inserted here by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="product-info">
+                <div class="product-name">
+                    <span id="productName">Fabric Name</span>
+                    <span class="discount-badge" id="modalDiscountBadge">-50%</span>
+                </div>
+                
+                <div class="product-price">
+                    <span class="current-price" id="currentPrice">₦49.99</span>
+                    <span class="original-price" id="originalPrice">₦99.99</span>
+                </div>
+                
+                <p class="product-description" id="productDescription">
+                    Fabric description will appear here. This is a high-quality Nigerian fabric with amazing features.
+                </p>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="viewDetailsBtn">
+                        <i class="fas fa-info-circle"></i> View Details
+                    </button>
+                    <button class="btn btn-secondary" id="addToCartBtn">
+                        <i class="fas fa-cart-plus"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Bottom Navbar -->
     <nav class="bottom-navbar">
@@ -254,7 +341,324 @@
     <script src="js/index.js"></script>
     <script src="js/tour-guide.js"></script>
     <script>
-        
+        // Featured Aso Oke Products Data
+        const featuredFabrics = [
+            {
+                id: 1,
+                name: "Premium Aso Oke Red",
+                images: [
+                    "https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1484704849700-f032a568e944?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                ],
+                description: "Authentic Nigerian Aso Oke in vibrant red. Perfect for traditional weddings and ceremonies. Handwoven with premium quality threads.",
+                price: 45000,
+                originalPrice: 55000,
+                discount: 18,
+                category: "Aso Oke"
+            },
+            {
+                id: 2,
+                name: "Blue Adire Fabric",
+                images: [
+                    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1579586337278-3fbe9c4284e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                ],
+                description: "Beautiful blue Adire fabric with traditional indigo dye patterns. Ideal for modern-traditional outfits and cultural events.",
+                price: 25000,
+                originalPrice: 35000,
+                discount: 29,
+                category: "Adire"
+            },
+            {
+                id: 3,
+                name: "Gold Brocade Ankara",
+                images: [
+                    "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1552168324-d612d77725e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1564466809058-bd6c6e3d0aa1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                ],
+                description: "Luxurious gold brocade Ankara print fabric. Perfect for special occasions, weddings, and formal attire.",
+                price: 15000,
+                originalPrice: 22000,
+                discount: 32,
+                category: "Ankara"
+            },
+            {
+                id: 4,
+                name: "Green Kente Cloth",
+                images: [
+                    "https://images.unsplash.com/photo-1541140532154-b024d705b90a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1587829741301-dc798b83add3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                ],
+                description: "Traditional Ghanaian Kente cloth in rich green tones. Symbolizes royalty and heritage. Perfect for ceremonial wear.",
+                price: 35000,
+                originalPrice: 45000,
+                discount: 22,
+                category: "Kente"
+            },
+            {
+                id: 5,
+                name: "Purple Lace Fabric",
+                images: [
+                    "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                ],
+                description: "Elegant purple lace fabric with intricate patterns. Ideal for wedding gowns, special occasions, and formal wear.",
+                price: 18000,
+                originalPrice: 25000,
+                discount: 28,
+                category: "Lace"
+            },
+            {
+                id: 6,
+                name: "Yellow Aso Oke",
+                images: [
+                    "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                ],
+                description: "Vibrant yellow Aso Oke fabric with traditional weaving patterns. Perfect for joyful celebrations and cultural events.",
+                price: 42000,
+                originalPrice: 52000,
+                discount: 19,
+                category: "Aso Oke"
+            },
+            {
+                id: 7,
+                name: "Black Wax Print",
+                images: [
+                    "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1581605405669-fcdf81165afa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1546938576-6e6a64f317cc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                ],
+                description: "Classic black wax print fabric with bold patterns. Versatile for both traditional and contemporary styles.",
+                price: 12000,
+                originalPrice: 16000,
+                discount: 25,
+                category: "Wax Print"
+            },
+            {
+                id: 8,
+                name: "White Satin Silk",
+                images: [
+                    "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1560074552-6e9f4f153c67?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                ],
+                description: "Premium white satin silk fabric. Luxurious and elegant, perfect for bridal wear and special occasions.",
+                price: 28000,
+                originalPrice: 38000,
+                discount: 26,
+                category: "Silk"
+            }
+        ];
+
+        // DOM elements for product status widget
+        const statusCirclesContainer = document.getElementById('statusCircles');
+        const statusModal = document.getElementById('statusModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const carouselTrack = document.getElementById('carouselTrack');
+        const carouselIndicators = document.getElementById('carouselIndicators');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        // Product info elements
+        const productName = document.getElementById('productName');
+        const modalDiscountBadge = document.getElementById('modalDiscountBadge');
+        const currentPrice = document.getElementById('currentPrice');
+        const originalPrice = document.getElementById('originalPrice');
+        const productDescription = document.getElementById('productDescription');
+        const viewDetailsBtn = document.getElementById('viewDetailsBtn');
+        const addToCartBtn = document.getElementById('addToCartBtn');
+
+        // Carousel state
+        let currentSlide = 0;
+        let currentFabric = null;
+
+        // Create status circles
+        function createStatusCircles() {
+            statusCirclesContainer.innerHTML = '';
+
+            featuredFabrics.forEach(fabric => {
+                const statusElement = document.createElement('div');
+                statusElement.className = 'status-circle-wrapper';
+
+                statusElement.innerHTML = `
+                    <div class="status-circle"
+                         style="background-image: url('${fabric.images[0]}')"
+                         data-id="${fabric.id}">
+                        ${fabric.discount ? `<div class="discount-badge">-${fabric.discount}%</div>` : ''}
+                    </div>
+                    <div class="status-name">${fabric.name}</div>
+                    <div class="status-price">₦${fabric.price.toLocaleString()}</div>
+                `;
+
+                statusCirclesContainer.appendChild(statusElement);
+
+                // Add click event to status circle
+                const circle = statusElement.querySelector('.status-circle');
+                circle.addEventListener('click', () => openFabricModal(fabric));
+            });
+        }
+
+        // Open fabric modal
+        function openFabricModal(fabric) {
+            currentFabric = fabric;
+            currentSlide = 0;
+
+            // Update fabric info
+            productName.textContent = fabric.name;
+            modalDiscountBadge.textContent = `-${fabric.discount}%`;
+            modalDiscountBadge.style.display = fabric.discount ? 'block' : 'none';
+
+            currentPrice.textContent = `₦${fabric.price.toLocaleString()}`;
+            originalPrice.textContent = `₦${fabric.originalPrice.toLocaleString()}`;
+            productDescription.textContent = fabric.description;
+
+            // Update button links
+            viewDetailsBtn.onclick = () => {
+                alert(`Viewing details for: ${fabric.name}`);
+                // In your actual implementation, you would redirect to product page
+                // window.location.href = `/product/${fabric.id}`;
+            };
+
+            addToCartBtn.onclick = () => {
+                alert(`Added to cart: ${fabric.name}`);
+                // In your actual implementation, you would add to cart
+            };
+
+            // Create carousel slides
+            carouselTrack.innerHTML = '';
+            carouselIndicators.innerHTML = '';
+
+            fabric.images.forEach((image, index) => {
+                // Create slide
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.style.backgroundImage = `url('${image}')`;
+                slide.dataset.index = index;
+                carouselTrack.appendChild(slide);
+
+                // Create indicator
+                const indicator = document.createElement('div');
+                indicator.className = `indicator ${index === 0 ? 'active' : ''}`;
+                indicator.dataset.index = index;
+                indicator.addEventListener('click', () => goToSlide(index));
+                carouselIndicators.appendChild(indicator);
+            });
+
+            // Update carousel position
+            updateCarousel();
+
+            // Show modal
+            statusModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Update carousel position
+        function updateCarousel() {
+            carouselTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+            // Update indicators
+            const indicators = document.querySelectorAll('.indicator');
+            indicators.forEach((indicator, index) => {
+                if (index === currentSlide) {
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active');
+                }
+            });
+        }
+
+        // Go to specific slide
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            updateCarousel();
+        }
+
+        // Next slide
+        function nextSlide() {
+            if (currentFabric) {
+                currentSlide = (currentSlide + 1) % currentFabric.images.length;
+                updateCarousel();
+            }
+        }
+
+        // Previous slide
+        function prevSlide() {
+            if (currentFabric) {
+                currentSlide = (currentSlide - 1 + currentFabric.images.length) % currentFabric.images.length;
+                updateCarousel();
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            statusModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Initialize product status widget
+        function initProductStatusWidget() {
+            // Create status circles
+            createStatusCircles();
+
+            // Event listeners
+            closeModalBtn.addEventListener('click', closeModal);
+            statusModal.addEventListener('click', (e) => {
+                if (e.target === statusModal) {
+                    closeModal();
+                }
+            });
+
+            // Carousel controls
+            prevBtn.addEventListener('click', prevSlide);
+            nextBtn.addEventListener('click', nextSlide);
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (statusModal.style.display === 'flex') {
+                    if (e.key === 'Escape') closeModal();
+                    if (e.key === 'ArrowLeft') prevSlide();
+                    if (e.key === 'ArrowRight') nextSlide();
+                }
+            });
+
+            // Touch swipe for carousel
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            carouselTrack.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+
+            carouselTrack.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                const diff = touchStartX - touchEndX;
+
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0) {
+                        // Swipe left - next slide
+                        nextSlide();
+                    } else {
+                        // Swipe right - previous slide
+                        prevSlide();
+                    }
+                }
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initProductStatusWidget);
     </script>
 </body>
 </html>
