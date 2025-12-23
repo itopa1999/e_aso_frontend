@@ -19,7 +19,7 @@ function generateProductUrl(id, title) {
         .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
         .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
     
-    return `product-info.html?id=${id}&slug=${slug}`;
+    return `product-info.html?id=${id}&details=${slug}`;
 }
 
 /**
@@ -31,7 +31,7 @@ function generateOrderUrl(id) {
     if (!id) return 'ordered-details.html';
     
     const slug = `order-ao-${id}`;
-    return `ordered-details.html?id=${id}&slug=${slug}`;
+    return `ordered-details.html?id=${id}&details=${slug}`;
 }
 
 // =========================

@@ -354,9 +354,6 @@ function renderList(data, append = false) {
                 <p class="product-features">${product.short_description}</p>
                <div class="rating">
                     ${starsHTML}
-                    <span>
-                        (<i class="fa fa-eye"></i> ${reviewFormatted})
-                    </span>
                 </div>
                 <div class="price">
                     <span class="current-price">₦${formatNumber(product.current_price)}</span>

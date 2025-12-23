@@ -512,7 +512,7 @@
     padding: 40px 20px;
     color: var(--dark-color);
     margin-top: 40px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 .empty-cart-message .fa-shopping-bag {

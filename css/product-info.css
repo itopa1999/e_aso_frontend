@@ -33,7 +33,7 @@
     align-items: center;
     justify-content: center;
     color: white;
-    font-family: 'Playfair Display', serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 2rem;
     text-align: center;
     padding: 20px;
@@ -89,7 +89,7 @@
 }
 
 .product-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 2.5rem;
     font-weight: 700;
     color: var(--dark-color);

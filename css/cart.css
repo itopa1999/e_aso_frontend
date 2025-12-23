@@ -537,7 +537,7 @@ select{
     padding: 40px 20px;
     color: var(--dark-color);
     margin-top: 40px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 .empty-cart-message .fa-shopping-cart {
@@ -599,7 +599,7 @@ select{
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   border: 2px solid var(--secondary-color);
   animation: fadeIn 0.3s ease;
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 .modal-content h2 {

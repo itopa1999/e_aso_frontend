@@ -90,12 +90,21 @@ async function loadOrders() {
 
         const data = await res.json();
 
-        // allOrders = data.data || [];
-        if (!data || !Array.isArray(data.data)) {
-            showErrorModal('Failed to load your orders. Please refresh the page.');
+        // Access data.data.results as per the API structure
+        let ordersData = [];
+        if (data.data && data.data.results && Array.isArray(data.data.results)) {
+            ordersData = data.data.results;
+        } else if (data.results && Array.isArray(data.results)) {
+            ordersData = data.results;
+        } else if (Array.isArray(data.data)) {
+            ordersData = data.data;
+        }
+
+        if (!ordersData.length) {
+            showErrorModal('No orders found. Please check back later.');
             allOrders = [];
         } else {
-            allOrders = data.data;
+            allOrders = ordersData;
         }
         displayedOrders = [];
         currentPage = 1;
@@ -510,38 +519,33 @@ function setupSearchAndFilter() {
 
 // ================== APPLY FILTERS AND SEARCH ==================
 function applyFiltersAndSearch() {
-    const cards = document.querySelectorAll('.order-card');
-    let visibleCount = 0;
-
-    cards.forEach(card => {
-        const orderNumber = card.querySelector('.order-id')?.textContent?.replace('Order ', '').trim() || '';
-        const status = card.dataset.status || '';
-
-        // Check status filter
-        const statusMatches = currentStatusFilter === 'all' || status === currentStatusFilter;
-
-        // Check search query
-        const searchMatches = currentSearchQuery === '' || orderNumber.toLowerCase().includes(currentSearchQuery.toLowerCase());
-
-        // Show card if both filters match
-        if (statusMatches && searchMatches) {
-            card.style.display = 'block';
-            visibleCount++;
-        } else {
-            card.style.display = 'none';
-        }
-    });
-
-    // Show or hide the "No orders" message
-    if (ORDERS_DOM.noOrdersMsg) {
-        ORDERS_DOM.noOrdersMsg.style.display = visibleCount === 0 ? 'block' : 'none';
-    }
-
-    // Reset displayed orders and reload with filtered results
+    // Reset and reload with filtered results
     displayedOrders = [];
-    currentStatusFilter = currentStatusFilter; // Maintain filter
+    currentPage = 1;
     hasMoreOrders = true;
-    loadMoreOrders();
+    
+    const filteredOrders = getFilteredOrders();
+    
+    if (filteredOrders.length === 0) {
+        // Show "no orders" message
+        ORDERS_DOM.ordersContainer.innerHTML = `
+            <div class="empty-cart-message">
+                <i class="fas fa-search"></i>
+                <p>No orders found</p>
+                <small>Try a different search term or filter.</small>
+            </div>
+        `;
+        return;
+    }
+    
+    // Render first page of filtered results
+    renderOrders(filteredOrders.slice(0, ORDERS_PER_PAGE));
+    displayedOrders = filteredOrders.slice(0, ORDERS_PER_PAGE);
+    
+    // Check if there are more orders to load
+    if (displayedOrders.length >= filteredOrders.length) {
+        hasMoreOrders = false;
+    }
 }
 
 // ================== INFINITE SCROLL SETUP ==================
