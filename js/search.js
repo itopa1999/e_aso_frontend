@@ -116,7 +116,26 @@ function renderList(data, append = false) {
     const products = data.results;
     const productsGrid = SEARCH_DOM.productsGrid;
     const noProduct = SEARCH_DOM.noProduct;
+    const recentSearchesSection = document.querySelector('.recent-searches-section');
+    
+    // Send first product to backend when loading fresh results
+    if (!append && products && products.length > 0) {
+        addSearchToHistory(products[0].id);
+    }
+    
     noProduct.style.display = "none";
+    
+    // Hide recent searches when user is searching or viewing results
+    if (currentFilters.search || products.length > 0) {
+        if (recentSearchesSection) {
+            recentSearchesSection.style.display = "none";
+        }
+    } else {
+        // Show recent searches only on initial load with no search
+        if (recentSearchesSection) {
+            recentSearchesSection.style.display = "block";
+        }
+    }
 
     SEARCH_DOM.searchMeta.innerHTML="Found " + products.length + ' products matching your search';
     SEARCH_DOM.resultsCount.innerHTML=products.length + " products Found "
@@ -216,7 +235,11 @@ function resetFilters() {
         select.selectedIndex = 0;
     });
 
-    
+    // Show recent searches when filters are cleared
+    const recentSearchesSection = document.querySelector('.recent-searches-section');
+    if (recentSearchesSection) {
+        recentSearchesSection.style.display = "block";
+    }
 }
 
 function setupSearchDelegation() {
@@ -504,13 +527,6 @@ function setupSearchListeners() {
             loadLists();
         });
     }
-
-    if (SEARCH_DOM.clearFiltersBtn) {
-        SEARCH_DOM.clearFiltersBtn.addEventListener('click', () => {
-            resetFilters();
-            loadLists();
-        });
-    }
 }
 
 
@@ -563,9 +579,230 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.querySelector('.clear-filters-btn')?.addEventListener('click', () => {
-        resetFilters();
-        document.querySelector(".no-products-wrapper").style.display = "none"; // Hide "no products" message
+        // Reset all filters and clear display
+        currentFilters = {
+            featured: "",
+            price_range: "",
+            search: "",
+            page: 1
+        };
+        
+        // Clear UI elements
+        if (SEARCH_DOM.searchInput) SEARCH_DOM.searchInput.value = "";
+        
+        const filterSelects = document.querySelectorAll('.filter-select');
+        filterSelects.forEach(select => {
+            select.selectedIndex = 0;
+        });
+        
+        // Clear the products grid completely
+        SEARCH_DOM.productsGrid.innerHTML = "";
+        
+        // Hide error messages
+        document.querySelector(".no-products-wrapper").style.display = "none";
+        SEARCH_DOM.searchMeta.innerHTML = "";
+        SEARCH_DOM.resultsCount.innerHTML = "0 products found";
+        
+        // Show only recent searches
+        const recentSearchesSection = document.querySelector('.recent-searches-section');
+        if (recentSearchesSection) {
+            recentSearchesSection.style.display = "block";
+        }
     });
 
     document.querySelector(".search-subtitle").innerHTML="Search for our amazing products"
+
+    // Initialize Recent Searches - this must be at the end of DOMContentLoaded
+    setTimeout(async () => {
+        await initializeRecentSearches();
+        loadRecentSearches();
+    }, 100);
 });
+
+// =========================
+// RECENT SEARCHES FUNCTIONALITY
+// =========================
+let recentSearches = [];
+
+async function initializeRecentSearches() {
+    try {
+        const res = await fetch(`${ASO_URL}/recent-searches/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            
+            // Map API response to our format
+            recentSearches = data.map(item => ({
+                id: item.id,
+                title: item.title,
+                desc: new Date(item.created_at).toLocaleDateString(), // Format date as description
+                img: item.image || "img/product_image.png",
+                product_id: item.product_id
+            }));
+        }
+    } catch (error) {
+        console.error('Failed to load recent searches:', error);
+        // If API fails, show empty list
+        recentSearches = [];
+    }
+}
+
+function loadRecentSearches() {
+    const searchList = document.getElementById('search-list');
+    const clearAllBtn = document.getElementById('clear-all');
+    
+    if (!searchList) return;
+    
+    function renderSearchList() {
+        searchList.innerHTML = '';
+        
+        if (recentSearches.length === 0) {
+            showEmptyState();
+            return;
+        }
+        
+        recentSearches.forEach(search => {
+            const item = createSearchItem(search);
+            searchList.appendChild(item);
+        });
+    }
+    
+    function createSearchItem(search) {
+        const item = document.createElement('div');
+        item.className = 'search-item';
+        item.dataset.id = search.id;
+        
+        item.innerHTML = `
+            <img src="${search.img || 'img/product_image.png'}" alt="${search.title}" class="item-img" onerror="this.src='img/product_image.png'">
+            <div class="item-info">
+                <div class="item-title">${search.title}</div>
+                <div class="item-desc">${search.desc}</div>
+            </div>
+            <button class="remove-btn" title="Remove from search history">×</button>
+        `;
+        
+        const removeBtn = item.querySelector('.remove-btn');
+        removeBtn.addEventListener('click', async function(e) {
+            e.stopPropagation();
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-20px)';
+            
+            setTimeout(async () => {
+                // Delete from backend
+                await deleteRecentSearch(search.id);
+                
+                const index = recentSearches.findIndex(s => s.id === search.id);
+                if (index !== -1) {
+                    recentSearches.splice(index, 1);
+                }
+                
+                item.remove();
+                
+                if (recentSearches.length === 0) {
+                    showEmptyState();
+                }
+            }, 300);
+        });
+        
+        item.addEventListener('click', function(e) {
+            if (!e.target.closest('.remove-btn')) {
+                // Open product details page
+                window.location.href = generateProductUrl(search.product_id, search.title);
+            }
+        });
+        
+        return item;
+    }
+    
+    function showEmptyState() {
+        searchList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🔍</div>
+                <div class="empty-title">No recent searches</div>
+                <div class="empty-text">Your search history will appear here</div>
+            </div>
+        `;
+    }
+    
+    if (clearAllBtn) {
+        clearAllBtn.addEventListener('click', async function() {
+            if (recentSearches.length === 0) return;
+            
+            if (confirm("Clear all recent searches?")) {
+                // Delete all from backend
+                await deleteAllRecentSearches();
+                recentSearches.length = 0;
+                renderSearchList();
+            }
+        });
+    }
+    
+    renderSearchList();
+}
+
+// Send search history to backend
+async function addSearchToHistory(productId) {
+    try {
+        const res = await fetch(`${ASO_URL}/recent-searches/add/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+                product_id: productId
+            })
+        });
+        
+        if (res.ok) {
+            console.log('Search added to history');
+        }
+    } catch (error) {
+        console.error('Failed to add search to history:', error);
+        // Silently fail - don't interrupt user experience
+    }
+}
+
+// Delete a single recent search
+async function deleteRecentSearch(searchId) {
+    try {
+        const res = await fetch(`${ASO_URL}/recent-searches/${searchId}/`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (res.ok) {
+            console.log('Search deleted from history');
+        }
+    } catch (error) {
+        console.error('Failed to delete search from history:', error);
+        // Silently fail - don't interrupt user experience
+    }
+}
+
+// Delete all recent searches
+async function deleteAllRecentSearches() {
+    try {
+        const res = await fetch(`${ASO_URL}/recent-searches/delete-all/`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (res.ok) {
+            console.log('All searches deleted from history');
+        }
+    } catch (error) {
+        console.error('Failed to delete all searches from history:', error);
+        // Silently fail - don't interrupt user experience
+    }
+}
