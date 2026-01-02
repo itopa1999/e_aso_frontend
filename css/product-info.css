@@ -400,6 +400,12 @@
     gap: 25px;
 }
 
+@media (max-width: 768px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 .product-card {
     background: white;
     border-radius: 15px;

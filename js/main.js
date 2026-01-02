@@ -135,6 +135,7 @@ function updateDropdown() {
             '<a href="profile.html" class="dropdown-item"><i class="fas fa-user-circle"></i><span>My Profile</span></a>',
             '<a href="ordered-lists.html" class="dropdown-item"><i class="fas fa-shopping-bag"></i><span>My Orders</span></a>',
             '<a href="watchlist.html" class="dropdown-item"><i class="fas fa-heart"></i><span>My Wishlist</span></a>',
+            '<a href="feedback-page.html" class="dropdown-item"><i class="fas fa-comment-dots"></i><span>Share Feedback</span></a>',
         ];
         
         if (authData.groups.includes("rider")) {
@@ -368,9 +369,9 @@ document.addEventListener('keydown', (e) => {
 
 });
 
-ADMIN_URL = "http://127.0.0.1:8000/admins/api/admin"
-AUTH_URL = "http://127.0.0.1:8000/auth/api/user" 
-ASO_URL = "http://127.0.0.1:8000/aso/api/product"
+ADMIN_URL = "http://192.168.0.199:8000/admins/api/admin"
+AUTH_URL = "http://192.168.0.199:8000/auth/api/user" 
+ASO_URL = "http://192.168.0.199:8000/aso/api/product"
 
 
 function getStarHTML(rating) {

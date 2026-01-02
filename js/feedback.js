@@ -4,30 +4,30 @@ if (!accessToken) {
     window.location.href = "auth.html";
 }
 
-async function checkReferralFeature() {
-    const featureFlagName = "Feedback";
-    try {
-        const res = await fetch(`${ASO_URL}/feature-flag/${encodeURIComponent(featureFlagName)}/`, {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        });
-        const result = await res.json();
+// async function checkReferralFeature() {
+//     const featureFlagName = "Feedback";
+//     try {
+//         const res = await fetch(`${ASO_URL}/feature-flag/${encodeURIComponent(featureFlagName)}/`, {
+//             method: "GET",
+//             headers: {
+//                 "Accept": "application/json"
+//             }
+//         });
+//         const result = await res.json();
 
         
-        if (result?.data === true) {
-            // Feature flag enabled
-        } else {
-            window.location.href = "404.html";
-        }
-    } catch (err) {
-        showErrorModal("This page is currently unavailable.");
-    }
-}
+//         if (result?.data === true) {
+//             // Feature flag enabled
+//         } else {
+//             window.location.href = "404.html";
+//         }
+//     } catch (err) {
+//         showErrorModal("This page is currently unavailable.");
+//     }
+// }
 
 document.addEventListener('DOMContentLoaded', function() {
-    checkReferralFeature();
+    // checkReferralFeature();
     // Get all form elements
     const feedbackForm = document.getElementById('feedbackForm');
     const successMessage = document.getElementById('successMessage');

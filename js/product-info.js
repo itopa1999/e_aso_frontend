@@ -209,15 +209,19 @@ function renderProductDetails(data) {
         });
     }
 
-    const descriptionData = data.details.find(item => item.tab === "description");
+    const descriptionData = data.details.filter(item => item.tab === "description");
     const detailsData = data.details.filter(item => item.tab === "details");
-    const shippingData = data.details.find(item => item.tab === "shipping");
+    const shippingData = data.details.filter(item => item.tab === "shipping");
 
-    // Description
-    if (descriptionData) {
-        document.getElementById("description").innerHTML = `
-            <p class="product-description">${descriptionData.content.replace(/\r\n/g, "<br>")}</p>
-        `;
+    // Description (multiple)
+    const descriptionContainer = document.getElementById("description");
+    if (descriptionData.length > 0) {
+        descriptionContainer.innerHTML = descriptionData.map(desc => `
+            <div class="detail-item">
+                <div class="detail-title"><i class="fas fa-info-circle"></i> ${desc.title}</div>
+                <div class="detail-value">${desc.content.replace(/\r\n/g, "<br>")}</div>
+            </div>
+        `).join("");
     }
 
     // Details (multiple)
@@ -225,20 +229,21 @@ function renderProductDetails(data) {
     if (detailsData.length > 0) {
         detailsContainer.innerHTML = detailsData.map(detail => `
             <div class="detail-item">
-                <div class="detail-title">${detail.title}</div>
+                <div class="detail-title"><i class="fas fa-check-circle"></i> ${detail.title}</div>
                 <div class="detail-value">${detail.content.replace(/\r\n/g, "<br>")}</div>
             </div>
         `).join("");
     }
 
-    // Shipping
-    if (shippingData) {
-        document.getElementById("shipping").innerHTML = `
+    // Shipping (multiple)
+    const shippingContainer = document.getElementById("shipping");
+    if (shippingData.length > 0) {
+        shippingContainer.innerHTML = shippingData.map(ship => `
             <div class="detail-item">
-                <div class="detail-title">${shippingData.title}</div>
-                <div class="detail-value">${shippingData.content.replace(/\r\n/g, "<br>")}</div>
+                <div class="detail-title"><i class="fas fa-truck"></i> ${ship.title}</div>
+                <div class="detail-value">${ship.content.replace(/\r\n/g, "<br>")}</div>
             </div>
-        `;
+        `).join("");
     }
 
     const ProductRelatedContainer = document.querySelector('.products-grid');

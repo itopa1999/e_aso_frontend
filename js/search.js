@@ -554,6 +554,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     window.addEventListener("scroll", async () => {
+        // Only trigger infinite scroll if products grid is visible
+        const recentSearchesSection = document.querySelector('.recent-searches-section');
+        const isRecentSearchesVisible = recentSearchesSection && recentSearchesSection.style.display !== 'none';
+        
+        // Don't load more if recent searches are showing or if no products are loaded
+        if (isRecentSearchesVisible || !SEARCH_DOM.productsGrid.hasChildNodes()) {
+            return;
+        }
+
         const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 200;
 
         if (nearBottom && !isLoadingMore && nextPageUrl) {
@@ -734,12 +743,39 @@ function loadRecentSearches() {
         clearAllBtn.addEventListener('click', async function() {
             if (recentSearches.length === 0) return;
             
-            if (confirm("Clear all recent searches?")) {
+            // Show custom confirmation modal
+            const confirmModal = document.createElement("div");
+            confirmModal.className = "dialog-overlay";
+            confirmModal.innerHTML = `
+                <div class="dialog-box" style="max-width: 400px;">
+                    <h3 style="color: #8a4b38; margin-bottom: 15px; font-size: 18px;">
+                        <i class="fas fa-trash-alt" style="color: #ff6b6b; margin-right: 8px;"></i>
+                        Clear Search History
+                    </h3>
+                    <p style="color: #666; margin-bottom: 20px; font-size: 14px;">
+                        Are you sure you want to clear all recent searches? This action cannot be undone.
+                    </p>
+                    <div class="dialog-actions" style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button class="cancel-btn" style="flex: 1; padding: 12px;">Cancel</button>
+                        <button class="confirm-btn1" style="flex: 1; padding: 12px; background-color: #ff6b6b;">Clear All</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(confirmModal);
+
+            // Handle cancel
+            confirmModal.querySelector(".cancel-btn").addEventListener("click", () => {
+                confirmModal.remove();
+            });
+
+            // Handle confirm - delete all searches
+            confirmModal.querySelector(".confirm-btn1").addEventListener("click", async () => {
+                confirmModal.remove();
                 // Delete all from backend
                 await deleteAllRecentSearches();
                 recentSearches.length = 0;
                 renderSearchList();
-            }
+            });
         });
     }
     

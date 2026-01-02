@@ -3,7 +3,7 @@ if (!accessToken) {
     window.location.href = "404.html";
 }
 
-RIDER_URL = "http://127.0.0.1:8000/rider/api";
+RIDER_URL = "http://192.168.0.199:8000/rider/api";
 
 // DOM CACHE FOR PERFORMANCE
 const RIDER_DOM = {

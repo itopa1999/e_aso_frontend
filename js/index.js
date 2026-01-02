@@ -606,6 +606,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     loadLists();
     loadCats();
+    
+    // Load featured fabrics from API
+    await loadFeaturedFabrics();
 
     // Price range slider with debounce
     if (DOM.priceRange && DOM.priceValue) {
@@ -703,3 +706,329 @@ document.addEventListener('DOMContentLoaded', async function () {
         }, 150);
     }, { passive: true });
 });
+
+// =========================
+// FEATURED FABRICS - PRODUCT STATUS WIDGET
+// =========================
+let featuredFabrics = [];
+
+// Fetch highest price products for featured section
+async function loadFeaturedFabrics() {
+    try {
+        const res = await fetch(`${ASO_URL}/highest-price/`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${accessToken}`,
+                "Accept": "application/json"
+            }
+        });
+
+        if (!res.ok) throw new Error("Failed to load featured fabrics");
+
+        const data = await res.json();
+        console.log('Featured fabrics data:', data);
+
+        // Filter and map API products to featured fabrics format
+        if (data.is_success && data.data && Array.isArray(data.data)) {
+            featuredFabrics = data.data
+                .map(product => {
+                    // Build images array
+                    let images = [];
+                    
+                    // Add main image if available
+                    if (product.product_main_image) {
+                        images.push(product.product_main_image);
+                    }
+                    
+                    // Add gallery images if available
+                    if (product.product_images && Array.isArray(product.product_images) && product.product_images.length > 0) {
+                        images = images.concat(product.product_images);
+                    }
+                    
+                    // If no images, use default
+                    if (images.length === 0) {
+                        images = ["img/product_image.png"];
+                    }
+                    
+                    return {
+                        id: product.id,
+                        name: product.title || "Product",
+                        images: images,
+                        description: product.description || "High quality product",
+                        price: product.current_price || 0,
+                        originalPrice: product.original_price || product.current_price || 0,
+                        discount: product.discount && product.discount > 0 ? product.discount : null,
+                        cartAdded: product.cart_added || false
+                    };
+                });
+
+            // Initialize the widget with fetched data
+            initProductStatusWidget();
+        }
+    } catch (error) {
+        console.error('Failed to load featured fabrics:', error);
+        // Silently fail - widget won't show if data fails to load
+    }
+}
+
+// DOM elements for product status widget
+const statusCirclesContainer = document.getElementById('statusCircles');
+const statusModal = document.getElementById('statusModal');
+const closeModalBtn = document.getElementById('closeModal');
+const carouselTrack = document.getElementById('carouselTrack');
+const carouselIndicators = document.getElementById('carouselIndicators');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+// Product info elements
+const productName = document.getElementById('productName');
+const modalDiscountBadge = document.getElementById('modalDiscountBadge');
+const currentPrice = document.getElementById('currentPrice');
+const originalPrice = document.getElementById('originalPrice');
+const productDescription = document.getElementById('productDescription');
+const viewDetailsBtn = document.getElementById('viewDetailsBtn');
+const addToCartBtn = document.getElementById('addToCartBtn');
+
+// Carousel state
+let currentSlide = 0;
+let currentFabric = null;
+
+// Create status circles
+function createStatusCircles() {
+    statusCirclesContainer.innerHTML = '';
+
+    featuredFabrics.forEach(fabric => {
+        const statusElement = document.createElement('div');
+        statusElement.className = 'status-circle-wrapper';
+
+        statusElement.innerHTML = `
+            <div class="status-circle"
+                 style="background-image: url('${fabric.images[0]}')"
+                 data-id="${fabric.id}">
+                ${fabric.discount && fabric.discount > 0 ? `<div class="discount-badge">-${fabric.discount}%</div>` : ''}
+            </div>
+            <div class="status-name">${fabric.name}</div>
+            <div class="status-price">₦${fabric.price.toLocaleString()}</div>
+        `;
+
+        statusCirclesContainer.appendChild(statusElement);
+
+        // Add click event to status circle
+        const circle = statusElement.querySelector('.status-circle');
+        circle.addEventListener('click', () => openFabricModal(fabric));
+    });
+}
+
+// Open fabric modal
+function openFabricModal(fabric) {
+    currentFabric = fabric;
+    currentSlide = 0;
+
+    // Update fabric info
+    productName.textContent = fabric.name;
+    
+    // Only show discount and original price if discount exists
+    if (fabric.discount && fabric.discount > 0) {
+        modalDiscountBadge.textContent = `-${fabric.discount}%`;
+        modalDiscountBadge.style.display = 'block';
+        originalPrice.textContent = `₦${fabric.originalPrice.toLocaleString()}`;
+        originalPrice.style.display = 'block';
+    } else {
+        modalDiscountBadge.style.display = 'none';
+        originalPrice.style.display = 'none';
+    }
+
+    currentPrice.textContent = `₦${fabric.price.toLocaleString()}`;
+    productDescription.textContent = fabric.description;
+
+    // Set up button states based on cart_added
+    if (fabric.cartAdded) {
+        addToCartBtn.textContent = '✓ Added!';
+        addToCartBtn.style.backgroundColor = '#28a745';
+        addToCartBtn.disabled = true;
+        addToCartBtn.style.cursor = 'not-allowed';
+    } else {
+        addToCartBtn.textContent = 'Add to Cart';
+        addToCartBtn.style.backgroundColor = '';
+        addToCartBtn.disabled = false;
+        addToCartBtn.style.cursor = 'pointer';
+    }
+
+    // Update button links
+    viewDetailsBtn.onclick = () => {
+        window.location.href = generateProductUrl(fabric.id, fabric.name);
+    };
+
+    addToCartBtn.onclick = async () => {
+        if (!accessToken) {
+            window.location.href = "auth.html";
+            return;
+        }
+
+        try {
+            showPreloader("Adding items to cart...");
+            const res = await fetch(`${ASO_URL}/add-to-cart/?product_id=${fabric.id}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (res.status === 401) {
+                window.location.href = "auth.html";
+                return;
+            }
+
+            if (!res.ok) throw new Error("Failed to add items to cart");
+
+            const data = await res.json();
+            const itemsMoved = data.data.items_added;
+            let currentCount = parseInt(DOM.cartBadge.textContent) || 0;
+            DOM.cartBadge.textContent = currentCount + itemsMoved;
+
+            addToCartBtn.textContent = '✓ Added!';
+            addToCartBtn.style.backgroundColor = '#28a745';
+            addToCartBtn.disabled = true;
+            addToCartBtn.style.cursor = "not-allowed";
+
+        } catch (error) {
+            showErrorModal(error.message || "Failed to add items to cart.");
+        } finally {
+            hidePreloader();
+        }
+    };
+
+    // Create carousel slides
+    carouselTrack.innerHTML = '';
+    carouselIndicators.innerHTML = '';
+
+    fabric.images.forEach((image, index) => {
+        // Create slide
+        const slide = document.createElement('div');
+        slide.className = 'carousel-slide';
+        slide.style.backgroundImage = `url('${image}')`;
+        slide.dataset.index = index;
+        carouselTrack.appendChild(slide);
+
+        // Create indicator
+        const indicator = document.createElement('div');
+        indicator.className = `indicator ${index === 0 ? 'active' : ''}`;
+        indicator.dataset.index = index;
+        indicator.addEventListener('click', () => goToSlide(index));
+        carouselIndicators.appendChild(indicator);
+    });
+
+    // Update carousel position
+    updateCarousel();
+
+    // Show modal
+    statusModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+// Update carousel position
+function updateCarousel() {
+    carouselTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+    // Update indicators
+    const indicators = document.querySelectorAll('.indicator');
+    indicators.forEach((indicator, index) => {
+        if (index === currentSlide) {
+            indicator.classList.add('active');
+        } else {
+            indicator.classList.remove('active');
+        }
+    });
+}
+
+// Go to specific slide
+function goToSlide(slideIndex) {
+    currentSlide = slideIndex;
+    updateCarousel();
+}
+
+// Next slide
+function nextSlide() {
+    if (currentFabric) {
+        currentSlide = (currentSlide + 1) % currentFabric.images.length;
+        updateCarousel();
+    }
+}
+
+// Previous slide
+function prevSlide() {
+    if (currentFabric) {
+        currentSlide = (currentSlide - 1 + currentFabric.images.length) % currentFabric.images.length;
+        updateCarousel();
+    }
+}
+
+// Close modal
+function closeModal() {
+    statusModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Initialize product status widget
+function initProductStatusWidget() {
+    // Create status circles
+    createStatusCircles();
+
+    // Only attach event listeners if there are fabrics to display
+    if (featuredFabrics.length === 0) {
+        return;
+    }
+
+    // Event listeners
+    closeModalBtn.addEventListener('click', closeModal);
+    statusModal.addEventListener('click', (e) => {
+        if (e.target === statusModal) {
+            closeModal();
+        }
+    });
+
+    // Carousel controls
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (statusModal.style.display === 'flex') {
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        }
+    });
+
+    // Touch swipe for carousel
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    carouselTrack.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+
+    carouselTrack.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
+
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                // Swipe left - next slide
+                nextSlide();
+            } else {
+                // Swipe right - previous slide
+                prevSlide();
+            }
+        }
+    }
+}
+
+// Load featured fabrics on page init
+// This is called from the DOMContentLoaded event
