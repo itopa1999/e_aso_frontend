@@ -194,7 +194,7 @@ function renderList(data, append = false) {
                         : ''
                     }
                 </div>
-                <button class="add-to-cart" data-id="${product.id}">Add to Cart</button>
+                <button class="add-to-cart" data-id="${product.id}"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
             </div>
         `;
 
@@ -207,7 +207,7 @@ function renderList(data, append = false) {
             btn.disabled = true;
             btn.style.cursor = "not-allowed";
         } else {
-            btn.textContent = "Add to Cart";
+            btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
             btn.disabled = false;
             btn.style.cursor = "pointer";
         }
