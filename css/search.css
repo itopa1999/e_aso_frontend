@@ -263,7 +263,7 @@
 
 .product-title {
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     color: var(--dark-color);
     font-size: 1.1rem;
 }
@@ -271,19 +271,14 @@
 .product-features {
     font-size: 0.9rem;
     color: #777;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     min-height: 40px;
-}
-
-.rating {
-    color: #ffc107;
-    margin-bottom: 10px;
 }
 
 .price {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
 }
 
 .current-price {

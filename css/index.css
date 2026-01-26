@@ -387,6 +387,11 @@
 
 /* Mobile responsive */
 @media (max-width: 768px) {
+    #hero {
+        margin-top: -50px;
+        margin-bottom: 15px;
+    }
+    
     .hero-slides {
         padding-bottom: 50%; /* Adjust aspect ratio for mobile */
         touch-action: pan-y;
@@ -494,7 +499,7 @@
 
 .product-title {
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     color: var(--dark-color);
     font-size: 1.1rem;
 }
@@ -502,19 +507,14 @@
 .product-features {
     font-size: 0.9rem;
     color: #777;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     min-height: 40px;
-}
-
-.rating {
-    color: #ffc107;
-    margin-bottom: 10px;
 }
 
 .price {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
 }
 
 .current-price {
@@ -977,6 +977,12 @@
 /* Featured Products Status Widget */
 .featured-products-section {
     margin: 30px 0;
+}
+
+@media (max-width: 768px) {
+    .featured-products-section {
+        margin: -10px 0 10px 0;
+    }
 }
 
 .whatsapp-product-status {

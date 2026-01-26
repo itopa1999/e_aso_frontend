@@ -180,9 +180,6 @@ function renderList(data, append = false) {
                     <h3 class="product-title">${product.title}</h3>
                 </a>
                 <p class="product-features">${product.short_description}</p>
-                <div class="rating">
-                ${starsHTML}
-                </div>
                 <div class="price">
                     <span class="current-price">₦${formatNumber(product.current_price)}</span>
                     ${
