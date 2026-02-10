@@ -29,6 +29,10 @@
         <div class="header-container">
             <a href="index.html" class="logo"></a>
             <div class="header-icons">
+                <a href="#" class="icon" id="notification-icon" style="display: none;">
+                    <i class="fas fa-bell"></i>
+                    <span class="icon-badge" id="notification-count">0</span>
+                </a>
                 <a href="#" class="icon" id="user-icon">
                     <i class="fas fa-user"></i>
                 </a>
@@ -46,6 +50,19 @@
                     </div>
                 </div>
                 <div class="dropdown-items"></div>
+            </div>
+
+            <!-- Notification Dropdown -->
+            <div class="notification-dropdown" id="notificationDropdown">
+                <div class="notification-header">
+                    <h3>Notifications</h3>
+                </div>
+                <div class="notification-list" id="notificationList">
+                    <div class="empty-notifications">No notifications</div>
+                </div>
+                <div class="notification-footer">
+                    <a href="notifications.html" class="view-more-btn">View All Notifications</a>
+                </div>
             </div>
         </div>
     </header>

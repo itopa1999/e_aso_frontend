@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watchlist | Esther\'s Fabrics Marketplace</title>
+    <title>Notifications | Esther's Fabrics Marketplace</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/logo.jpeg">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/watchlist.css">
-    <style>
-  
-    </style>
+    <link rel="stylesheet" href="css/notifications.css">
 </head>
 <body>
     <div class="preloader" id="preloader">
@@ -24,6 +21,7 @@
             <div class="preloader-dot"></div>
         </div>
     </div>
+
     <!-- Header -->
     <header class="header">
         <div class="header-container">
@@ -41,7 +39,8 @@
                     <span class="icon-badge" id="cart-count">0</span>
                 </a>
             </div>
-        <div class="user-dropdown" id="userDropdown">
+
+            <div class="user-dropdown" id="userDropdown">
                 <div class="user-header">
                     <div class="user-avatar d-lg-none" id="main-profile-pic">AO</div>
                     <div class="user-info">
@@ -50,22 +49,7 @@
                     </div>
                 </div>
                 
-                <div class="dropdown-items">
-                    
-                </div>
-            </div>
-
-            <!-- Notification Dropdown -->
-            <div class="notification-dropdown" id="notificationDropdown">
-                <div class="notification-header">
-                    <h3>Notifications</h3>
-                </div>
-                <div class="notification-list" id="notificationList">
-                    <div class="empty-notifications">No notifications</div>
-                </div>
-                <div class="notification-footer">
-                    <a href="notifications.html" class="view-more-btn">View All Notifications</a>
-                </div>
+                <div class="dropdown-items"></div>
             </div>
         </div>
     </header>
@@ -75,31 +59,31 @@
         <div class="breadcrumb-nav">
             <a href="index.html"><i class="fas fa-home"></i> Home</a>
             <span class="separator">/</span>
-            <span>Watchlist</span>
+            <span>Notifications</span>
         </div>
     </div>
 
-    <!-- Watchlist Header -->
-    <div class="watchlist-header">
-        <h1 class="watchlist-title">Your Watchlist</h1>
-        <div class="watchlist-actions">
-            <button class="action-btn btn-move-all">
-                <i class="fas fa-shopping-cart"></i>
-                Move All to Cart
-            </button>
-            <button class="action-btn btn-clear-all">
-                <i class="fas fa-trash-alt"></i>
-                Clear Watchlist
-            </button>
+    <!-- Main Content -->
+    <div class="notifications-container">
+        <div class="notifications-header">
+            <h1>Notifications</h1>
+            <div class="notifications-actions">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="system">System</button>
+                <button class="filter-btn" data-filter="updates">Updates</button>
+                <button class="filter-btn" data-filter="promos">Promos</button>
+                <button class="mark-all-read" id="markAllRead">Mark All as Read</button>
+            </div>
+        </div>
+
+        <div class="notifications-list" id="notificationsList">
+            <div class="empty-notifications">
+                <i class="fas fa-bell"></i>
+                <p>No notifications yet</p>
+                <a href="index.html">Continue Shopping</a>
+            </div>
         </div>
     </div>
-
-    <!-- Product Grid -->
-    <section class="product-section">
-        <div class="products-grid">
-            
-        </div>
-    </section>
 
     <!-- Bottom Navbar -->
     <nav class="bottom-navbar">
@@ -111,16 +95,30 @@
             <i class="fas fa-search nav-icon"></i>
             <span>Search</span>
         </a>
-        <a href="watchlist.html" class="nav-item active">
+        <a href="watchlist.html" class="nav-item">
             <i class="fas fa-heart nav-icon"></i>
             <span>Wishlist</span>
             <span class="nav-badge" id="watchlist-count">0</span>
         </a>
         <a href="ordered-lists.html" class="nav-item">
-            <i class="fas fa-shopping-bag  nav-icon"></i>
+            <i class="fas fa-shopping-bag nav-icon"></i>
             <span>Orders</span>
         </a>
     </nav>
+
+    <!-- Notification Dropdown (for header) -->
+    <div class="notification-dropdown" id="notificationDropdown">
+        <div class="notification-header">
+            <h3>Notifications</h3>
+            <button class="clear-notifications" id="clearNotifications">Clear All</button>
+        </div>
+        <div class="notification-list" id="notificationList">
+            <div class="empty-notifications">No notifications</div>
+        </div>
+        <div class="notification-footer">
+            <a href="notifications.html" class="view-more-btn">View All Notifications</a>
+        </div>
+    </div>
 
     <!-- Overlay for sidebar -->
     <div class="overlay" id="overlay"></div>
@@ -129,9 +127,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/watchlist.js"></script>
-    <script>
-        
-    </script>
+    <script src="js/notifications.js"></script>
 </body>
 </html>

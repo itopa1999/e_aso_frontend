@@ -44,7 +44,11 @@ const DOM_CACHE = {
     dropdownItems: null,
     userName: null,
     userEmail: null,
-    goToTopBtn: null
+    goToTopBtn: null,
+    notificationIcon: null,
+    notificationDropdown: null,
+    notificationList: null,
+    notificationCount: null
 };
 
 function initDOMCache() {
@@ -55,6 +59,10 @@ function initDOMCache() {
     DOM_CACHE.userName = document.getElementById('userName');
     DOM_CACHE.userEmail = document.getElementById('userEmail');
     DOM_CACHE.goToTopBtn = document.getElementById('goToTopBtn');
+    DOM_CACHE.notificationIcon = document.getElementById('notification-icon');
+    DOM_CACHE.notificationDropdown = document.getElementById('notificationDropdown');
+    DOM_CACHE.notificationList = document.getElementById('notificationList');
+    DOM_CACHE.notificationCount = document.getElementById('notification-count');
 }
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -66,18 +74,6 @@ function setCookie(name, value, days = 1) {
     const expires = "expires=" + date.toUTCString();
     document.cookie = `${name}=${encodeURIComponent(value)}; ${expires}; path=/; SameSite=Lax`;
 }
-
-// Only proceed if email param exists
-const email1 = urlParams.get("email");
-if (email1) {
-    ["access", "refresh", "email", "name", "group"].forEach(param => {
-        const value = urlParams.get(param);
-        if (value) {
-            setCookie(param, value, 7); // always 1 day expiry
-        }
-    });
-}
-
 
 // Initialize auth data
 let authData = {
@@ -91,8 +87,12 @@ function loadAuthData() {
     authData.access = getCookie("access");
     authData.email = getCookie("email");
     authData.name = getCookie("name");
-    const groupString = getCookie("group")?.toLowerCase() || "";
-    authData.groups = groupString ? groupString.split(",").map(g => g.trim()) : [];
+    const groupString = getCookie("group") || "";
+    // Parse groups: split by literal \054 or comma
+    authData.groups = groupString 
+        ? groupString.split(/\\054|,/).map(g => g.trim().toLowerCase()).filter(g => g)
+        : [];
+    console.log('Group string:', groupString, 'Parsed groups:', authData.groups);
 }
 
 // Load auth data immediately
@@ -369,9 +369,9 @@ document.addEventListener('keydown', (e) => {
 
 });
 
-ADMIN_URL = "http://192.168.0.199:8000/admins/api/admin"
-AUTH_URL = "http://192.168.0.199:8000/auth/api/user" 
-ASO_URL = "http://192.168.0.199:8000/aso/api/product"
+ADMIN_URL = "http://127.0.0.1:8000/admins/api/admin"
+AUTH_URL = "http://127.0.0.1:8000/auth/api/user" 
+ASO_URL = "http://127.0.0.1:8000/aso/api/product"
 
 
 function getStarHTML(rating) {
@@ -408,6 +408,289 @@ function formatNumber(num) {
 function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
+}
+
+// Notification Functions
+function setupNotificationHandler() {
+    if (!DOM_CACHE.notificationIcon || !DOM_CACHE.notificationDropdown) return;
+    
+    // Toggle notification dropdown
+    DOM_CACHE.notificationIcon.addEventListener('click', function (e) {
+        e.preventDefault();
+        DOM_CACHE.notificationDropdown.classList.toggle('active');
+        DOM_CACHE.userDropdown?.classList.remove('active');
+    });
+    
+    // Close notification dropdown on outside click
+    document.addEventListener('click', function (e) {
+        if (!DOM_CACHE.notificationIcon?.contains(e.target) && !DOM_CACHE.notificationDropdown?.contains(e.target)) {
+            DOM_CACHE.notificationDropdown?.classList.remove('active');
+        }
+    });
+    
+    // Clear notifications button
+    const clearBtn = document.getElementById('clearNotifications');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            clearAllNotifications();
+        });
+    }
+}
+
+function updateNotificationIcon() {
+    if (!authData.access || !DOM_CACHE.notificationIcon) {
+        if (DOM_CACHE.notificationIcon) {
+            DOM_CACHE.notificationIcon.style.display = 'none';
+        }
+        return;
+    }
+    
+    // Show notification icon only if authenticated
+    DOM_CACHE.notificationIcon.style.display = 'flex';
+    loadNotifications();
+}
+
+async function loadNotifications() {
+    if (!authData.access || !DOM_CACHE.notificationList) return;
+    
+    try {
+        const response = await fetch(`${ASO_URL}/notifications/recent/`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${authData.access}`,
+                "Accept": "application/json"
+            }
+        });
+        
+        if (!response.ok) throw new Error("Failed to fetch notifications");
+        
+        const data = await response.json();
+        displayNotifications(data.data || []);
+    } catch (error) {
+        console.log('Notifications load skipped - API may not be available yet');
+    }
+}
+
+
+function displayNotifications(notifications) {
+    if (!DOM_CACHE.notificationList || !DOM_CACHE.notificationCount) return;
+    
+    if (!notifications || notifications.length === 0) {
+        DOM_CACHE.notificationList.innerHTML = '<div class="empty-notifications">No notifications</div>';
+        DOM_CACHE.notificationCount.textContent = '0';
+        return;
+    }
+    
+    // Count unread notifications
+    const unreadCount = notifications.filter(n => !n.is_read).length;
+    DOM_CACHE.notificationCount.textContent = unreadCount > 0 ? unreadCount : '';
+    DOM_CACHE.notificationCount.style.display = unreadCount > 0 ? 'flex' : 'none';
+    
+    // Limit to 5 notifications in dropdown
+    const displayNotifications = notifications.slice(0, 5);
+    
+    const notificationHTML = displayNotifications.map(notif => {
+        const typeIcon = getNotificationTypeIcon(notif.type);
+        const typeClass = `type-${notif.type}`;
+        const truncatedMessage = truncateLongText(notif.message || '', 80);
+        const messageHTML = truncatedMessage.replace(/\n/g, '<br>');
+        
+        return `
+            <div class="notification-item ${notif.is_read ? '' : 'unread'} ${typeClass}" data-id="${notif.id}">
+                <div class="notification-icon">${typeIcon}</div>
+                <div class="notification-content" onclick="markAsRead(${notif.id}, event)">
+                    <h4>${notif.title || 'Notification'}</h4>
+                    <p>${messageHTML}</p>
+                    <small>${formatTimeAgo(notif.created_at)}</small>
+                </div>
+                <button class="delete-notification" data-id="${notif.id}" title="Delete">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+    }).join('');
+    
+    DOM_CACHE.notificationList.innerHTML = notificationHTML;
+    
+    // Add delete handlers
+    document.querySelectorAll('.delete-notification').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            deleteNotification(this.dataset.id);
+        });
+    });
+}
+
+function getNotificationTypeIcon(type) {
+    const icons = {
+        'system': '<i class="fas fa-cog"></i>',
+        'updates': '<i class="fas fa-bell"></i>',
+        'promos': '<i class="fas fa-tag"></i>'
+    };
+    return icons[type] || icons['system'];
+}
+
+function getNotificationTypeLabel(type) {
+    const labels = {
+        'system': 'System',
+        'updates': 'Updates',
+        'promos': 'Promos'
+    };
+    return labels[type] || 'Notification';
+}
+
+function truncateLongText(text, maxLength = 80) {
+    if (!text) return '';
+    
+    // Preserve line breaks but escape them for HTML display
+    const lines = text.split('\n');
+    let result = lines.join('\n');
+    
+    // Truncate if total length exceeds maxLength
+    if (result.length > maxLength) {
+        result = result.substring(0, maxLength) + '...';
+    }
+    
+    return result;
+}
+
+function formatTimeAgo(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
+    
+    if (seconds < 60) return 'Just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}d ago`;
+    
+    return formatDateToHuman(dateString);
+}
+
+// Mark a single notification as read via API
+async function markAsReadAPI(notificationId) {
+    if (!authData.access) return false;
+    
+    try {
+        const response = await fetch(`${ASO_URL}/notifications/${notificationId}/read/`, {
+            method: "PUT",
+            headers: {
+                "Authorization": `Bearer ${authData.access}`,
+                "Content-Type": "application/json"
+            }
+        });
+        
+        if (response.ok) {
+            return true;
+        }
+    } catch (error) {
+        console.log('Failed to mark notification as read');
+    }
+    return false;
+}
+
+// Delete a single notification via API
+async function deleteNotificationAPI(notificationId) {
+    if (!authData.access) return false;
+    showPreloader('Deleting notification...');
+    try {
+        const response = await fetch(`${ASO_URL}/notifications/${notificationId}/`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${authData.access}`
+            }
+        });
+        
+        if (response.ok) {
+            return true;
+        }
+    } catch (error) {
+        console.log('Failed to delete notification');
+    } finally {
+        hidePreloader();
+    }
+    return false;
+}
+
+// Mark all notifications as read via API
+async function markAllAsReadAPI() {
+    if (!authData.access) return false;
+    
+    try {
+        const response = await fetch(`${ASO_URL}/notifications/mark-all-read/`, {
+            method: "PUT",
+            headers: {
+                "Authorization": `Bearer ${authData.access}`,
+                "Content-Type": "application/json"
+            }
+        });
+        
+        if (response.ok) {
+            return true;
+        }
+    } catch (error) {
+        console.log('Failed to mark all notifications as read');
+    }
+    return false;
+}
+
+// Delete all notifications via API
+async function deleteAllNotificationsAPI() {
+    if (!authData.access) return false;
+    
+    try {
+        const response = await fetch(`${ASO_URL}/notifications/clear-all/`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${authData.access}`
+            }
+        });
+        
+        if (response.ok) {
+            return true;
+        }
+    } catch (error) {
+        console.log('Failed to delete all notifications');
+    }
+    return false;
+}
+
+// Wrapper for dropdown: mark as read with event handling
+async function markAsRead(notificationId, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    const success = await markAsReadAPI(notificationId);
+    if (success) {
+        // Update UI - remove unread class
+        const notifItem = document.querySelector(`[data-id="${notificationId}"]`);
+        if (notifItem) {
+            notifItem.classList.remove('unread');
+        }
+        loadNotifications();
+    }
+}
+
+// Wrapper for dropdown: delete notification
+async function deleteNotification(notificationId) {
+    const success = await deleteNotificationAPI(notificationId);
+    if (success) {
+        loadNotifications();
+    }
+}
+
+// Wrapper for dropdown: clear all notifications
+async function clearAllNotifications() {
+    const success = await deleteAllNotificationsAPI();
+    if (success) {
+        loadNotifications();
+    }
 }
 
 function showErrorModal(message) {
@@ -480,10 +763,11 @@ function initializeApp() {
     setupOutsideClickDetection();
     setupLogoutHandler();
     setupRestartTourHandler();
+    setupNotificationHandler();
+    updateNotificationIcon();
     updateCartAndWatchlistCounts();
     setupGoToTop();
     setupImageProtection();
-    
 }
 
 // =========================
