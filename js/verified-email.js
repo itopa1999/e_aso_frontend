@@ -1,4 +1,20 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Check for verification token from backend
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const userId = urlParams.get('user_id');
+    
+    // If no token or user_id, redirect to 404 (not a valid backend request)
+    if (!token || !userId) {
+        window.location.href = '404.html';
+        return;
+    }
+    
+    // Show verification success
+    showVerificationSuccess();
+});
+
+function showVerificationSuccess() {
     // Simulate a slight delay for verification
     setTimeout(() => {
         document.querySelector('.verification-icon').style.animation = 'pulse 2s infinite, fadeIn 0.8s ease-out';
@@ -57,4 +73,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 2000);
         }
     }
-});
+}

@@ -77,14 +77,14 @@ function renderNotifications() {
         const fullHTML = notif.message.replace(/\n/g, '<br>');
         
         return `
-            <div class="notification-card ${notif.is_read ? '' : 'unread'} type-${notif.type}" data-id="${notif.id}" onclick="handleNotificationClick(${notif.id})" style="cursor: pointer;">
+            <div class="notification-card ${notif.is_read ? '' : 'unread'} type-${notif.type}" data-id="${notif.id}" style="cursor: pointer;">
                 <div class="notification-icon">${typeIcon}</div>
                 <div class="notification-content">
                     <div class="notification-header-text">
                         <h3>${notif.title}</h3>
                         <span class="notification-badge">${typeLabel}</span>
                     </div>
-                    <p class="notification-message" onclick="toggleMessage(event, ${notif.id})" style="cursor: pointer;">
+                    <p class="notification-message" onclick="markAsRead(${notif.id}, event)" style="cursor: pointer;">
                         <span class="message-short" id="short-${notif.id}">${truncatedHTML}</span>
                         <span class="message-full" id="full-${notif.id}" style="display: none;">${fullHTML}</span>
                     </p>
@@ -104,11 +104,55 @@ function renderNotifications() {
 
 // Delete a notification from the page
 async function pageDeleteNotification(id) {
-    const success = await deleteNotificationAPI(id);
-    if (success) {
-        allNotifications = allNotifications.filter(n => n.id !== id);
-        renderNotifications();
-    }
+    // Show confirmation modal
+    showDeleteConfirmation(id);
+}
+
+// Show delete confirmation modal
+function showDeleteConfirmation(notificationId) {
+    const overlay = document.createElement("div");
+    overlay.className = "dialog-overlay";
+    overlay.innerHTML = `
+        <div class="dialog-box">
+            <div class="dialog-header">
+                <h3><i class="fas fa-trash"></i> Delete Notification</h3>
+            </div>
+            <div class="dialog-body">
+                <p>Are you sure you want to delete this notification? This action cannot be undone.</p>
+            </div>
+            <div class="dialog-footer">
+                <button class="btn btn-secondary" id="cancelDelete">Cancel</button>
+                <button class="btn btn-danger" id="confirmDelete">Delete</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    // Handle cancel
+    document.getElementById('cancelDelete').addEventListener('click', () => {
+        overlay.remove();
+    });
+    
+    // Handle confirm delete
+    document.getElementById('confirmDelete').addEventListener('click', async () => {
+        overlay.remove();
+        const success = await deleteNotificationAPI(notificationId);
+        if (success) {
+            allNotifications = allNotifications.filter(n => n.id !== notificationId);
+            renderNotifications();
+            showNotification('success', 'Success', 'Notification deleted successfully');
+        } else {
+            showNotification('error', 'Error', 'Failed to delete notification');
+        }
+    });
+    
+    // Close on overlay click
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            overlay.remove();
+        }
+    });
 }
 
 // Mark a notification as read from the page
@@ -160,34 +204,84 @@ function toggleMessage(event, id) {
     }
 }
 
-// Handle notification card click - show full message and mark as read if not already
-function handleNotificationClick(notificationId) {
+// Wrapper: mark as read and toggle message expand
+async function markAsRead(notificationId, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    
     // Find the notification
     const notif = allNotifications.find(n => n.id === notificationId);
+    
+    // Toggle to show full message
     const shortMsg = document.getElementById(`short-${notificationId}`);
     const fullMsg = document.getElementById(`full-${notificationId}`);
-    const card = document.querySelector(`[data-id="${notificationId}"]`);
     
     if (shortMsg && fullMsg) {
-        // Toggle to show full message
         shortMsg.style.display = 'none';
         fullMsg.style.display = 'inline';
-        
-        // Scroll to notification card
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
-        // Highlight the card temporarily
-        card.style.backgroundColor = '#fff3cd';
-        setTimeout(() => {
-            card.style.backgroundColor = '';
-        }, 2000);
-        
-        // Mark as read if not already read
-        if (notif && !notif.is_read) {
-            pageMarkAsRead(notificationId);
+    }
+    
+    // Only mark as read if not already read
+    if (notif && !notif.is_read) {
+        const success = await markAsReadAPI(notificationId);
+        if (success) {
+            // Update the notification object
+            notif.is_read = true;
+            
+            // Update UI - remove unread class
+            const notifCard = document.querySelector(`[data-id="${notificationId}"]`);
+            if (notifCard) {
+                notifCard.classList.remove('unread');
+            }
         }
     }
 }
 
 // Load notifications on page load
-document.addEventListener('DOMContentLoaded', loadPageNotifications);
+document.addEventListener('DOMContentLoaded', () => {
+    loadPageNotifications();
+    
+    // Check if we need to auto-open a notification
+    const urlParams = new URLSearchParams(window.location.search);
+    const notificationId = urlParams.get('id') || sessionStorage.getItem('viewNotificationId');
+    
+    if (notificationId) {
+        // Clear the session storage
+        sessionStorage.removeItem('viewNotificationId');
+        
+        // Wait a bit for the notifications to render, then auto-open
+        setTimeout(() => {
+            const notifCard = document.querySelector(`[data-id="${notificationId}"]`);
+            if (notifCard) {
+                // Scroll to the notification
+                notifCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Highlight it
+                notifCard.style.backgroundColor = '#fff3cd';
+                setTimeout(() => {
+                    notifCard.style.backgroundColor = '';
+                }, 2000);
+                
+                // Auto-expand the message
+                const shortMsg = document.getElementById(`short-${notificationId}`);
+                const fullMsg = document.getElementById(`full-${notificationId}`);
+                if (shortMsg && fullMsg) {
+                    shortMsg.style.display = 'none';
+                    fullMsg.style.display = 'inline';
+                }
+                
+                // Mark as read if not already
+                const notif = allNotifications.find(n => n.id == notificationId);
+                if (notif && !notif.is_read) {
+                    markAsReadAPI(notificationId).then(success => {
+                        if (success) {
+                            notif.is_read = true;
+                            notifCard.classList.remove('unread');
+                        }
+                    });
+                }
+            }
+        }, 500);
+    }
+});

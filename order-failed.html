@@ -192,9 +192,10 @@
         const params = new URLSearchParams(window.location.search);
         const reference = params.get('reference');
 
-        if (reference === null) {
+        // Must have reference from backend
+        if (!reference) {
             window.location.href = '404.html';
-                  
+            return;
         }
 
         // Get retry button

@@ -512,38 +512,38 @@
     </div>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const order_number = params.get('order_number');
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const order_number = params.get('order_number');
 
-        if (order_number === null) {
-            window.location.href = '404.html';
-                  
-        }
-        
-
-        // Add animation to confetti pieces
-        document.querySelectorAll('.confetti-piece').forEach((piece, index) => {
-            piece.style.animationDelay = `${Math.random() * 3}s`;
-            piece.style.left = `${Math.random() * 100}%`;
-        });
-        
-        // Add a subtle bounce to the success icon
-        setTimeout(() => {
-            const icon = document.querySelector('.success-icon');
-            icon.style.animation = 'pulse 2s infinite, bounce 0.8s ease-out';
+            // Must have order_number from backend
+            if (!order_number) {
+                window.location.href = '404.html';
+                return;
+            }
             
-            // Create keyframes for bounce
-            const styleSheet = document.styleSheets[0];
-            styleSheet.insertRule(`
-                @keyframes bounce {
-                    0% { transform: scale(1); }
-                    50% { transform: scale(1.15); }
-                    100% { transform: scale(1); }
-                }
-            `, styleSheet.cssRules.length);
-        }, 300);
-
-        
+            // Add animation to confetti pieces
+            document.querySelectorAll('.confetti-piece').forEach((piece, index) => {
+                piece.style.animationDelay = `${Math.random() * 3}s`;
+                piece.style.left = `${Math.random() * 100}%`;
+            });
+            
+            // Add a subtle bounce to the success icon
+            setTimeout(() => {
+                const icon = document.querySelector('.success-icon');
+                icon.style.animation = 'pulse 2s infinite, bounce 0.8s ease-out';
+                
+                // Create keyframes for bounce
+                const styleSheet = document.styleSheets[0];
+                styleSheet.insertRule(`
+                    @keyframes bounce {
+                        0% { transform: scale(1); }
+                        50% { transform: scale(1.15); }
+                        100% { transform: scale(1); }
+                    }
+                `, styleSheet.cssRules.length);
+            }, 300);
+        });
     </script>
 </body>
 </html>

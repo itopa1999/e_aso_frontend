@@ -1,12 +1,21 @@
 AUTH_URL = "http://127.0.0.1:8000/auth/api/user"
 document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const userId = urlParams.get('user_id');
+    const email = urlParams.get('email');
+    
+    // Must have token and user_id from backend
+    if (!token || !userId) {
+        window.location.href = '404.html';
+        return;
+    }
+    
     // Simulate a slight delay for verification
     setTimeout(() => {
         document.querySelector('.verification-icon').style.animation = 'pulseWarning 2s infinite, fadeIn 0.8s ease-out';
     }, 300);
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const email = urlParams.get('email');
     const is_login = urlParams.get('is_login');
     
     // Resend email functionality

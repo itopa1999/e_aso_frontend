@@ -499,7 +499,7 @@ function displayNotifications(notifications) {
         return `
             <div class="notification-item ${notif.is_read ? '' : 'unread'} ${typeClass}" data-id="${notif.id}">
                 <div class="notification-icon">${typeIcon}</div>
-                <div class="notification-content" onclick="markAsRead(${notif.id}, event)">
+                <div class="notification-content" onclick="viewNotificationDetail(${notif.id}, event)">
                     <h4>${notif.title || 'Notification'}</h4>
                     <p>${messageHTML}</p>
                     <small>${formatTimeAgo(notif.created_at)}</small>
@@ -675,6 +675,19 @@ async function markAsRead(notificationId, event) {
         }
         loadNotifications();
     }
+}
+
+// View notification detail on full notifications page
+function viewNotificationDetail(notificationId, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    // Store the notification ID to scroll to and open
+    sessionStorage.setItem('viewNotificationId', notificationId);
+    
+    // Navigate to notifications page
+    window.location.href = 'notifications.html?id=' + notificationId;
 }
 
 // Wrapper for dropdown: delete notification
