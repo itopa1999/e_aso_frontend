@@ -162,21 +162,23 @@ function renderOrderDetails(order) {
 
     // Shipping address
     const addr = order.shipping_address;
-    if (ORDER_DETAILS_DOM.addressDetails) {
+    if (ORDER_DETAILS_DOM.addressDetails && addr) {
         ORDER_DETAILS_DOM.addressDetails.innerHTML = `
-        <div class="address-name">${addr.full_name}</div>
-        <div class="address-line">${addr.first_name} ${addr.last_name}</div>
-        <div class="address-line">${addr.address}</div>
-        <div class="address-line">Apartment: ${addr.apartment}</div>
-        <div class="address-line">${addr.city}, ${addr.state}</div>
+        <div class="address-name">${addr.full_name || 'N/A'}</div>
+        <div class="address-line">${addr.first_name || ''} ${addr.last_name || ''}</div>
+        <div class="address-line">${addr.address || 'N/A'}</div>
+        <div class="address-line">Apartment: ${addr.apartment || 'N/A'}</div>
+        <div class="address-line">${addr.city || ''}, ${addr.state || ''}</div>
         <div class="address-line">Nigeria</div>
         <div class="address-line" style="margin-top: 10px;">
-            <i class="fas fa-phone"></i> ${addr.phone}
+            <i class="fas fa-phone"></i> ${addr.phone || 'N/A'}
         </div>
         <div class="address-line">
-            <i class="fas fa-phone"></i> Alt: ${addr.alt_phone}
+            <i class="fas fa-phone"></i> Alt: ${addr.alt_phone || 'N/A'}
         </div>
         `;
+    } else if (ORDER_DETAILS_DOM.addressDetails) {
+        ORDER_DETAILS_DOM.addressDetails.innerHTML = `<div class="address-line"><em>Address information not available</em></div>`;
     }
 
     const otherInfo = order.other_info;
@@ -191,9 +193,15 @@ function renderOrderDetails(order) {
     // Payment info
     const payment = order.payment_detail;
     if (ORDER_DETAILS_DOM.paymentInfo) {
-        ORDER_DETAILS_DOM.paymentInfo.innerHTML = `
-        <div class="payment-name">${payment.method}</div>
-        `;
+        if (payment && payment.method) {
+            ORDER_DETAILS_DOM.paymentInfo.innerHTML = `
+            <div class="payment-name">${payment.method}</div>
+            `;
+        } else {
+            ORDER_DETAILS_DOM.paymentInfo.innerHTML = `
+            <div class="payment-name">Payment method not available</div>
+            `;
+        }
     }
 
     if (ORDER_DETAILS_DOM.totalPayment) {
