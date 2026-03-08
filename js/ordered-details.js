@@ -89,7 +89,65 @@ function renderOrderDetails(order) {
     if (ORDER_DETAILS_DOM.statusBadge && ORDER_DETAILS_DOM.statusText) {
         ORDER_DETAILS_DOM.statusBadge.textContent = ORDER_DETAILS_DOM.statusText.textContent;
         ORDER_DETAILS_DOM.statusBadge.className = `order-status status-${ORDER_DETAILS_DOM.statusText.textContent.toLowerCase()}`;
-    }    
+    }
+    
+    // Add created date
+    const createdDate = order.created_at
+        ? formatDateToHuman(order.created_at)
+        : null;
+    
+    const statusCreatedEl = document.querySelector('.status-created');
+    if (statusCreatedEl) {
+        statusCreatedEl.textContent = createdDate
+            ? "Created: " + createdDate
+            : "Created: Not available";
+    }
+    
+    // Add payment status badge
+    const paymentStatusEl = document.querySelector('.status-bar .payment-status');
+    const retryBtn = document.getElementById('detailsRetryBtn');
+    
+    if (paymentStatusEl && order.payment_status) {
+        const paymentStatusValue = order.payment_status || 'Unknown';
+        const paymentStatusClass = `payment-status-${paymentStatusValue.replace(/\s+/g, '-').toLowerCase()}`;
+        paymentStatusEl.className = `payment-status ${paymentStatusClass}`;
+        paymentStatusEl.innerHTML = `<span class="payment-label">Payment:</span> ${paymentStatusValue}`;
+        paymentStatusEl.style.display = 'inline-block';
+        
+        // Show retry button ONLY for pending, failed, and cancelled statuses
+        const lowerStatus = (paymentStatusValue || '').toLowerCase().trim();
+        const showRetryBtn = lowerStatus.includes('pending') || 
+                            lowerStatus.includes('failed') || 
+                            lowerStatus === 'cancelled';
+        
+        if (retryBtn) {
+            // Always hide button first
+            retryBtn.style.display = 'none';
+            
+            // Only show if payment status is a retry status
+            if (showRetryBtn) {
+                retryBtn.dataset.orderId = order.id;
+                retryBtn.style.display = 'inline-flex';
+                
+                // Remove old event listener to avoid duplicates
+                const newRetryBtn = retryBtn.cloneNode(true);
+                retryBtn.parentNode.replaceChild(newRetryBtn, retryBtn);
+                
+                // Add fresh retry button click handler
+                newRetryBtn.addEventListener('click', async function() {
+                    const success = await retryPayment(this.dataset.orderId);
+                    if (success) {
+                        setTimeout(() => {
+                            fetchOrderDetails();
+                        }, 2000);
+                    }
+                });
+            }
+        }
+        
+        console.log('Payment Status:', paymentStatusValue, 'Lowercase:', lowerStatus, 'Show Retry:', showRetryBtn);
+    }
+    
     const deliveryDate = order.estimated_delivery_date
         ? formatDateToHuman(order.estimated_delivery_date)
         : null;
@@ -192,14 +250,19 @@ function renderOrderDetails(order) {
 
     // Payment info
     const payment = order.payment_detail;
+    let paymentStatusValue = order.payment_status || 'Unknown';
+    let paymentStatusClass = `payment-status-${paymentStatusValue.replace(/\s+/g, '-').toLowerCase()}`;
+        
     if (ORDER_DETAILS_DOM.paymentInfo) {
         if (payment && payment.method) {
             ORDER_DETAILS_DOM.paymentInfo.innerHTML = `
             <div class="payment-name">${payment.method}</div>
+            <div class="payment-status ${paymentStatusClass}"><span class="payment-label">Payment:</span> ${paymentStatusValue}</div>
             `;
         } else {
             ORDER_DETAILS_DOM.paymentInfo.innerHTML = `
             <div class="payment-name">Payment method not available</div>
+            <div class="payment-status ${paymentStatusClass}"><span class="payment-label">Payment:</span> ${paymentStatusValue}</div>
             `;
         }
     }

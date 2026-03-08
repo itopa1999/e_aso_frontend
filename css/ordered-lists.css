@@ -765,3 +765,88 @@
     background-color: white;
     color: var(--primary-color);
 }
+
+.order-statuses {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.payment-status {
+    padding: 6px 12px !important;
+    border-radius: 20px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.payment-label {
+    font-weight: 700 !important;
+    margin-right: 4px;
+}
+
+/* Pending Payment variations */
+.payment-status-pending-payment,
+.payment-status-pending,
+.payment-status-pending_payment {
+    background-color: #fff3cd !important;
+    color: #856404 !important;
+    border: 1px solid #ffeeba !important;
+}
+
+/* Payment Failed variations */
+.payment-status-payment-failed,
+.payment-status-failed,
+.payment-status-payment_failed {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+    border: 1px solid #f5c6cb !important;
+}
+
+/* Payment Confirmed variations */
+.payment-status-payment-confirmed,
+.payment-status-confirmed,
+.payment-status-payment_confirmed {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+    border: 1px solid #c3e6cb !important;
+}
+
+/* Cancelled variations */
+.payment-status-cancelled,
+.payment-status-cancel {
+    background-color: #e2e3e5 !important;
+    color: #383d41 !important;
+    border: 1px solid #d6d8db !important;
+}
+
+/* Retry Payment Button */
+.retry-payment-btn {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #e74c3c !important;
+    background-color: #fff !important;
+    color: #e74c3c !important;
+    border-radius: 50%;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-width: 32px;
+}
+
+.retry-payment-btn:hover {
+    background-color: #e74c3c !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+}
+
+.retry-payment-btn:active {
+    transform: scale(0.95);
+}

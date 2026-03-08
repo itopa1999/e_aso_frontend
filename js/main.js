@@ -852,3 +852,47 @@ function setupImageProtection() {
 // Call it after DOM loads
 document.addEventListener("DOMContentLoaded", initializeApp);
 
+// =========================
+// RETRY PAYMENT FUNCTION
+// =========================
+async function retryPayment(orderId) {
+    try {
+        showPreloader("Initiating payment retry");
+        
+        const accessToken = getCookie("access");
+        const response = await fetch(`${ASO_URL}/retry-payment/${orderId}/`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${accessToken}`,
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            const errorMsg = errorData.message || `Error: ${response.status} ${response.statusText}`;
+            showErrorModal(errorMsg);
+            return false;
+        }
+
+        const data = await response.json();
+        
+        // If checkout URL is available, redirect to it
+        if (data.data && data.data.checkout_url) {
+            window.location.href = data.data.checkout_url;
+            return true;
+        }
+        
+        showErrorModal("Payment retry initiated. Please complete your payment.");
+        
+        return true;
+
+    } catch (error) {
+        showErrorModal(error.message || "Failed to retry payment");
+        return false;
+    } finally {
+        hidePreloader();
+    }
+}
+

@@ -113,11 +113,20 @@ function renderProductDetails(data) {
      */
     function renderOptions(containerId, options, type) {
         const container = document.getElementById(containerId);
+        const optionsSection = container.closest('.options-section');
         container.innerHTML = '';
 
         if (!options || options.length === 0) {
-            container.innerHTML = `<p style="color:red;">No ${type}s available.</p>`;
+            // Hide the entire section if no data
+            if (optionsSection) {
+                optionsSection.style.display = 'none';
+            }
             return;
+        }
+
+        // Show the section if it has data
+        if (optionsSection) {
+            optionsSection.style.display = 'block';
         }
 
         // Use DocumentFragment for batch insertion

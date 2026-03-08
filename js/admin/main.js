@@ -215,59 +215,13 @@ async function loadNotifications() {
             const notifications = Array.isArray(data) ? data : data.results || [];
             displayNotifications(notifications.slice(0, 5));
         } else {
-            displaySampleNotifications();
+            console.log('Failed to load notifications');
         }
     } catch (error) {
         console.log('Failed to load notifications');
-        displaySampleNotifications();
     }
 }
 
-function displaySampleNotifications() {
-    const notifications = [
-        {
-            id: 1,
-            title: "Your Order is Confirmed",
-            message: "Order #12345 has been confirmed and will be shipped soon.",
-            type: "system",
-            is_read: false,
-            created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
-        },
-        {
-            id: 2,
-            title: "Special Promo: 20% Off",
-            message: "Get 20% off on all fabric collections this weekend only!",
-            type: "promos",
-            is_read: true,
-            created_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString()
-        },
-        {
-            id: 3,
-            title: "New Premium Collection Available",
-            message: "Check out our latest premium fabric collection just added to the store.",
-            type: "updates",
-            is_read: false,
-            created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
-        },
-        {
-            id: 4,
-            title: "Payment Successful",
-            message: "Your payment of ₦15,500 for order #12346 has been processed.",
-            type: "system",
-            is_read: true,
-            created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
-        },
-        {
-            id: 5,
-            title: "Aso Oke Festival Sale",
-            message: "Celebrate with us! Enjoy exclusive deals on traditional Aso Oke fabrics.",
-            type: "promos",
-            is_read: false,
-            created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
-        }
-    ];
-    displayNotifications(notifications);
-}
 
 function displayNotifications(notifications) {
     const notificationList = document.getElementById('notificationList');

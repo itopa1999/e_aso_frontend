@@ -109,6 +109,8 @@ async function loadOrders() {
         displayedOrders = [];
         currentPage = 1;
         hasMoreOrders = true;
+        // Update count badges
+        updateCountBadges();
         // Load first page
         loadMoreOrders();
 
@@ -224,6 +226,13 @@ function renderOrdersAppend(orders) {
 
     orders.forEach(order => {
         const statusClass = `status-${order.order_status.replace(/_/g, '-')}`;
+        
+        // Handle payment status - support multiple formats
+        let paymentStatusValue = order.payment_status || 'Unknown';
+        let paymentStatusClass = `payment-status-${paymentStatusValue.replace(/\s+/g, '-').toLowerCase()}`;
+        
+        console.log('Order Status:', order.order_status, 'Class:', statusClass);
+        console.log('Payment Status:', paymentStatusValue, 'Class:', paymentStatusClass);
 
         const itemHtml = order.order_items.map(item => `
             <div class="order-item">
@@ -243,6 +252,16 @@ function renderOrdersAppend(orders) {
             </div>
         `).join("");
 
+        // Determine if retry button should be shown
+        const normalizedStatus = (paymentStatusValue || '').toLowerCase().trim();
+        const showRetryBtn = normalizedStatus.includes('pending') || normalizedStatus.includes('failed') || normalizedStatus.includes('cancelled');
+        
+        console.log('Payment Status Value:', paymentStatusValue, 'Normalized:', normalizedStatus, 'Show Retry:', showRetryBtn);
+        
+        const retryBtnHtml = showRetryBtn 
+            ? `<button class="retry-payment-btn" data-order-id="${order.id}" title="Retry Payment"><i class="fas fa-redo"></i></button>`
+            : '';
+
         const card = document.createElement('div');
         card.className = "order-card fade-in";
         card.setAttribute('data-status', order.order_status);
@@ -250,9 +269,15 @@ function renderOrdersAppend(orders) {
             <div class="order-header">
                 <div>
                     <div class="order-id">Order ${order.order_number}</div>
-                    <div class="order-date">Placed on ${formatDateToHuman(order.created_at)}</div>
+                    <div class="order-date">Created at ${formatDateToHuman(order.created_at)}</div>
                 </div>
-                <div class="order-status ${statusClass}">${order.order_status.replace(/_/g, ' ')}</div>
+                <div class="order-statuses">
+                    ${order.order_status ? `<div class="order-status ${statusClass}">${order.order_status.replace(/_/g, ' ')}</div>` : ''}
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div class="payment-status ${paymentStatusClass}"><span class="payment-label">Payment:</span> ${order.payment_status}</div>
+                        ${retryBtnHtml}
+                    </div>
+                </div>
             </div>
 
             <div class="order-body">
@@ -306,6 +331,7 @@ function setupOrdersDelegation() {
         const reorderBtn = e.target.closest('.btn-reorder');
         const viewBtn = e.target.closest('.btn-view');
         const trackBtn = e.target.closest('.btn-track');
+        const retryPaymentBtn = e.target.closest('.retry-payment-btn');
         
         if (reorderBtn) {
             await reorderItems(reorderBtn);
@@ -314,6 +340,15 @@ function setupOrdersDelegation() {
         
         if (viewBtn) {
             window.location.href = generateOrderUrl(viewBtn.dataset.id);
+            return;
+        }
+
+        if (retryPaymentBtn) {
+            const orderId = retryPaymentBtn.dataset.orderId;
+            const success = await retryPayment(orderId);
+            if (success) {
+                
+            }
             return;
         }
         
@@ -469,6 +504,36 @@ async function reorderItems(btn) {
             btn.style.borderColor = '';
         }, 2000);
     }
+}
+
+// ================== UPDATE COUNT BADGES ==================
+function updateCountBadges() {
+    // Count orders by status
+    const statusCounts = {
+        all: allOrders.length,
+        placed: 0,
+        processing: 0,
+        shipped: 0,
+        in_transit: 0,
+        delivered: 0,
+        cancelled: 0
+    };
+
+    // Count each status
+    allOrders.forEach(order => {
+        const status = order.order_status || '';
+        if (statusCounts.hasOwnProperty(status)) {
+            statusCounts[status]++;
+        }
+    });
+
+    // Update badges in DOM
+    Object.keys(statusCounts).forEach(status => {
+        const badge = document.querySelector(`.count-badge[data-count-for="${status}"]`);
+        if (badge) {
+            badge.textContent = statusCounts[status];
+        }
+    });
 }
 
 // ================== FILTER ==================

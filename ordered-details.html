@@ -102,8 +102,15 @@
             <div class="status-text">
                 <div class="status-title">Null</div>
                 <div class="status-subtitle">Null</div>
+                <div class="status-created" style="font-size: 0.9rem; color: #999; margin-top: 5px;">Created: Null</div>
             </div>
-            <div class="order-status status-shipped">Null</div>
+            <div class="order-statuses" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <div class="order-status status-shipped">Null</div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div class="payment-status" style="display: none;">Payment: Null</div>
+                    <button class="retry-payment-btn" id="detailsRetryBtn" data-order-id="" style="display: none !important;" title="Retry Payment"><i class="fas fa-redo"></i></button>
+                </div>
+            </div>
         </div>
 
         <!-- Tracking Section -->
