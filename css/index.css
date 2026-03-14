@@ -163,6 +163,19 @@
     font-weight: 700;
 }
 
+/* Custom Order Link */
+.custom-order-link {
+    color: #007bff;
+    text-decoration: underline;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.custom-order-link:hover {
+    color: #0056b3;
+}
+
 .modal-footer {
     display: flex;
     gap: 12px;

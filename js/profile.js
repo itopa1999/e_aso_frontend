@@ -163,6 +163,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         const orderItem = document.createElement('div');
         orderItem.className = 'order-item';
 
+        // Handle payment status
+        const paymentStatusValue = order.payment_status || 'Unknown';
+        const paymentStatusClass = `payment-status-${paymentStatusValue.replace(/\s+/g, '-').toLowerCase()}`;
+
+        // Handle order status with dynamic class
+        const orderStatusValue = order.latest_tracking_status || '';
+        const orderStatusClass = `status-${orderStatusValue.replace(/_/g, '-').toLowerCase()}`;
+
         orderItem.innerHTML = `
             <div class="order-info">
                 <a href="${generateOrderUrl(order.id)}" class="order-image">AO-${order.id}</a>
@@ -172,7 +180,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                 </div>
             </div>
             <div class="order-right">
-                <div class="order-status status-delivered">${order.latest_tracking_status}</div>
+                <div class="order-statuses-container">
+                    ${orderStatusValue ? `<div class="order-status ${orderStatusClass}">${orderStatusValue}</div>` : ''}
+                    <div class="payment-status ${paymentStatusClass}"><span class="payment-label">Payment:</span> ${paymentStatusValue}</div>
+                </div>
                 <div class="order-price">₦${formatNumber(order.total)}</div>
             </div>
         `;

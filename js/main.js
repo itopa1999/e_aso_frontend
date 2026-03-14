@@ -147,6 +147,7 @@ function updateDropdown() {
         }
         
         links.push(
+            '<a href="custom-order.html" class="dropdown-item"><i class="fas fa-gift"></i><span>Custom Order</span></a>',
             '<a href="about.html" class="dropdown-item"><i class="fas fa-info-circle"></i><span>About Us</span></a>',
             '<a href="contact.html" class="dropdown-item"><i class="fas fa-envelope"></i><span>Contact Us</span></a>',
             '<a href="#" class="dropdown-item restart-tour-item" id="restartTourDropdown"><i class="fas fa-redo"></i><span>Restart Tour</span></a>',
@@ -158,6 +159,7 @@ function updateDropdown() {
         DOM_CACHE.userName.textContent = "Guest";
         DOM_CACHE.userEmail.textContent = "Please log in";
         DOM_CACHE.dropdownItems.innerHTML = `
+            <a href="custom-order.html" class="dropdown-item"><i class="fas fa-gift"></i><span>Custom Order</span></a>
             <a href="about.html" class="dropdown-item"><i class="fas fa-info-circle"></i><span>About Us</span></a>
             <a href="contact.html" class="dropdown-item"><i class="fas fa-envelope"></i><span>Contact Us</span></a>
             <a href="auth.html" class="dropdown-item"><i class="fas fa-sign-in-alt"></i><span>Sign In</span></a>
