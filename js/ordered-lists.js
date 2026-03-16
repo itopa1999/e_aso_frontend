@@ -201,8 +201,8 @@ function renderOrders(orders) {
         ORDERS_DOM.ordersContainer.innerHTML = `
             <div class="empty-cart-message">
                 <i class="fas fa-shopping-bag"></i>
-                <p>Your Order is empty</p>
-                <small>Looks like you haven’t Ordered anything yet.</small>
+                <p>No orders found</p>
+                <small>You have not placed any orders yet. Start shopping to place your first order.</small>
                 <a href="index.html" class="start-shopping-btn">
                     <i class="fas fa-store"></i> Start Shopping
                 </a>

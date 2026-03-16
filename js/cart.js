@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <i class="fas fa-shopping-cart"></i>
                         </div>
                         <h3>Your Cart is Empty</h3>
-                        <p>Looks like you haven't added anything yet. Browse our collection and find something you love!</p>
+                        <p>Your cart is currently empty. Start shopping and explore our collection of premium fabrics.</p>
                         <a href="index.html" class="btn-shop">Continue Shopping</a>
                     </div>
                 </div>

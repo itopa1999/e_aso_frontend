@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         circle.setAttribute('stroke-dasharray', `${percent}, 100`);
         text.textContent = `${percent}%`;
         count.textContent = current;
-        status.textContent = userData.isQualified ? "✅ Qualified" : "🚀 Keep Referring";
+        status.textContent = userData.isQualified ? "✅ Qualified for Reward" : "🚀 Keep Referring to Qualify";
         status.style.color = userData.isQualified ? "green" : "orange";
 
         const referralCodeElem = document.getElementById("referralCode");
@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             overlay.className = "dialog-overlay";
             overlay.innerHTML = `
                 <div class="dialog-box">
-                    <p>Please fill in both first name, last name and phone</p>
+                    <p>Please provide your first name, last name, and phone number to continue</p>
                     <div class="dialog-actions">
                         <button class="cancel-btn">Cancel</button>
                         <button class="confirm-btn1">Okay</button>
@@ -310,8 +310,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (result.is_success) {
                 showNotification(
                     'success',
-                    'Profile Update',
-                    'Successfully changed'
+                    'Profile Updated',
+                    'Your profile has been successfully updated'
                 );
                 userData.firstName = firstName;
                 userData.lastName = lastName;
@@ -361,14 +361,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             overlay.className = "dialog-overlay";
             overlay.innerHTML = `
                 <div class="dialog-box">
-                    <p><strong>Enable Telegram Updates</strong></p>
-                    <p>You will be directed to our Telegram bot to subscribe for all your order notifications.</p>
+                    <p><strong>Enable Telegram Notifications</strong></p>
+                    <p>Connect your Telegram account to receive order notifications directly.</p>
                     <p style="font-size: 13px; color: #666; margin-top: 10px;">
-                        You'll receive real-time notifications about all your order statuses, shipping, and deliveries via Telegram.
+                        Get instant updates on order confirmation, shipment tracking, and delivery status via Telegram.
                     </p>
                     <div class="dialog-actions">
                         <button class="cancel-btn">Cancel</button>
-                        <button class="confirm-btn1" style="background-color: #0088cc;">Continue to Telegram</button>
+                        <button class="confirm-btn1" style="background-color: #0088cc;">Connect Telegram Account</button>
                     </div>
                 </div>
             `;
